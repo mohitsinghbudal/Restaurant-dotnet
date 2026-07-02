@@ -1,0 +1,8 @@
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.csproj.AssemblyReference.cache
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.AssemblyInfoInputs.cache
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.AssemblyInfo.cs
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.csproj.CoreCompileInputs.cache
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.MvcApplicationPartsAssemblyInfo.cache
