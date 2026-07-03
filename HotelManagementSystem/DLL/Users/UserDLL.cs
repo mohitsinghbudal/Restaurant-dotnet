@@ -53,5 +53,40 @@ VALUES
 
             return await connection.ExecuteAsync(sql, user);
         }
+
+        public async Task<int> AssignWaiterAsync()
+        {
+            using var conn = _dbConnection.CreateConnection();
+
+            var sql = @"
+SELECT
+    u.UserId,
+    u.FirstName,
+    COUNT(d.SessionId) AS ActiveSessions
+FROM Users u
+LEFT JOIN Tables t
+    ON u.UserId = t.WaiterId
+LEFT JOIN Dinning d
+    ON d.TableId = t.TableId
+    AND d.SessionStatus <> 'Completed'
+    AND d.UpdatedAt > DATEADD(HOUR, -6, GETDATE())
+WHERE u.RoleId = 3
+  AND u.IsActive = 1
+GROUP BY
+    u.UserId,
+    u.FirstName
+ORDER BY
+    ActiveSessions ASC,
+    u.UserId ASC;";
+
+            var waiters = await conn.QueryAsync(sql);
+
+            var waiter = waiters.FirstOrDefault();
+
+            if (waiter == null)
+                throw new Exception("No active waiter found.");
+
+            return waiter.UserId;
+        }
     }
 }

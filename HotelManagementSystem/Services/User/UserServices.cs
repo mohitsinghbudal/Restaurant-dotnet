@@ -1,4 +1,6 @@
-﻿using HotelManagementSystem.Interfaces.UserInterfaces;
+﻿using HotelManagementSystem.Helper.JWT;
+using HotelManagementSystem.Interfaces.JWTInterface;
+using HotelManagementSystem.Interfaces.UserInterfaces;
 using HotelManagementSystem.Models.User;
 
 namespace HotelManagementSystem.Services.User
@@ -6,10 +8,12 @@ namespace HotelManagementSystem.Services.User
     public class UserServices : IUserService
     {
         private readonly IUserDLL _userDLL;
+        private readonly IJWT _jwt;
 
-        public UserServices(IUserDLL userDLL)
+        public UserServices(IUserDLL userDLL, IJWT jwt)
         {
             _userDLL = userDLL;
+            _jwt = jwt;
         }
 
         public async Task<IEnumerable<UserModel>> GetUsersAsync()
@@ -20,6 +24,7 @@ namespace HotelManagementSystem.Services.User
         public async Task<int> SignUp(SignUpDTO user)
         {
             var existingUser = await _userDLL.GetUserByEmailAsync(user.Email);
+            
 
             if (existingUser != null)
             {
@@ -41,6 +46,29 @@ namespace HotelManagementSystem.Services.User
             };
 
             return await _userDLL.SignUp(newUser);
+        }
+        
+        public async Task<string?> Login(LoginDTO user)
+        {
+            var existingUser = await _userDLL.GetUserByEmailAsync(user.Email);
+            if (existingUser == null)
+            {
+                return null;
+            }
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(user.Password, existingUser.PasswordHash);
+            if (!isPasswordValid)
+            {
+                return null;
+            }
+
+            var token = _jwt.JwtToken(existingUser);
+
+            if(token == null)
+            {
+                return "token generation failed";
+            }
+
+            return token;
         }
     }
 }

@@ -6,11 +6,15 @@ namespace HotelManagementSystem.Interfaces.UserInterfaces
     {
         Task<IEnumerable<UserModel>> GetUsersAsync();
          Task<int> SignUp(SignUpDTO user);
+        Task<string?> Login(LoginDTO user);
     }
     public interface IUserDLL
     {
         Task<IEnumerable<UserModel>> GetUsersAsync();
         Task<UserModel?> GetUserByEmailAsync(string email);
         Task<int> SignUp(UserModel user);
+        Task<int> AssignWaiterAsync();
+
+
     }
 }

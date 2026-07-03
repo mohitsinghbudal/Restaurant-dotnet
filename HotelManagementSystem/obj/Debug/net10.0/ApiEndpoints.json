@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_2",
     "RelativePath": "",
     "HttpMethod": "GET",
     "IsController": false,
@@ -18,6 +18,107 @@
     ]
   },
   {
+    "ContainingType": "HotelManagementSystem.Controllers.DinningController.DinnningController",
+    "Method": "CreateDinningSession",
+    "RelativePath": "api/Dinnning",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Dinning",
+        "Type": "HotelManagementSystem.Models.Dinning.DinningDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "CreateTableAsync",
+    "RelativePath": "api/Table",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "table",
+        "Type": "HotelManagementSystem.Models.Table.TableModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "BookTable",
+    "RelativePath": "api/Table/book-table",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "table",
+        "Type": "HotelManagementSystem.Models.Table.UpdateTable",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "CleanTable",
+    "RelativePath": "api/Table/clean-table",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "table",
+        "Type": "HotelManagementSystem.Models.Table.UpdateTable",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "FreeTable",
+    "RelativePath": "api/Table/free-table",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "table",
+        "Type": "HotelManagementSystem.Models.Table.UpdateTable",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "GetTableQRCode",
+    "RelativePath": "api/Table/generate-qr/{tableNo}/{updatedById}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tableNo",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedById",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "HotelManagementSystem.Controllers.usercontroller.UserController",
     "Method": "GetUserAsync",
     "RelativePath": "api/User",
@@ -25,6 +126,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.usercontroller.UserController",
+    "Method": "Login",
+    "RelativePath": "api/User/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "HotelManagementSystem.Models.User.LoginDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
