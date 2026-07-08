@@ -1,11 +1,8 @@
-﻿using HotelManagementSystem.Controllers.CategoryController;
-using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.SubCategoryInterface;
 using HotelManagementSystem.Models.Categories;
 using Microsoft.AspNetCore.Mvc;
-using Dapper;
 
-namespace HotelManagementSystem.DLL.SubCategoryDLL
+namespace HotelManagementSystem.Controllers.SubCategoryController
 {
     [Route("api/[controller]")]
     [ApiController]

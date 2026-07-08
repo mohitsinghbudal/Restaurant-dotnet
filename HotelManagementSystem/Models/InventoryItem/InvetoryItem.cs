@@ -3,7 +3,7 @@
     {
         public int InventoryItemId { get; set; }
 
-        public int ItemId { get; set; }
+        public string ItemName { get; set; } = string.Empty;
 
         public int UnitId { get; set; }
 

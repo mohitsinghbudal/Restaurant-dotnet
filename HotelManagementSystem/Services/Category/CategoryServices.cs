@@ -1,7 +1,6 @@
 ﻿using HotelManagementSystem.Interfaces.CategoryInterface;
 using HotelManagementSystem.Models.Categories;
-
-namespace HotelManagementSystem.Services.Categories
+namespace HotelManagementSystem.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {

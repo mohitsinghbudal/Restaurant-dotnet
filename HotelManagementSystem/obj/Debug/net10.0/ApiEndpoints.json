@@ -139,7 +139,197 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "HotelManagementSystem.DLL.SubCategoryDLL.SubCategoryController",
+    "ContainingType": "HotelManagementSystem.Controllers.InventoryController.InventoryController",
+    "Method": "AddInventoryItem",
+    "RelativePath": "api/Inventory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "inventoryItem",
+        "Type": "HotelManagementSystem.Models.Inventory.InventoryItem",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.InventoryController.InventoryController",
+    "Method": "GetInventoryItemById",
+    "RelativePath": "api/Inventory/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.InventoryController.InventoryController",
+    "Method": "UpdateInventoryItem",
+    "RelativePath": "api/Inventory/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "inventoryItem",
+        "Type": "HotelManagementSystem.Models.Inventory.InventoryItem",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.MenuController.MenuController",
+    "Method": "GetAllMenuItems",
+    "RelativePath": "api/Menu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.MenuController.MenuController",
+    "Method": "CreateMenuItem",
+    "RelativePath": "api/Menu",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "menu",
+        "Type": "HotelManagementSystem.Models.MenuItems.CreateMenu",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.MenuController.MenuController",
+    "Method": "GetMenuItemById",
+    "RelativePath": "api/Menu/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.MenuController.MenuController",
+    "Method": "UpdateMenuItem",
+    "RelativePath": "api/Menu/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "menu",
+        "Type": "HotelManagementSystem.Models.MenuItems.Menu",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RecipeController.RecipeController",
+    "Method": "GetAllRecipes",
+    "RelativePath": "api/Recipe",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RecipeController.RecipeController",
+    "Method": "CreateRecipe",
+    "RelativePath": "api/Recipe",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recipe",
+        "Type": "HotelManagementSystem.Models.Recipe.Recipe",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RecipeController.RecipeController",
+    "Method": "UpdateRecipe",
+    "RelativePath": "api/Recipe",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recipe",
+        "Type": "HotelManagementSystem.Models.Recipe.Recipe",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RecipeController.RecipeController",
+    "Method": "DeleteRecipe",
+    "RelativePath": "api/Recipe/{recipeId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recipeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RecipeController.RecipeController",
+    "Method": "GetRecipeByMenuId",
+    "RelativePath": "api/Recipe/menu/{menuId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "menuId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.SubCategoryController.SubCategoryController",
     "Method": "GetSubCategoryById",
     "RelativePath": "api/SubCategory/{id}",
     "HttpMethod": "GET",
@@ -155,7 +345,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "HotelManagementSystem.DLL.SubCategoryDLL.SubCategoryController",
+    "ContainingType": "HotelManagementSystem.Controllers.SubCategoryController.SubCategoryController",
     "Method": "GetAllSubCategories",
     "RelativePath": "api/SubCategory/All",
     "HttpMethod": "GET",
@@ -165,7 +355,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "HotelManagementSystem.DLL.SubCategoryDLL.SubCategoryController",
+    "ContainingType": "HotelManagementSystem.Controllers.SubCategoryController.SubCategoryController",
     "Method": "GetByCategoryId",
     "RelativePath": "api/SubCategory/ByCategory/{categoryId}",
     "HttpMethod": "GET",
@@ -181,7 +371,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "HotelManagementSystem.DLL.SubCategoryDLL.SubCategoryController",
+    "ContainingType": "HotelManagementSystem.Controllers.SubCategoryController.SubCategoryController",
     "Method": "CreateSubCategory",
     "RelativePath": "api/SubCategory/Create",
     "HttpMethod": "POST",
@@ -197,7 +387,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "HotelManagementSystem.DLL.SubCategoryDLL.SubCategoryController",
+    "ContainingType": "HotelManagementSystem.Controllers.SubCategoryController.SubCategoryController",
     "Method": "DeleteSubCategory",
     "RelativePath": "api/SubCategory/Delete/{id}/{deletedBy}",
     "HttpMethod": "DELETE",
@@ -218,7 +408,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "HotelManagementSystem.DLL.SubCategoryDLL.SubCategoryController",
+    "ContainingType": "HotelManagementSystem.Controllers.SubCategoryController.SubCategoryController",
     "Method": "UpdateSubCategory",
     "RelativePath": "api/SubCategory/Update",
     "HttpMethod": "PUT",

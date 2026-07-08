@@ -1,49 +1,120 @@
-﻿using HotelManagementSystem.Interfaces.DatabaseConnection;
+﻿using Dapper;
+using HotelManagementSystem.Interfaces.DatabaseConnection;
+using HotelManagementSystem.Interfaces.MenuInterface;
 using HotelManagementSystem.Models.MenuItems;
-using Dapper;
-using HotelManagementSystem.Interfaces.TableInterface;
 
 namespace HotelManagementSystem.DLL.MenuDLL
 {
-    public class MenuDLL
+    public class MenuDLL : IMenuDLL
     {
         private readonly IDbConnectionFactory _dbConn;
-        private readonly ITableDLL _tableDLL;
 
-        public MenuDLL(IDbConnectionFactory dbConn, ITableDLL tableDLL)
+        public MenuDLL(IDbConnectionFactory dbConn)
         {
             _dbConn = dbConn;
-            _tableDLL = tableDLL;
         }
-        public async Task<int> CreateMenuItemAsync(Menu menu)
+
+        public async Task<int> CreateMenuItemAsync(CreateMenu menu)
         {
             using var connection = _dbConn.CreateConnection();
-            var sql = @"
-            INSERT INTO Menu
-            (ItemName, ItemDescription, CategoryId, SubCategoryId, ItemImage, ItemPrice, Unit, IsAvailable, CreatedBy, CreatedOn)
-            VALUES
-            (@ItemName, @ItemDescription, @CategoryId, @SubCategoryId, @ItemImage, @ItemPrice, @Unit, @IsAvailable, @CreatedBy, @CreatedOn);
-            SELECT CAST(SCOPE_IDENTITY() AS INT);";
-            var menuId = await connection.ExecuteScalarAsync<int>(sql, menu);
-            return menuId;
+
+            string sql = @"
+                INSERT INTO Menus
+                (
+                    ItemName,
+                    ItemDescription,
+                    CategoryId,
+                    SubCategoryId,
+                    ItemImage,
+                    ItemPrice,
+                    UnitId,
+                    IsAvailable,
+                    IsActive,
+                    CreatedBy,
+                    CreatedOn
+                )
+                VALUES
+                (
+                    @ItemName,
+                    @ItemDescription,
+                    @CategoryId,
+                    @SubCategroyId,
+                    @ItemImage,
+                    @ItemPrice,
+                    @UnitId,
+                    1,
+                    1,
+                    @CreatedBy,
+                    @CreatedOn
+                );
+
+                SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+            return await connection.ExecuteScalarAsync<int>(sql, menu);
         }
-        public async Task<Menu> GetMenuItemByIdAsync(int menuId)
+
+        public async Task<Menu?> GetMenuItemByIdAsync(int menuId)
         {
             using var connection = _dbConn.CreateConnection();
-            string sql = @"SELECT * FROM Menu WHERE MenuId = @MenuId";
-            var menu = await connection.QuerySingleOrDefaultAsync<Menu>(sql, new { MenuId = menuId });
-            if (menu == null)
-            {
-                throw new Exception("Menu item not found.");
-            }
-            return menu;
+
+            string sql = @"
+                SELECT *
+                FROM Menus
+                WHERE MenuId = @MenuId
+                  AND IsActive = 1;";
+
+            return await connection.QuerySingleOrDefaultAsync<Menu>(
+                sql,
+                new { MenuId = menuId });
         }
-        public async Task<IEnumerable<Menu>> UpdateMenuAsync()
+
+        public async Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync()
         {
             using var connection = _dbConn.CreateConnection();
-            string sql = @"ALTER TABLE MenuItems insert";
-            var menu = await connection.QueryAsync<Menu>(sql);
-            return menu;
+
+            string sql = @"
+                SELECT
+                    MenuId,
+                    ItemName,
+                    ItemDescription,
+                    CategoryId,
+                    SubCategoryId,
+                    ItemImage,
+                    ItemPrice,
+                    UnitId,
+                    IsAvailable,
+                    IsActive,
+                    CreatedBy,
+                    CreatedOn,
+                    LastUpdatedBy,
+                    LastUpdatedOn
+                FROM Menus
+                WHERE IsActive = 1;";
+
+            return await connection.QueryAsync<ShowMenu>(sql);
+        }
+
+        public async Task<int> UpdateMenuAsync(Menu menu)
+        {
+            using var connection = _dbConn.CreateConnection();
+
+            string sql = @"
+                UPDATE Menus
+                SET
+                    ItemName = @ItemName,
+                    ItemDescription = @ItemDescription,
+                    CategoryId = @CategoryId,
+                    SubCategoryId = @SubCategoryId,
+                    ItemImage = @ItemImage,
+                    ItemPrice = @ItemPrice,
+                    UnitId = @UnitId,
+                    IsAvailable = @IsAvailable,
+                    LastUpdatedBy = @LastUpdatedBy,
+                    LastUpdatedOn = SYSUTCDATETIME()
+                WHERE MenuId = @MenuId
+                  AND IsActive = 1;";
+
+            return await connection.ExecuteAsync(sql, menu);
         }
     }
 }

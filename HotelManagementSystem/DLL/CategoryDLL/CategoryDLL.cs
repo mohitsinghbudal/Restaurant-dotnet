@@ -18,7 +18,6 @@ namespace HotelManagementSystem.DLL.CategoryDLL
         {
             using var conn = _dbConn.CreateConnection();
 
-            // Notice your model uses 'CreatedOn' instead of 'CreatedAt'
             var sql = @"
                 INSERT INTO Categories 
                 (CategoryName, [Description], IsAvailable, IsActive, CreatedBy, CreatedOn, DisplayOrder)

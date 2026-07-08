@@ -17,7 +17,7 @@ namespace HotelManagementSystem.DLL.InventoryDLL
         public async Task<IEnumerable<InventoryItem>> GetInventoryItemAsync()
         {
             using var conn = _dbConn.CreateConnection();
-            string sql = @"SELECT * FROM INVENTORY";
+            string sql = @"SELECT * FROM InventoryItems";
 
             var result = await conn.QueryAsync<InventoryItem>(sql);
             return result;
@@ -28,9 +28,9 @@ namespace HotelManagementSystem.DLL.InventoryDLL
             using var conn = _dbConn.CreateConnection();
 
             string sql = @"
-        INSERT INTO Inventory
+        INSERT INTO InventoryItems
         (
-            ItemId,
+            ItemName,
             UnitId,
             CurrentQuantity,
             MinimumQuantity,
@@ -42,7 +42,7 @@ namespace HotelManagementSystem.DLL.InventoryDLL
         OUTPUT INSERTED.*
         VALUES
         (
-            @ItemId,
+            @ItemName,
             @UnitId,
             @CurrentQuantity,
             @MinimumQuantity,
@@ -59,9 +59,9 @@ namespace HotelManagementSystem.DLL.InventoryDLL
             using var conn = _dbConn.CreateConnection();
 
             string sql = @"
-        UPDATE Inventory
+        UPDATE InventoryItems
         SET
-            ItemId = @ItemId,
+            ItemName = @ItemName,
             UnitId = @UnitId,
             CurrentQuantity = @CurrentQuantity,
             MinimumQuantity = @MinimumQuantity,
@@ -78,7 +78,7 @@ namespace HotelManagementSystem.DLL.InventoryDLL
 
             string sql = @"
         SELECT *
-        FROM Inventory
+        FROM InventoryItems
         WHERE InventoryItemId = @Id
           AND IsActive = 1;";
 

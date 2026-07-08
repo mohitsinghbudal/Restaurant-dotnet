@@ -1,6 +1,10 @@
+using HotelManagementSystem.Controllers.CategoryController;
 using HotelManagementSystem.DLL.AssignWaiterDLL;
 using HotelManagementSystem.DLL.CategoryDLL;
 using HotelManagementSystem.DLL.DinningDLL;
+using HotelManagementSystem.DLL.InventoryDLL;
+using HotelManagementSystem.DLL.MenuDLL;
+using HotelManagementSystem.DLL.RecipeDLL;
 using HotelManagementSystem.DLL.Tables;
 using HotelManagementSystem.DLL.UnitDLL;
 using HotelManagementSystem.DLL.Users;
@@ -8,12 +12,22 @@ using HotelManagementSystem.Helper.JWT;
 using HotelManagementSystem.Interfaces.CategoryInterface;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.DinningInterface;
+using HotelManagementSystem.Interfaces.Inventory;
 using HotelManagementSystem.Interfaces.JWTInterface;
+using HotelManagementSystem.Interfaces.MenuInterface;
+using HotelManagementSystem.Interfaces.RecipeInterface;
+using HotelManagementSystem.Interfaces.SubCategoryInterface;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Interfaces.Units;
 using HotelManagementSystem.Interfaces.User;
 using HotelManagementSystem.Interfaces.UserInterfaces;
+using HotelManagementSystem.Models.Categories;
+using HotelManagementSystem.Services.Categories;
+using HotelManagementSystem.Services.CategoryService;
+using HotelManagementSystem.Services.Categories;
 using HotelManagementSystem.Services.Dinning;
+using HotelManagementSystem.Services.Inventory;
+using HotelManagementSystem.Services.MenuService;
 using HotelManagementSystem.Services.Table;
 using HotelManagementSystem.Services.Units;
 using HotelManagementSystem.Services.User;
@@ -26,6 +40,7 @@ using System;
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text;
+using HotelManagementSystem.Services.RecipeService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,16 +57,23 @@ builder.Services.AddScoped<IDinningDLL, DinningDLL>();
 builder.Services.AddScoped<IWaiterDLL, AssignWaiterDLL>();
 builder.Services.AddScoped<IUnitDLL, UnitDLL>();
 builder.Services.AddScoped<ICategoryDLL, CategoryDLL>();
-//builder.Services.AddScoped<IMenyDLL, MenuDLL>();
-//builder Service.AddScoped<IMenuServices, MenuServices>();
+builder.Services.AddScoped<IMenuDLL, MenuDLL>();
+builder.Services.AddScoped<IInventoryDLL, InventoryDLL>();
+builder.Services.AddScoped<IRecipeDLL, RecipeDLL>();
+builder.Services.AddScoped<ISubCategoryDLL, SubCategoryController>();
+
 
 //for service layer
 builder.Services.AddScoped<IUserService, UserServices>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<IDinningService, DinningService>();
 builder.Services.AddScoped<IUnitServices, UnitServices>();
-builder.Services.AddScoped<IUnitServices, UnitServices>();
-
+builder.Services.AddScoped<IInventoryService, InventoryServices>();
+builder.Services.AddScoped<IMenuServices, MenuService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IRecipeService, RecipeService>();
+// SubCategory DLL implementation not present; register the service implementation
+builder.Services.AddScoped<ISubCategoryService, SubCategoryServices>();
 
 
 
