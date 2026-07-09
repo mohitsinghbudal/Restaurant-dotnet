@@ -7,7 +7,7 @@ namespace HotelManagementSystem.Interfaces.MenuInterface
         Task<int> CreateMenuItemAsync(CreateMenu menu);
         Task<Menu?> GetMenuItemByIdAsync(int menuId);
         Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync();
-        Task<int> UpdateMenuAsync(Menu menu);
+        Task<int> UpdateMenuAsync(UpdateMenu menu);
     }
 
     public interface IMenuDLL
@@ -15,7 +15,8 @@ namespace HotelManagementSystem.Interfaces.MenuInterface
         Task<int> CreateMenuItemAsync(CreateMenu menu); // Returns the new identity ID
         Task<Menu?> GetMenuItemByIdAsync(int menuId);
         //Task<IEnumerable<Menu>> GetAllMenuItemsAsync(); // Added missing method
-        Task<int> UpdateMenuAsync(Menu menu); // Standardized signature
+        Task<int> UpdateMenuAsync(UpdateMenu menu); // Standardized signature
         Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync();
+        Task<decimal> GetPriceById(int Id);
     }
 }

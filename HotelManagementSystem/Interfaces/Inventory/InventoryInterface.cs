@@ -1,5 +1,7 @@
 ﻿using HotelManagementSystem.DLL.InventoryDLL;
 using HotelManagementSystem.Models.Inventory;
+using HotelManagementSystem.Models.InventoryItem;
+using System.Data;
 
 namespace HotelManagementSystem.Interfaces.Inventory
 {
@@ -9,6 +11,7 @@ namespace HotelManagementSystem.Interfaces.Inventory
         Task<InventoryItem?> GetInventoryItemById(int id);
         Task<InventoryItem> AddInventoryItem(InventoryItem inventoryItem);
         Task<int> UpdateInventoryItem(InventoryItem inventoryItem);
+        Task<bool> DeductInventoryForOrderAsync(int menuId, int orderedQuantity);
     }
     public interface IInventoryDLL
     {
@@ -16,5 +19,6 @@ namespace HotelManagementSystem.Interfaces.Inventory
         Task<InventoryItem> AddInventoryItem(InventoryItem inventoryItem);
         Task<int> UpdateInventoryItem(InventoryItem inventoryItem);
         Task<InventoryItem?> GetInventoryItemById(int id);
+        Task<bool> DeductRawStockAsync(IEnumerable<InventoryDeductionModel> itemsToDeduct);
     }
 }

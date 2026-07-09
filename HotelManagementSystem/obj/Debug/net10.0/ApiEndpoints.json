@@ -18,6 +18,43 @@
     ]
   },
   {
+    "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
+    "Method": "PayBill",
+    "RelativePath": "api/Bill/pay",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pay",
+        "Type": "HotelManagementSystem.Models.Bill.PayBill",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
+    "Method": "GetBillPreview",
+    "RelativePath": "api/Bill/view-bill/{sessionId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "discountPercentage",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "HotelManagementSystem.Controllers.CategoryController.CategoryController",
     "Method": "GetCategoryById",
     "RelativePath": "api/Category/{id}",
@@ -248,7 +285,39 @@
       },
       {
         "Name": "menu",
-        "Type": "HotelManagementSystem.Models.MenuItems.Menu",
+        "Type": "HotelManagementSystem.Models.MenuItems.UpdateMenu",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.OrderController.OrderController",
+    "Method": "CreateOrderAsync",
+    "RelativePath": "api/Order",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newOrder",
+        "Type": "HotelManagementSystem.Models.Order.CreateOrder",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.OrderController.OrderController",
+    "Method": "GetOrderBySessionId",
+    "RelativePath": "api/Order/sessionId/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -326,6 +395,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.ReportController.ReportController",
+    "Method": "DownloadDashboardExcel",
+    "RelativePath": "api/Report/dashboard/excel",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -603,6 +682,22 @@
       {
         "Name": "user",
         "Type": "HotelManagementSystem.Models.User.SignUpDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.OrderController.OrderController",
+    "Method": "GetOrderById",
+    "RelativePath": "orderbyid/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

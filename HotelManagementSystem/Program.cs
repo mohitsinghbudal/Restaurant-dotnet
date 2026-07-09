@@ -1,33 +1,43 @@
 using HotelManagementSystem.Controllers.CategoryController;
 using HotelManagementSystem.DLL.AssignWaiterDLL;
+using HotelManagementSystem.DLL.BillDLL;
 using HotelManagementSystem.DLL.CategoryDLL;
 using HotelManagementSystem.DLL.DinningDLL;
 using HotelManagementSystem.DLL.InventoryDLL;
 using HotelManagementSystem.DLL.MenuDLL;
+using HotelManagementSystem.DLL.OrderDLL;
+using HotelManagementSystem.DLL.OrderItemDLL;
 using HotelManagementSystem.DLL.RecipeDLL;
+using HotelManagementSystem.DLL.ReportDLL;
 using HotelManagementSystem.DLL.Tables;
 using HotelManagementSystem.DLL.UnitDLL;
 using HotelManagementSystem.DLL.Users;
 using HotelManagementSystem.Helper.JWT;
+using HotelManagementSystem.Interfaces.BillInterface;
 using HotelManagementSystem.Interfaces.CategoryInterface;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.DinningInterface;
 using HotelManagementSystem.Interfaces.Inventory;
 using HotelManagementSystem.Interfaces.JWTInterface;
 using HotelManagementSystem.Interfaces.MenuInterface;
+using HotelManagementSystem.Interfaces.OrderInterface;
+using HotelManagementSystem.Interfaces.OrderItemInterface;
 using HotelManagementSystem.Interfaces.RecipeInterface;
+using HotelManagementSystem.Interfaces.Report;
 using HotelManagementSystem.Interfaces.SubCategoryInterface;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Interfaces.Units;
 using HotelManagementSystem.Interfaces.User;
 using HotelManagementSystem.Interfaces.UserInterfaces;
-using HotelManagementSystem.Models.Categories;
+using HotelManagementSystem.Services.BillService;
 using HotelManagementSystem.Services.Categories;
 using HotelManagementSystem.Services.CategoryService;
-using HotelManagementSystem.Services.Categories;
 using HotelManagementSystem.Services.Dinning;
 using HotelManagementSystem.Services.Inventory;
 using HotelManagementSystem.Services.MenuService;
+using HotelManagementSystem.Services.OrderService;
+using HotelManagementSystem.Services.RecipeService;
+using HotelManagementSystem.Services.Report;
 using HotelManagementSystem.Services.Table;
 using HotelManagementSystem.Services.Units;
 using HotelManagementSystem.Services.User;
@@ -36,21 +46,17 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
-// using Scalar.AspNetCore; // removed to avoid source-generator incompatibility causing CS0200
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text;
-using HotelManagementSystem.Services.RecipeService;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Services
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IJWT, JWT>();
 
-        
-//for dll
+// For DLL layer
 builder.Services.AddScoped<IUserDLL, UserDLL>();
 builder.Services.AddScoped<ITableDLL, TableDLL>();
 builder.Services.AddScoped<IDinningDLL, DinningDLL>();
@@ -61,9 +67,12 @@ builder.Services.AddScoped<IMenuDLL, MenuDLL>();
 builder.Services.AddScoped<IInventoryDLL, InventoryDLL>();
 builder.Services.AddScoped<IRecipeDLL, RecipeDLL>();
 builder.Services.AddScoped<ISubCategoryDLL, SubCategoryController>();
+builder.Services.AddScoped<IOrderDLL, OrderDLL>();
+builder.Services.AddScoped<IOrderItemDLL, OrderItemDLL>();
+builder.Services.AddScoped<IBillDLL, BillDLL>();
+builder.Services.AddScoped<IReportDLL, ReportDLL>();
 
-
-//for service layer
+// For Service layer
 builder.Services.AddScoped<IUserService, UserServices>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<IDinningService, DinningService>();
@@ -72,18 +81,18 @@ builder.Services.AddScoped<IInventoryService, InventoryServices>();
 builder.Services.AddScoped<IMenuServices, MenuService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
-// SubCategory DLL implementation not present; register the service implementation
 builder.Services.AddScoped<ISubCategoryService, SubCategoryServices>();
-
-
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IBillSeervice, BillService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 builder.Services.AddControllers();
 
-// Swagger / OpenAPI (Swashbuckle)
+// Swagger / OpenAPI Configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+// Authentication Context Configurations
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -102,6 +111,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
+builder.Services.AddAuthorization();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllLocal", policy =>
@@ -116,24 +127,22 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowAllLocal");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
 
+// Concrete implementation mapping for DB context factory
 public class SqlConnectionFactory : IDbConnectionFactory
 {
     private readonly string _connectionString;

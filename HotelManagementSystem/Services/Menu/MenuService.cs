@@ -40,7 +40,7 @@ namespace HotelManagementSystem.Services.MenuService
             return await _menuDLL.GetMenuItemByIdAsync(menuId);
         }
 
-        public async Task<int> UpdateMenuAsync(Menu menu)
+        public async Task<int> UpdateMenuAsync(UpdateMenu menu)
         {
             return await _menuDLL.UpdateMenuAsync(menu);
         }
@@ -50,6 +50,12 @@ namespace HotelManagementSystem.Services.MenuService
             var menus = (await _menuDLL.GetAllMenuItemsAsync()).ToList();
             var recipes = (await _recipeDLL.GetAllRecipesAsync()).ToList();
             var inventoryItems = (await _inventoryDLL.GetInventoryItemAsync()).ToList();
+
+            if (recipes.Any())
+            {
+                var firstRecipe = recipes.First();
+                Console.WriteLine($"[DEBUG] Raw Recipe ID: {firstRecipe.RecipeId}, MenuId: {firstRecipe.MenuId}, Qty: {firstRecipe.QuantityRequired}");
+            }
 
             foreach (var menu in menus)
             {
@@ -77,7 +83,14 @@ namespace HotelManagementSystem.Services.MenuService
                         break;
                     }
 
-                    int possible = (int)(inventory.CurrentQuantity / recipe.QantityRequired);
+                    Console.WriteLine(inventory.CurrentQuantity);
+                    Console.WriteLine(recipe.QuantityRequired);
+
+                    if (recipe.QuantityRequired <= 0)
+                    {
+                        continue;
+                    }
+                    int possible = (int)(inventory.CurrentQuantity / recipe.QuantityRequired);
                     availablePortions = Math.Min(availablePortions, possible);
                 }
 
@@ -110,7 +123,7 @@ namespace HotelManagementSystem.Services.MenuService
                 if (inventory == null)
                     return 0;
 
-                int possible = (int)(inventory.CurrentQuantity / recipe.QantityRequired);
+                int possible = (int)(inventory.CurrentQuantity / recipe.QuantityRequired);
                 available = Math.Min(available, possible);
             }
 
@@ -143,7 +156,7 @@ namespace HotelManagementSystem.Services.MenuService
             {
                 foreach (var recipe in recipes)
                 {
-                    decimal totalDeduction = recipe.QantityRequired * orderedQuantity;
+                    decimal totalDeduction = recipe.QuantityRequired * orderedQuantity;
 
                     string sql = @"
                         UPDATE Inventory 

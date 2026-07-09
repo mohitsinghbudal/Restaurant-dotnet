@@ -147,6 +147,7 @@ namespace HotelManagementSystem.Services.Table
         public byte[] GenerateTableQRCode(int tableNo, int updatedById)
         {
             string payload = $"TableNo:{tableNo}|UpdatedBy:{updatedById}|Timestamp:{DateTime.UtcNow:O}";
+        
 
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
             {

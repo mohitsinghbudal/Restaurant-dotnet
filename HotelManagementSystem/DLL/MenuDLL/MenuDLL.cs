@@ -14,6 +14,7 @@ namespace HotelManagementSystem.DLL.MenuDLL
             _dbConn = dbConn;
         }
 
+
         public async Task<int> CreateMenuItemAsync(CreateMenu menu)
         {
             using var connection = _dbConn.CreateConnection();
@@ -94,7 +95,7 @@ namespace HotelManagementSystem.DLL.MenuDLL
             return await connection.QueryAsync<ShowMenu>(sql);
         }
 
-        public async Task<int> UpdateMenuAsync(Menu menu)
+        public async Task<int> UpdateMenuAsync(UpdateMenu menu)
         {
             using var connection = _dbConn.CreateConnection();
 
@@ -116,5 +117,19 @@ namespace HotelManagementSystem.DLL.MenuDLL
 
             return await connection.ExecuteAsync(sql, menu);
         }
-    }
-}
+        
+    
+
+    public async Task<decimal> GetPriceById(int Id)
+        {
+            using var connection = _dbConn.CreateConnection();
+
+            string sql = @"
+                SELECT ItemPrice
+                FROM Menus
+                WHERE MenuId = @MenuId
+                  AND IsActive = 1;";
+            return await connection.ExecuteScalarAsync<decimal>(sql, new { MenuId = Id });
+        }
+
+    } }

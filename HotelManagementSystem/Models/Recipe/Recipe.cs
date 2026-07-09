@@ -5,7 +5,7 @@
         public int RecipeId { get; set; }
         public int MenuId { get; set; }
         public int InventoryItemId { get; set; }
-        public decimal QantityRequired { get; set; }
+        public decimal QuantityRequired { get; set; }
         public int UnitId { get; set; }
         public bool IsActive { get; set; }
         public int CreatedBy { get; set; }

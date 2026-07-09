@@ -4,7 +4,7 @@
     {
         public int BillId { get; set; }
 
-        public int BillNo { get; set; }
+        public long BillNo { get; set; }
 
         public int SessionId { get; set; }
 
@@ -26,4 +26,5 @@
 
         public int? PaidBy { get; set; }
     }
+
 }

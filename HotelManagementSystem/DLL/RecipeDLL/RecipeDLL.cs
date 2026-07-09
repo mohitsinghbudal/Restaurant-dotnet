@@ -25,6 +25,7 @@ namespace HotelManagementSystem.DLL.RecipeDLL
                     MenuId,
                     InventoryItemId,
                     QuantityRequired,
+                    UnitId,
                     IsActive,
                     CreatedBy,
                     CreatedOn
@@ -35,6 +36,7 @@ namespace HotelManagementSystem.DLL.RecipeDLL
                     @MenuId,
                     @InventoryItemId,
                     @QuantityRequired,
+                    @UnitId,
                     @IsActive,
                     @CreatedBy,
                     @CreatedOn
@@ -60,14 +62,35 @@ namespace HotelManagementSystem.DLL.RecipeDLL
         }
 
 
+        //public async Task<IEnumerable<Recipe>> GetAllRecipesAsync()
+        //{
+        //    using var conn = _dbConn.CreateConnection();
+
+        //    string sql = @"
+        //        SELECT *
+        //        FROM Recipe
+        //        WHERE IsActive = 1;";
+
+        //    return await conn.QueryAsync<Recipe>(sql);
+        //}
         public async Task<IEnumerable<Recipe>> GetAllRecipesAsync()
         {
             using var conn = _dbConn.CreateConnection();
 
+            // Explicitly select and alias the columns to guarantee Dapper matches them
             string sql = @"
-                SELECT *
-                FROM Recipe
-                WHERE IsActive = 1;";
+        SELECT 
+            RecipeId,
+            MenuId,
+            InventoryItemId,
+            QuantityRequired, 
+            UnitId,
+            IsActive,
+            CreatedBy,
+            CreatedOn,
+            UpdatedBy,
+            UpdatedOn
+        FROM Recipe;";
 
             return await conn.QueryAsync<Recipe>(sql);
         }

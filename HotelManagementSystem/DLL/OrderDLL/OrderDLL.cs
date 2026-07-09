@@ -1,11 +1,12 @@
-﻿using HotelManagementSystem.Interfaces.DatabaseConnection;
+﻿using Dapper;
+using HotelManagementSystem.Interfaces.DatabaseConnection;
+using HotelManagementSystem.Interfaces.OrderInterface;
 using HotelManagementSystem.Models.Order;
-using Dapper;
 
 
 namespace HotelManagementSystem.DLL.OrderDLL
 {
-    public class OrderDLL
+    public class OrderDLL : IOrderDLL
     {
         private readonly IDbConnectionFactory _dbConn;
 
@@ -17,10 +18,18 @@ namespace HotelManagementSystem.DLL.OrderDLL
         public async Task<Order> GetOrderByIdAsync(int id)
         {
             using var conn = _dbConn.CreateConnection();
-            string sql = @"SELECT * FROM Orders WHERE OrderId = @OrderId";
+            string sql = @"SELECT * FROM Orders WHERE OrderId = @OrderId;";
 
             return conn.QueryFirstOrDefault<Order>(sql, new { OrderId = id });
         }
+
+        public async Task<IEnumerable<Order>> GetOrderBySessionId(int Id)
+        {
+            using var conn = _dbConn.CreateConnection();
+            string sql = @"SELECT * FROM Orders WHERE DiningSessionId = @DiningSessionId;";
+            return await conn.QueryAsync<Order>(sql, new { DiningSessionId = Id });
+        }
+
         public async Task<int> UpdateOrderAsync(Order order)
         {
             using var conn = _dbConn.CreateConnection();
@@ -53,7 +62,7 @@ namespace HotelManagementSystem.DLL.OrderDLL
             CompletedAt,
             CreatedBy,
             UpdatedBy,
-            IsActive
+            IsActive,MenuId,Quantity,UnitPrice,ItemName
         )
         OUTPUT INSERTED.*
         VALUES
@@ -66,7 +75,7 @@ namespace HotelManagementSystem.DLL.OrderDLL
             @CompletedAt,
             @CreatedBy,
             @UpdatedBy,
-            @IsActive
+            @IsActive,@MenuId,@Quantity,@UnitPrice,@ItemName
         );";
 
             return await conn.QueryFirstOrDefaultAsync<Order>(sql, order);

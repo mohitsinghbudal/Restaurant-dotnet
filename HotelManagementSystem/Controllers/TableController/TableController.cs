@@ -1,12 +1,16 @@
-﻿using HotelManagementSystem.Interfaces.TableInterface;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Models.Table;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace HotelManagementSystem.Controllers.TableController
 {
-    // [Authorize] -- Ready to uncomment when authentication is fully configured
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TableController : ControllerBase
@@ -35,7 +39,7 @@ namespace HotelManagementSystem.Controllers.TableController
             }
             catch (InvalidOperationException ex)
             {
-                return Conflict(new { message = ex.Message }); // 409 Conflict is ideal for duplicates
+                return Conflict(new { message = ex.Message }); 
             }
             catch (Exception ex)
             {
@@ -111,6 +115,12 @@ namespace HotelManagementSystem.Controllers.TableController
         [HttpGet("qrcode/{tableNo}/{updatedById}")]
         public IActionResult GetQRCode(int tableNo, int updatedById)
         {
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            //if (roleId != 3)
+                //return Unauthorized("user not allowed is not an admin");
+
             byte[] imageBytes = _tableService.GenerateTableQRCode(tableNo, updatedById);
 
             return File(imageBytes, "image/png");

@@ -71,15 +71,15 @@ namespace HotelManagementSystem.Controllers.MenuController
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMenuItem(
             int id,
-            [FromBody] Menu menu)
+            [FromBody] UpdateMenu menu)
         {
-            if (id != menu.MenuId)
+            if (menu == null)
             {
-                return BadRequest(new
-                {
-                    message = "MenuId mismatch"
-                });
+                return BadRequest();
             }
+
+            // Ensure the MenuId expected by the SQL is provided from the route
+            menu.MenuId = id;
 
             var result = await _menuService.UpdateMenuAsync(menu);
 
