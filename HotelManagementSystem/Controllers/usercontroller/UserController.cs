@@ -59,12 +59,14 @@ namespace HotelManagementSystem.Controllers.usercontroller
         {
             try
             {
-                string token = await _userService.Login(user);
-                if (token==null)
+                var loginRes = await _userService.Login(user);
+
+                
+                if (loginRes == null)
                 {
                     return BadRequest("Error Occured");
                 }
-                return Ok(new{ Login_token = token, message = "login successfull"});
+                return Ok(new{ Login_token = loginRes.token, message = "login successfull", RoleId = loginRes.roleId ,UserId = loginRes.userId});
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);

@@ -45,10 +45,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Linq;
+using System.Reflection;
 using System;
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text;
+using NSwag.Generation.Processors.Security;
+using NSwag;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,7 +70,9 @@ builder.Services.AddScoped<ICategoryDLL, CategoryDLL>();
 builder.Services.AddScoped<IMenuDLL, MenuDLL>();
 builder.Services.AddScoped<IInventoryDLL, InventoryDLL>();
 builder.Services.AddScoped<IRecipeDLL, RecipeDLL>();
-builder.Services.AddScoped<ISubCategoryDLL, SubCategoryController>();
+// Register SubCategory data layer implementation
+builder.Services.AddScoped<HotelManagementSystem.Interfaces.SubCategoryInterface.ISubCategoryDLL,
+                           HotelManagementSystem.Controllers.CategoryController.SubCategoryController>();
 builder.Services.AddScoped<IOrderDLL, OrderDLL>();
 builder.Services.AddScoped<IOrderItemDLL, OrderItemDLL>();
 builder.Services.AddScoped<IBillDLL, BillDLL>();
@@ -88,11 +94,23 @@ builder.Services.AddScoped<IReportService, ReportService>();
 
 builder.Services.AddControllers();
 
-// Swagger / OpenAPI Configuration
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApiDocument(options =>
+{
+    options.Title = "Hotel Management API";
+    options.Version = "V1";
 
-// Authentication Context Configurations
+    options.AddSecurity("Bearer",  new OpenApiSecurityScheme
+    {
+        Type = OpenApiSecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = OpenApiSecurityApiKeyLocation.Header,
+        Description = "Enter your JWT token."
+    });
+
+    options.OperationProcessors.Add(
+        new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -127,8 +145,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseOpenApi();
+    app.UseSwaggerUi();
 }
 
 app.UseHttpsRedirection();
@@ -138,23 +156,31 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
+
+app.UseStaticFiles();
+
+
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
 
-// Concrete implementation mapping for DB context factory
 public class SqlConnectionFactory : IDbConnectionFactory
 {
-    private readonly string _connectionString;
+    private readonly IConfiguration _configuration;
 
+    
     public SqlConnectionFactory(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-                            ?? throw new InvalidOperationException("Connection string not found.");
+        _configuration = configuration;
     }
 
     public IDbConnection CreateConnection()
     {
-        return new SqlConnection(_connectionString);
+        var connectionString = _configuration.GetConnectionString("DefaultConnection")
+                               ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+        return new SqlConnection(connectionString);
     }
 }

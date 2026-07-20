@@ -7,9 +7,9 @@ namespace HotelManagementSystem.Interfaces.TableInterface
     {
         Task<TableModel> CreateTableAsync(CreateTable table);
         Task<int> UpdateTableAsync(UpdateTable table);
-        Task<int> BookTableAsync(UpdateTable table);
+        Task<int> BookTableAsync(BookTable table, int userId);
         Task<int> FreeTableAsync(UpdateTable table);
-        Task<int> CleanTableAsync(UpdateTable table);
+        Task<int> CleanTableAsync(CleanTable table);
         byte[] GenerateTableQRCode(int tableNo, int updatedById);
     }
 

@@ -31,6 +31,18 @@ C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debu
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\Microsoft.OpenApi.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\Microsoft.SqlServer.Server.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\Namotion.Reflection.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\Newtonsoft.Json.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NJsonSchema.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NJsonSchema.Annotations.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NJsonSchema.NewtonsoftJson.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NJsonSchema.Yaml.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NSwag.Annotations.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NSwag.AspNetCore.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NSwag.Core.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NSwag.Core.Yaml.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NSwag.Generation.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\NSwag.Generation.AspNetCore.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\QRCoder.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\RBush.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\SixLabors.Fonts.dll
@@ -42,6 +54,7 @@ C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debu
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\System.IO.Packaging.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\YamlDotNet.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\cs\Microsoft.Data.SqlClient.resources.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\de\Microsoft.Data.SqlClient.resources.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\es\Microsoft.Data.SqlClient.resources.dll
@@ -87,3 +100,4 @@ C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debu
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.pdb
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\HotelManagementSystem.genruntimeconfig.cache
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\ref\HotelManagementSystem.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

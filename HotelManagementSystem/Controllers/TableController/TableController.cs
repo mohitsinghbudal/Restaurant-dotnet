@@ -48,13 +48,25 @@ namespace HotelManagementSystem.Controllers.TableController
         }
 
         [HttpPost("book-table")]
-        public async Task<IActionResult> BookTable([FromBody] UpdateTable table)
+        public async Task<IActionResult> BookTable([FromBody] BookTable table)
         {
+
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            if (roleId != 1)
+                    return Unauthorized("user not allowed is not an customer");
             if (table == null) return BadRequest(new { message = "Invalid update payload." });
+
+            if(userId != table.bookedby)
+            {
+                return BadRequest(new { message = "Invalid update" });
+            }
+
 
             try
             {
-                var result = await _tableService.BookTableAsync(table);
+                var result = await _tableService.BookTableAsync(table , userId);
 
                 if (result <= 0)
                 {
@@ -62,6 +74,43 @@ namespace HotelManagementSystem.Controllers.TableController
                 }
 
                 return Ok(new { affectedRows = result, message = "Table successfully booked and waiter assigned!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [HttpPost("clean-table")]
+        public async Task<IActionResult> CleanTable([FromBody] CleanTable table)
+        {
+            if (table == null) return BadRequest(new { message = "Invalid update payload." });
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            
+
+            if (roleId != 2)
+                return Unauthorized("user not allowed is not an waiter");
+
+            if(table.waiterId != table.updatedby)
+            {
+                return Unauthorized("user not allowed is not an waiter");
+            }
+            if (table.waiterId != roleId)
+            {
+                return Unauthorized("user not allowed is not an waiter");
+            }
+
+
+            try
+            {
+                var result = await _tableService.CleanTableAsync(table);
+                if (result <= 0)
+                {
+                    return BadRequest(new { message = "Error encountered while attempting to clear the cleaning status." });
+                }
+
+                return Ok(new { affectedRows = result, message = "Table cleaning complete. Table is now available!" });
             }
             catch (Exception ex)
             {
@@ -91,35 +140,12 @@ namespace HotelManagementSystem.Controllers.TableController
             }
         }
 
-        [HttpPost("clean-table")]
-        public async Task<IActionResult> CleanTable([FromBody] UpdateTable table)
-        {
-            if (table == null) return BadRequest(new { message = "Invalid update payload." });
-
-            try
-            {
-                var result = await _tableService.CleanTableAsync(table);
-                if (result <= 0)
-                {
-                    return BadRequest(new { message = "Error encountered while attempting to clear the cleaning status." });
-                }
-
-                return Ok(new { affectedRows = result, message = "Table cleaning complete. Table is now available!" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        
 
         [HttpGet("qrcode/{tableNo}/{updatedById}")]
         public IActionResult GetQRCode(int tableNo, int updatedById)
         {
-            int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            //if (roleId != 3)
-                //return Unauthorized("user not allowed is not an admin");
+            
 
             byte[] imageBytes = _tableService.GenerateTableQRCode(tableNo, updatedById);
 

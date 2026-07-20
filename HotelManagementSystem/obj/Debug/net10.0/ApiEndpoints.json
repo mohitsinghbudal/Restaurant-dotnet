@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_2",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_3",
     "RelativePath": "",
     "HttpMethod": "GET",
     "IsController": false,
@@ -512,7 +512,7 @@
     "Parameters": [
       {
         "Name": "table",
-        "Type": "HotelManagementSystem.Models.Table.UpdateTable",
+        "Type": "HotelManagementSystem.Models.Table.BookTable",
         "IsRequired": true
       }
     ],
@@ -528,7 +528,7 @@
     "Parameters": [
       {
         "Name": "table",
-        "Type": "HotelManagementSystem.Models.Table.UpdateTable",
+        "Type": "HotelManagementSystem.Models.Table.CleanTable",
         "IsRequired": true
       }
     ],

@@ -48,9 +48,12 @@ namespace HotelManagementSystem.Services.User
             return await _userDLL.SignUp(newUser);
         }
         
-        public async Task<string?> Login(LoginDTO user)
+        public async Task<LoginResDTO> Login(LoginDTO user)
         {
             var existingUser = await _userDLL.GetUserByEmailAsync(user.Email);
+
+            
+
             if (existingUser == null)
             {
                 return null;
@@ -62,13 +65,21 @@ namespace HotelManagementSystem.Services.User
             }
 
             var token = _jwt.JwtToken(existingUser);
-
-            if(token == null)
+            if (token == null)
             {
-                return "token generation failed";
+                throw new Exception("token generation failed");
             }
 
-            return token;
+            var res = new LoginResDTO
+            {
+                token = token,
+                userId = existingUser.UserId,
+                roleId = existingUser.RoleId
+            };
+
+            
+
+            return res;
         }
     }
 }

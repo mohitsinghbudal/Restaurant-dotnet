@@ -1,174 +1,227 @@
 {
-  "openapi": "3.0.4",
+  "x-generator": "NSwag v14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
   "info": {
-    "title": "HotelManagementSystem",
-    "version": "1.0"
+    "title": "Hotel Management API",
+    "version": "V1"
   },
   "paths": {
-    "/api/Bill/view-bill/{sessionId}": {
+    "/": {
+      "get": {
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/WeatherForecast": {
       "get": {
         "tags": [
-          "Bill"
+          "WeatherForecast"
         ],
-        "parameters": [
-          {
-            "name": "sessionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+        "operationId": "WeatherForecast_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherForecast"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_GetUser",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/signup": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_SignUp",
+        "requestBody": {
+          "x-name": "user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpDTO"
+              }
             }
           },
-          {
-            "name": "discountPercentage",
-            "in": "query",
-            "schema": {
-              "type": "number",
-              "format": "double"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Bill/pay": {
-      "post": {
-        "tags": [
-          "Bill"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayBill"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayBill"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayBill"
-              }
-            }
-          }
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/Category/Create": {
+    "/api/User/login": {
       "post": {
         "tags": [
-          "Category"
+          "User"
         ],
+        "operationId": "User_Login",
         "requestBody": {
+          "x-name": "user",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
+                "$ref": "#/components/schemas/LoginDTO"
               }
             }
-          }
+          },
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Category/All": {
-      "get": {
-        "tags": [
-          "Category"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Category/{id}": {
-      "get": {
-        "tags": [
-          "Category"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
             }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
         }
       }
     },
-    "/api/Category/Update": {
+    "/api/Units": {
+      "get": {
+        "tags": [
+          "Units"
+        ],
+        "operationId": "Units_GetAllUnits",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Units"
+        ],
+        "operationId": "Units_AddUnit",
+        "requestBody": {
+          "x-name": "unit",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unit"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": [
-          "Category"
+          "Units"
         ],
+        "operationId": "Units_UpdateUnit",
         "requestBody": {
+          "x-name": "unit",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
+                "$ref": "#/components/schemas/Unit"
               }
             }
-          }
+          },
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/Category/Delete/{id}/{deletedBy}": {
+    "/api/Units/{id}": {
       "delete": {
         "tags": [
-          "Category"
+          "Units"
         ],
+        "operationId": "Units_DeleteUnit",
         "parameters": [
           {
             "name": "id",
@@ -177,7 +230,394 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
             }
+          }
+        }
+      }
+    },
+    "/api/Table/CreateTable": {
+      "post": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_CreateTable",
+        "requestBody": {
+          "x-name": "table",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTable"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Table/book-table": {
+      "post": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_BookTable",
+        "requestBody": {
+          "x-name": "table",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookTable"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Table/clean-table": {
+      "post": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_CleanTable",
+        "requestBody": {
+          "x-name": "table",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CleanTable"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Table/free-table": {
+      "post": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_FreeTable",
+        "requestBody": {
+          "x-name": "table",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTable"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Table/qrcode/{tableNo}/{updatedById}": {
+      "get": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_GetQRCode",
+        "parameters": [
+          {
+            "name": "tableNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "updatedById",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/SubCategory/Create": {
+      "post": {
+        "tags": [
+          "SubCategory"
+        ],
+        "operationId": "SubCategory_CreateSubCategory",
+        "requestBody": {
+          "x-name": "subCategory",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubCategory"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SubCategory/All": {
+      "get": {
+        "tags": [
+          "SubCategory"
+        ],
+        "operationId": "SubCategory_GetAllSubCategories",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SubCategory/ByCategory/{categoryId}": {
+      "get": {
+        "tags": [
+          "SubCategory"
+        ],
+        "operationId": "SubCategory_GetByCategoryId",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SubCategory/{id}": {
+      "get": {
+        "tags": [
+          "SubCategory"
+        ],
+        "operationId": "SubCategory_GetSubCategoryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SubCategory/Update": {
+      "put": {
+        "tags": [
+          "SubCategory"
+        ],
+        "operationId": "SubCategory_UpdateSubCategory",
+        "requestBody": {
+          "x-name": "subCategory",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubCategory"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SubCategory/Delete/{id}/{deletedBy}": {
+      "delete": {
+        "tags": [
+          "SubCategory"
+        ],
+        "operationId": "SubCategory_DeleteSubCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
           },
           {
             "name": "deletedBy",
@@ -186,82 +626,415 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "x-position": 2
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/Dinning/Create-Session": {
+    "/api/Report/dashboard/excel": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "Report_DownloadDashboardExcel",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Recipe": {
+      "get": {
+        "tags": [
+          "Recipe"
+        ],
+        "operationId": "Recipe_GetAllRecipes",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
-          "Dinning"
+          "Recipe"
         ],
+        "operationId": "Recipe_CreateRecipe",
         "requestBody": {
+          "x-name": "recipe",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DinningDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DinningDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DinningDTO"
+                "$ref": "#/components/schemas/Recipe"
               }
             }
-          }
+          },
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Recipe"
+        ],
+        "operationId": "Recipe_UpdateRecipe",
+        "requestBody": {
+          "x-name": "recipe",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Recipe"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/Dinning/End-Session/{sessionId}": {
-      "post": {
+    "/api/Recipe/menu/{menuId}": {
+      "get": {
         "tags": [
-          "Dinning"
+          "Recipe"
         ],
+        "operationId": "Recipe_GetRecipeByMenuId",
         "parameters": [
           {
-            "name": "sessionId",
+            "name": "menuId",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "x-position": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/": {
-      "get": {
+    "/api/Recipe/{recipeId}": {
+      "delete": {
         "tags": [
-          "HotelManagementSystem"
+          "Recipe"
+        ],
+        "operationId": "Recipe_DeleteRecipe",
+        "parameters": [
+          {
+            "name": "recipeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "",
             "content": {
-              "text/plain": {
+              "application/octet-stream": {
                 "schema": {
-                  "type": "string"
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orderbyid/{id}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "operationId": "Order_GetOrderById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Order/sessionId/{id}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "operationId": "Order_GetOrderBySessionId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Order": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "operationId": "Order_CreateOrder",
+        "requestBody": {
+          "x-name": "newOrder",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrder"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Menu": {
+      "get": {
+        "tags": [
+          "Menu"
+        ],
+        "operationId": "Menu_GetAllMenuItems",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Menu"
+        ],
+        "operationId": "Menu_CreateMenuItem",
+        "requestBody": {
+          "x-name": "menu",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenu"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Menu/{id}": {
+      "get": {
+        "tags": [
+          "Menu"
+        ],
+        "operationId": "Menu_GetMenuItemById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Menu"
+        ],
+        "operationId": "Menu_UpdateMenuItem",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "menu",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenu"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -274,9 +1047,18 @@
         "tags": [
           "Inventory"
         ],
+        "operationId": "Inventory_GetInventoryItems",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       },
@@ -284,28 +1066,30 @@
         "tags": [
           "Inventory"
         ],
+        "operationId": "Inventory_AddInventoryItem",
         "requestBody": {
+          "x-name": "inventoryItem",
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/InventoryItem"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InventoryItem"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/InventoryItem"
-              }
             }
-          }
+          },
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
@@ -315,6 +1099,7 @@
         "tags": [
           "Inventory"
         ],
+        "operationId": "Inventory_GetInventoryItemById",
         "parameters": [
           {
             "name": "id",
@@ -323,12 +1108,21 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "x-position": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       },
@@ -336,6 +1130,7 @@
         "tags": [
           "Inventory"
         ],
+        "operationId": "Inventory_UpdateInventoryItem",
         "parameters": [
           {
             "name": "id",
@@ -344,81 +1139,163 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "x-position": 1
           }
         ],
         "requestBody": {
+          "x-name": "inventoryItem",
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/InventoryItem"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InventoryItem"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/InventoryItem"
-              }
             }
-          }
+          },
+          "required": true,
+          "x-position": 2
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/Menu": {
-      "get": {
-        "tags": [
-          "Menu"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
+    "/api/Dinning/Create-Session": {
       "post": {
         "tags": [
-          "Menu"
+          "Dinning"
         ],
+        "operationId": "Dinning_CreateDinningSession",
         "requestBody": {
+          "x-name": "dto",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateMenu"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMenu"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMenu"
+                "$ref": "#/components/schemas/DinningDTO"
               }
             }
-          }
+          },
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/Menu/{id}": {
+    "/api/Dinning/End-Session/{sessionId}": {
+      "post": {
+        "tags": [
+          "Dinning"
+        ],
+        "operationId": "Dinning_EndDinningSession",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Category/Create": {
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "Category_CreateCategory",
+        "requestBody": {
+          "x-name": "category",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Category/All": {
       "get": {
         "tags": [
-          "Menu"
+          "Category"
         ],
+        "operationId": "Category_GetAllCategories",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Category/{id}": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "Category_GetCategoryById",
         "parameters": [
           {
             "name": "id",
@@ -427,332 +1304,64 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "x-position": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
-      },
+      }
+    },
+    "/api/Category/Update": {
       "put": {
         "tags": [
-          "Menu"
+          "Category"
         ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "operationId": "Category_UpdateCategory",
         "requestBody": {
+          "x-name": "category",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateMenu"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateMenu"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateMenu"
+                "$ref": "#/components/schemas/Category"
               }
             }
-          }
+          },
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/orderbyid/{id}": {
-      "get": {
-        "tags": [
-          "Order"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Order/sessionId/{id}": {
-      "get": {
-        "tags": [
-          "Order"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Order": {
-      "post": {
-        "tags": [
-          "Order"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrder"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrder"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrder"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Recipe": {
-      "get": {
-        "tags": [
-          "Recipe"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Recipe"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Recipe"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Recipe"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Recipe"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Recipe"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Recipe"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Recipe"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Recipe"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Recipe/menu/{menuId}": {
-      "get": {
-        "tags": [
-          "Recipe"
-        ],
-        "parameters": [
-          {
-            "name": "menuId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Recipe/{recipeId}": {
+    "/api/Category/Delete/{id}/{deletedBy}": {
       "delete": {
         "tags": [
-          "Recipe"
+          "Category"
         ],
-        "parameters": [
-          {
-            "name": "recipeId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Report/dashboard/excel": {
-      "get": {
-        "tags": [
-          "Report"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/SubCategory/Create": {
-      "post": {
-        "tags": [
-          "SubCategory"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubCategory"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubCategory"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubCategory"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/SubCategory/All": {
-      "get": {
-        "tags": [
-          "SubCategory"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/SubCategory/ByCategory/{categoryId}": {
-      "get": {
-        "tags": [
-          "SubCategory"
-        ],
-        "parameters": [
-          {
-            "name": "categoryId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/SubCategory/{id}": {
-      "get": {
-        "tags": [
-          "SubCategory"
-        ],
+        "operationId": "Category_DeleteCategory",
         "parameters": [
           {
             "name": "id",
@@ -761,61 +1370,8 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/SubCategory/Update": {
-      "put": {
-        "tags": [
-          "SubCategory"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubCategory"
-              }
             },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubCategory"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubCategory"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/SubCategory/Delete/{id}/{deletedBy}": {
-      "delete": {
-        "tags": [
-          "SubCategory"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+            "x-position": 1
           },
           {
             "name": "deletedBy",
@@ -824,371 +1380,93 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "x-position": 2
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Table/CreateTable": {
-      "post": {
-        "tags": [
-          "Table"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTable"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTable"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTable"
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
               }
             }
           }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
         }
       }
     },
-    "/api/Table/book-table": {
-      "post": {
-        "tags": [
-          "Table"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Table/free-table": {
-      "post": {
-        "tags": [
-          "Table"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Table/clean-table": {
-      "post": {
-        "tags": [
-          "Table"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTable"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Table/qrcode/{tableNo}/{updatedById}": {
+    "/api/Bill/view-bill/{sessionId}": {
       "get": {
         "tags": [
-          "Table"
+          "Bill"
         ],
+        "operationId": "Bill_GetBillPreview",
         "parameters": [
           {
-            "name": "tableNo",
+            "name": "sessionId",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "x-position": 1
           },
           {
-            "name": "updatedById",
-            "in": "path",
-            "required": true,
+            "name": "discountPercentage",
+            "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Units": {
-      "get": {
-        "tags": [
-          "Units"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Units"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Unit"
-              }
+              "type": "number",
+              "format": "decimal"
             },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Unit"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Unit"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Units"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Unit"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Unit"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Unit"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Units/{id}": {
-      "delete": {
-        "tags": [
-          "Units"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+            "x-position": 2
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/User": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/User/signup": {
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SignUpDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SignUpDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/SignUpDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/User/login": {
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/WeatherForecast": {
-      "get": {
-        "tags": [
-          "WeatherForecast"
-        ],
-        "operationId": "GetWeatherForecast",
-        "responses": {
-          "200": {
-            "description": "OK",
+            "description": "",
             "content": {
-              "text/plain": {
+              "application/octet-stream": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
+                  "type": "string",
+                  "format": "binary"
                 }
-              },
-              "application/json": {
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Bill/pay": {
+      "post": {
+        "tags": [
+          "Bill"
+        ],
+        "operationId": "Bill_PayBill",
+        "requestBody": {
+          "x-name": "pay",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayBill"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -1199,16 +1477,195 @@
   },
   "components": {
     "schemas": {
-      "Category": {
+      "WeatherForecast": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperatureF": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "SignUpDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNo": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LoginDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Unit": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "unitId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateTable": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tableNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "BookTable": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tableNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bookedby": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CleanTable": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "waiterId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedby": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tableno": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UpdateTable": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "tableNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "waiterId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        }
+      },
+      "SubCategory": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "subCategoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "categoryId": {
             "type": "integer",
             "format": "int32"
           },
-          "categoryName": {
-            "type": "string",
-            "nullable": true
+          "subCategoryName": {
+            "type": "string"
           },
           "description": {
             "type": "string",
@@ -1219,6 +1676,10 @@
           },
           "isActive": {
             "type": "boolean"
+          },
+          "displayOrder": {
+            "type": "integer",
+            "format": "int32"
           },
           "createdBy": {
             "type": "integer",
@@ -1237,72 +1698,66 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
-          },
-          "displayOrder": {
-            "type": "integer",
-            "format": "int32"
           }
-        },
-        "additionalProperties": false
+        }
       },
-      "CreateMenu": {
+      "Recipe": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
-          "itemName": {
-            "type": "string",
-            "nullable": true
-          },
-          "itemDescription": {
-            "type": "string",
-            "nullable": true
-          },
-          "categoryId": {
+          "recipeId": {
             "type": "integer",
             "format": "int32"
           },
-          "subCategroyId": {
+          "menuId": {
             "type": "integer",
             "format": "int32"
           },
-          "itemImage": {
-            "type": "string",
-            "nullable": true
+          "inventoryItemId": {
+            "type": "integer",
+            "format": "int32"
           },
-          "itemPrice": {
+          "quantityRequired": {
             "type": "number",
-            "format": "double"
+            "format": "decimal"
           },
           "unitId": {
             "type": "integer",
             "format": "int32"
           },
-          "isAvailable": {
-            "type": "boolean"
-          },
           "isActive": {
             "type": "boolean"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
           "createdOn": {
             "type": "string",
             "format": "date-time"
           },
-          "createdBy": {
-            "type": "integer",
-            "format": "int32"
+          "updatedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
-        },
-        "additionalProperties": false
+        }
       },
       "CreateOrder": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
           "menuId": {
             "type": "integer",
             "format": "int32"
           },
           "itemName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "diningSessionId": {
             "type": "integer",
@@ -1329,240 +1784,39 @@
           },
           "price": {
             "type": "number",
-            "format": "double"
+            "format": "decimal"
           }
-        },
-        "additionalProperties": false
+        }
       },
-      "CreateTable": {
+      "CreateMenu": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
-          "capacity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tableNo": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DinningDTO": {
-        "type": "object",
-        "properties": {
-          "tableId": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "InventoryItem": {
-        "type": "object",
-        "properties": {
-          "inventoryItemId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "itemName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
-          "unitId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "currentQuantity": {
-            "type": "number",
-            "format": "double"
-          },
-          "minimumQuantity": {
-            "type": "number",
-            "format": "double"
-          },
-          "costPrice": {
-            "type": "number",
-            "format": "double"
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "createdBy": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedBy": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "updatedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "LoginDTO": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "PayBill": {
-        "type": "object",
-        "properties": {
-          "billNo": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "billAmount": {
-            "type": "number",
-            "format": "double"
-          },
-          "sessionId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "updatedDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "paidAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "paidBy": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "Recipe": {
-        "type": "object",
-        "properties": {
-          "recipeId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "menuId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "inventoryItemId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "quantityRequired": {
-            "type": "number",
-            "format": "double"
-          },
-          "unitId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "createdBy": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "updatedBy": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SignUpDTO": {
-        "type": "object",
-        "properties": {
-          "firstName": {
-            "type": "string",
-            "nullable": true
-          },
-          "middleName": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastName": {
-            "type": "string",
-            "nullable": true
-          },
-          "roleId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNo": {
-            "type": "string",
-            "nullable": true
-          },
-          "isActive": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "SubCategory": {
-        "type": "object",
-        "properties": {
-          "subCategoryId": {
-            "type": "integer",
-            "format": "int32"
+          "itemDescription": {
+            "type": "string"
           },
           "categoryId": {
             "type": "integer",
             "format": "int32"
           },
-          "subCategoryName": {
+          "subCategroyId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemImage": {
             "type": "string",
             "nullable": true
           },
-          "description": {
-            "type": "string",
-            "nullable": true
+          "itemPrice": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "unitId": {
+            "type": "integer",
+            "format": "int32"
           },
           "isAvailable": {
             "type": "boolean"
@@ -1570,66 +1824,26 @@
           "isActive": {
             "type": "boolean"
           },
-          "displayOrder": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "createdBy": {
-            "type": "integer",
-            "format": "int32"
-          },
           "createdOn": {
             "type": "string",
             "format": "date-time"
           },
-          "updatedBy": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "updatedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "Unit": {
-        "type": "object",
-        "properties": {
-          "unitId": {
+          "createdBy": {
             "type": "integer",
             "format": "int32"
-          },
-          "unitName": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "shortName": {
-            "type": "string",
-            "nullable": true
-          },
-          "isActive": {
-            "type": "boolean"
           }
-        },
-        "additionalProperties": false
+        }
       },
       "UpdateMenu": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
           "menuId": {
             "type": "integer",
             "format": "int32"
           },
           "itemName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "itemDescription": {
             "type": "string",
@@ -1650,7 +1864,7 @@
           },
           "itemPrice": {
             "type": "number",
-            "format": "double"
+            "format": "decimal"
           },
           "unitId": {
             "type": "integer",
@@ -1669,108 +1883,152 @@
             "format": "date-time",
             "nullable": true
           }
-        },
-        "additionalProperties": false
+        }
       },
-      "UpdateTable": {
+      "InventoryItem": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
-          "status": {
-            "type": "string",
-            "nullable": true
-          },
-          "tableNo": {
+          "inventoryItemId": {
             "type": "integer",
             "format": "int32"
           },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
+          "itemName": {
+            "type": "string"
+          },
+          "unitId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentQuantity": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "minimumQuantity": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "costPrice": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "isActive": {
+            "type": "boolean"
           },
           "createdBy": {
             "type": "integer",
             "format": "int32"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
           },
           "updatedBy": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
-          "waiterId": {
-            "type": "integer",
-            "format": "int32",
+          "updatedOn": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
-        },
-        "additionalProperties": false
+        }
       },
-      "WeatherForecast": {
+      "DinningDTO": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "temperatureC": {
+          "tableId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "categoryId": {
             "type": "integer",
             "format": "int32"
           },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
+          "categoryName": {
+            "type": "string"
           },
-          "summary": {
+          "description": {
             "type": "string",
             "nullable": true
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "updatedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "displayOrder": {
+            "type": "integer",
+            "format": "int32"
           }
-        },
-        "additionalProperties": false
+        }
+      },
+      "PayBill": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "billNo": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "billAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "sessionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paidAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paidBy": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Enter your JWT token.",
+        "in": "header",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
-  },
-  "tags": [
-    {
-      "name": "Bill"
-    },
-    {
-      "name": "Category"
-    },
-    {
-      "name": "Dinning"
-    },
-    {
-      "name": "HotelManagementSystem"
-    },
-    {
-      "name": "Inventory"
-    },
-    {
-      "name": "Menu"
-    },
-    {
-      "name": "Order"
-    },
-    {
-      "name": "Recipe"
-    },
-    {
-      "name": "Report"
-    },
-    {
-      "name": "SubCategory"
-    },
-    {
-      "name": "Table"
-    },
-    {
-      "name": "Units"
-    },
-    {
-      "name": "User"
-    },
-    {
-      "name": "WeatherForecast"
-    }
-  ]
+  }
 }

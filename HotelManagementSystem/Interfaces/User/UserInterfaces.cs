@@ -6,7 +6,7 @@ namespace HotelManagementSystem.Interfaces.UserInterfaces
     {
         Task<IEnumerable<UserModel>> GetUsersAsync();
          Task<int> SignUp(SignUpDTO user);
-        Task<string?> Login(LoginDTO user);
+        Task<LoginResDTO> Login(LoginDTO user);
     }
     public interface IUserDLL
     {

@@ -49,15 +49,15 @@ namespace HotelManagementSystem.Services.Table
             return await _table.UpdateTableAsync(table);
         }
 
-        public async Task<int> BookTableAsync(UpdateTable table)
+        public async Task<int> BookTableAsync(BookTable table , int userId)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
 
-            var existingTable = await _table.GetTableByTableNoAsync(table.TableNo);
+            var existingTable = await _table.GetTableByTableNoAsync(table.tableNo);
 
             if (existingTable == null)
             {
-                throw new KeyNotFoundException($"Table number {table.TableNo} does not exist.");
+                throw new KeyNotFoundException($"Table number {table.tableNo} does not exist.");
             }
 
             if (existingTable.Status == "Occupied")
@@ -71,7 +71,8 @@ namespace HotelManagementSystem.Services.Table
 
             // 1. Double Assignment Protection: Handled internally inside TableDLL via AssignWaiterAsync
             existingTable.Status = "Occupied";
-            existingTable.UpdatedBy = table.UpdatedBy;
+            existingTable.UpdatedBy = userId;
+            existingTable.UpdatedAt = DateTime.UtcNow;
 
             // 2. Delegate to DLL which safely assigns the workload-based waiter
             return await _table.BookTableAsync(existingTable);
@@ -109,15 +110,15 @@ namespace HotelManagementSystem.Services.Table
             return await _table.UpdateTableAsync(updatedData);
         }
 
-        public async Task<int> CleanTableAsync(UpdateTable table)
+        public async Task<int> CleanTableAsync(CleanTable table)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
 
-            var existingTable = await _table.GetTableByTableNoAsync(table.TableNo);
+            var existingTable = await _table.GetTableByTableNoAsync(table.tableno);
 
             if (existingTable == null)
             {
-                throw new KeyNotFoundException($"Table number {table.TableNo} does not exist.");
+                throw new KeyNotFoundException($"Table number {table.tableno} does not exist.");
             }
 
             // FIX: Typo matching ("Cleaning" vs "Cleanning")   
@@ -136,8 +137,8 @@ namespace HotelManagementSystem.Services.Table
 
             var updatedData = new UpdateTable
             {
-                TableNo = table.TableNo,
-                UpdatedBy = table.UpdatedBy,
+                TableNo = table.tableno,
+                UpdatedBy = table.updatedby,
                 Status = "Cleaning" // Once cleaning is done, it transitions back to Available
             };
 
@@ -146,7 +147,7 @@ namespace HotelManagementSystem.Services.Table
 
         public byte[] GenerateTableQRCode(int tableNo, int updatedById)
         {
-            string payload = $"TableNo:{tableNo}|UpdatedBy:{updatedById}|Timestamp:{DateTime.UtcNow:O}";
+            string payload = $"https://localhost:7186/api/Table/";
         
 
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
