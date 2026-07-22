@@ -96,7 +96,6 @@ namespace HotelManagementSystem.Services.MenuService
 
                 menu.AvailablePortions = availablePortions == int.MaxValue ? 0 : availablePortions;
 
-                // Respect manual availability flag alongside real stock levels
                 menu.IsAvailable = menu.IsAvailable && menu.AvailablePortions > 0;
             }
 

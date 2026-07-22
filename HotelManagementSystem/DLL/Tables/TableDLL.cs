@@ -17,6 +17,26 @@ namespace HotelManagementSystem.DLL.Tables
             _userDLL = userDLL;
         }
         
+        public async Task<TableModel> GetMyBookings(int userId)
+        {
+            using var conn = _dbConnection.CreateConnection();
+            string sql = @"SELECT * FROM  Tables WHERE UpdatedBy = @Id AND IsActive = 1";
+            return await conn.QueryFirstOrDefaultAsync<TableModel>(sql, new {Id = userId});
+        }
+
+        public async Task<IEnumerable<TableModel>> GetMyAllBookings(int userId)
+        {
+            using var conn = _dbConnection.CreateConnection();
+
+            string sql = @"
+        SELECT *
+        FROM Tables
+        WHERE UpdatedBy = @Id
+          AND IsActive = 1";
+
+            return await conn.QueryAsync<TableModel>(sql, new { Id = userId });
+        }
+
         public async Task<TableModel> GetTableByNo( int No)
         {
             using var conn = _dbConnection.CreateConnection();
@@ -89,6 +109,12 @@ namespace HotelManagementSystem.DLL.Tables
                 WaiterId = WaiterId,
                 TableNo = table.TableNo
             });
+        }
+        public async Task<IEnumerable<TableModel>> GetAllTable()
+        {
+            using var connection = _dbConnection.CreateConnection();
+            string sql = @"SELECT * FROM Tables WHERE Status = 'Available' AND IsActive = 1"; 
+            return await connection.QueryAsync<TableModel>(sql);
         }
     }
 }

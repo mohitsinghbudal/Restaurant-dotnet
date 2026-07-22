@@ -249,6 +249,121 @@
         }
       }
     },
+    "/api/Table/get-all-table": {
+      "get": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_GetAllTable",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Table/my-active-bookings": {
+      "get": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_getmybookings",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Table/my-all-bookings": {
+      "get": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_getallbookings",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Table/get-single-table-info": {
+      "get": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_SeeTableInfo",
+        "parameters": [
+          {
+            "name": "tableNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/api/Table/CreateTable": {
       "post": {
         "tags": [
@@ -294,11 +409,12 @@
         ],
         "operationId": "Table_BookTable",
         "requestBody": {
-          "x-name": "table",
+          "x-name": "tableNo",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookTable"
+                "type": "integer",
+                "format": "int32"
               }
             }
           },
@@ -355,12 +471,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
+        }
       }
     },
     "/api/Table/free-table": {
@@ -401,7 +512,7 @@
         ]
       }
     },
-    "/api/Table/qrcode/{tableNo}/{updatedById}": {
+    "/api/Table/qrcode/{tableNo}": {
       "get": {
         "tags": [
           "Table"
@@ -417,16 +528,6 @@
               "format": "int32"
             },
             "x-position": 1
-          },
-          {
-            "name": "updatedById",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
           }
         ],
         "responses": {
@@ -914,43 +1015,12 @@
         }
       }
     },
-    "/api/Menu": {
+    "/api/Menu/get-all": {
       "get": {
         "tags": [
           "Menu"
         ],
         "operationId": "Menu_GetAllMenuItems",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Menu"
-        ],
-        "operationId": "Menu_CreateMenuItem",
-        "requestBody": {
-          "x-name": "menu",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMenu"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
         "responses": {
           "200": {
             "description": "",
@@ -1026,6 +1096,39 @@
           },
           "required": true,
           "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Menu": {
+      "post": {
+        "tags": [
+          "Menu"
+        ],
+        "operationId": "Menu_CreateMenuItem",
+        "requestBody": {
+          "x-name": "menu",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenu"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
@@ -1584,20 +1687,6 @@
             "format": "date-time"
           },
           "createdBy": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "BookTable": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "tableNo": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "bookedby": {
             "type": "integer",
             "format": "int32"
           }

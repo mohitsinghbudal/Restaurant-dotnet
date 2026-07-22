@@ -1,5 +1,6 @@
 ﻿using HotelManagementSystem.Interfaces.MenuInterface;
 using HotelManagementSystem.Models.MenuItems;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSystem.Controllers.MenuController
@@ -17,7 +18,8 @@ namespace HotelManagementSystem.Controllers.MenuController
 
 
         // GET: api/Menu
-        [HttpGet]
+        //[AllowAnonymous]
+        [HttpGet("get-all")]
         public async Task<IActionResult> GetAllMenuItems()
         {
             var menus = await _menuService.GetAllMenuItemsAsync();

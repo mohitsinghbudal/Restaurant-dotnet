@@ -230,16 +230,6 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.MenuController.MenuController",
-    "Method": "GetAllMenuItems",
-    "RelativePath": "api/Menu",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "HotelManagementSystem.Controllers.MenuController.MenuController",
     "Method": "CreateMenuItem",
     "RelativePath": "api/Menu",
     "HttpMethod": "POST",
@@ -289,6 +279,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.MenuController.MenuController",
+    "Method": "GetAllMenuItems",
+    "RelativePath": "api/Menu/get-all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -511,8 +511,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "table",
-        "Type": "HotelManagementSystem.Models.Table.BookTable",
+        "Name": "tableNo",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -568,8 +568,18 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
-    "Method": "GetQRCode",
-    "RelativePath": "api/Table/qrcode/{tableNo}/{updatedById}",
+    "Method": "GetAllTable",
+    "RelativePath": "api/Table/get-all-table",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "SeeTableInfo",
+    "RelativePath": "api/Table/get-single-table-info",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -577,10 +587,41 @@
       {
         "Name": "tableNo",
         "Type": "System.Int32",
-        "IsRequired": true
-      },
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "getmybookings",
+    "RelativePath": "api/Table/my-active-bookings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "getallbookings",
+    "RelativePath": "api/Table/my-all-bookings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "GetQRCode",
+    "RelativePath": "api/Table/qrcode/{tableNo}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
-        "Name": "updatedById",
+        "Name": "tableNo",
         "Type": "System.Int32",
         "IsRequired": true
       }

@@ -1,25 +1,105 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Interfaces.DinningInterface;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Models.Table;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using YamlDotNet.Core.Tokens;
 
 namespace HotelManagementSystem.Controllers.TableController
 {
+
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TableController : ControllerBase
     {
         private readonly ITableService _tableService;
+        
+
 
         public TableController(ITableService tableService)
         {
             _tableService = tableService;
+
+        }
+
+
+        [HttpGet("get-all-table")]
+        public async Task<IActionResult> GetAllTable()
+        {
+
+            var tables = _tableService.GetAllTable();
+            return Ok(new { message = "this is tables info", alltables = tables });
+        }
+
+
+        [HttpGet("my-active-bookings")]
+        public async Task<IActionResult> getmybookings()
+        {
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+            if (roleId != 1)
+            {
+                return Unauthorized("Please login first");
+            }
+            try
+            {
+                var items = await _tableService.GetMyBookings(userId);
+                return Ok(new { bookings = items });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("my-all-bookings")]
+        public async Task<IActionResult> getallbookings()
+        {
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            if (roleId != 1)
+            {
+                return Unauthorized("Please login first");
+            }
+
+            try
+            {
+                var items = await _tableService.GetMyAllBookings(userId);
+                return Ok(new { bookings = items });
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-single-table-info")]
+        public async Task<IActionResult> SeeTableInfo([FromQuery] int tableNo)
+        {
+            var table = await _tableService.SeeTableInfo(tableNo);
+
+            if (table == null)
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Table not found."
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                tableData = table
+            });
         }
 
         [HttpPost("CreateTable")]
@@ -48,25 +128,22 @@ namespace HotelManagementSystem.Controllers.TableController
         }
 
         [HttpPost("book-table")]
-        public async Task<IActionResult> BookTable([FromBody] BookTable table)
+        public async Task<IActionResult> BookTable([FromBody] int tableNo)
         {
 
             int userId = ClaimHelper.GetUserId(User);
             int roleId = ClaimHelper.GetRoleId(User);
 
             if (roleId != 1)
-                    return Unauthorized("user not allowed is not an customer");
-            if (table == null) return BadRequest(new { message = "Invalid update payload." });
+                    return Unauthorized("user allowed is not an customer");
 
-            if(userId != table.bookedby)
-            {
-                return BadRequest(new { message = "Invalid update" });
-            }
+
+            if (tableNo <=0) return BadRequest(new { message = "Invalid update payload." });
 
 
             try
             {
-                var result = await _tableService.BookTableAsync(table , userId);
+                var result = await _tableService.BookTableAsync(tableNo , userId);
 
                 if (result <= 0)
                 {
@@ -80,26 +157,20 @@ namespace HotelManagementSystem.Controllers.TableController
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [AllowAnonymous]
         [HttpPost("clean-table")]
         public async Task<IActionResult> CleanTable([FromBody] CleanTable table)
         {
+
             if (table == null) return BadRequest(new { message = "Invalid update payload." });
-            int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
+
+            //int userId = ClaimHelper.GetUserId(User);
+            //int roleId = ClaimHelper.GetRoleId(User);
 
             
 
-            if (roleId != 2)
-                return Unauthorized("user not allowed is not an waiter");
-
-            if(table.waiterId != table.updatedby)
-            {
-                return Unauthorized("user not allowed is not an waiter");
-            }
-            if (table.waiterId != roleId)
-            {
-                return Unauthorized("user not allowed is not an waiter");
-            }
+            //if (roleId != 2)
+            //    return Unauthorized("user not allowed is not an waiter")
 
 
             try
@@ -117,6 +188,7 @@ namespace HotelManagementSystem.Controllers.TableController
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpPost("free-table")]
         public async Task<IActionResult> FreeTable([FromBody] UpdateTable table)
@@ -142,12 +214,12 @@ namespace HotelManagementSystem.Controllers.TableController
 
         
 
-        [HttpGet("qrcode/{tableNo}/{updatedById}")]
-        public IActionResult GetQRCode(int tableNo, int updatedById)
+        [HttpGet("qrcode/{tableNo}")]
+        public IActionResult GetQRCode(int tableNo)
         {
             
 
-            byte[] imageBytes = _tableService.GenerateTableQRCode(tableNo, updatedById);
+            byte[] imageBytes = _tableService.GenerateTableQRCode(tableNo);
 
             return File(imageBytes, "image/png");
         }

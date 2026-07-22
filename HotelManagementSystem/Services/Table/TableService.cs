@@ -1,7 +1,10 @@
 ﻿using HotelManagementSystem.Interfaces.DatabaseConnection;
+using HotelManagementSystem.Interfaces.DinningInterface;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Interfaces.UserInterfaces;
 using HotelManagementSystem.Models.Table;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QRCoder;
 using System;
 using System.Threading.Tasks;
@@ -12,13 +15,22 @@ namespace HotelManagementSystem.Services.Table
     {
         private readonly ITableDLL _table;
         private readonly IUserDLL _userDLL;
+        private readonly IDinningService _din;
 
-        public TableService(ITableDLL table, IUserDLL userDLL)
+        public TableService(ITableDLL table, IUserDLL userDLL, IDinningService din)
         {
             _table = table;
             _userDLL = userDLL;
+            _din = din;
         }
-
+        public async Task<TableModel> GetMyBookings(int userId)
+        {
+            return await _table.GetMyBookings(userId);
+        }
+        public async Task<IEnumerable<TableModel>> GetMyAllBookings(int userId)
+        {
+            return await _table.GetMyAllBookings(userId);
+        }
         public async Task<TableModel> CreateTableAsync(CreateTable table)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
@@ -49,15 +61,15 @@ namespace HotelManagementSystem.Services.Table
             return await _table.UpdateTableAsync(table);
         }
 
-        public async Task<int> BookTableAsync(BookTable table , int userId)
+        public async Task<int> BookTableAsync(int tableNo , int userId)
         {
-            if (table == null) throw new ArgumentNullException(nameof(table));
+            if (tableNo <=0) throw new ArgumentNullException(nameof(tableNo));
 
-            var existingTable = await _table.GetTableByTableNoAsync(table.tableNo);
+            var existingTable = await _table.GetTableByTableNoAsync(tableNo);
 
             if (existingTable == null)
             {
-                throw new KeyNotFoundException($"Table number {table.tableNo} does not exist.");
+                throw new KeyNotFoundException($"Table number {tableNo} does not exist.");
             }
 
             if (existingTable.Status == "Occupied")
@@ -75,7 +87,21 @@ namespace HotelManagementSystem.Services.Table
             existingTable.UpdatedAt = DateTime.UtcNow;
 
             // 2. Delegate to DLL which safely assigns the workload-based waiter
-            return await _table.BookTableAsync(existingTable);
+            var table = await _table.BookTableAsync(existingTable);
+
+            if (table <=0)
+            {
+                throw new Exception("error in table");
+            }
+
+            var session = await _din.CreateDinningAsync(existingTable.TableId);
+
+            if (session <=0)
+            {
+                return 0;
+            }
+
+            return table;
         }
 
         public async Task<int> FreeTableAsync(UpdateTable table)
@@ -145,9 +171,10 @@ namespace HotelManagementSystem.Services.Table
             return await _table.UpdateTableAsync(updatedData);
         }
 
-        public byte[] GenerateTableQRCode(int tableNo, int updatedById)
+       
+        public byte[] GenerateTableQRCode(int tableNo)
         {
-            string payload = $"https://localhost:7186/api/Table/";
+            string payload = $"https://localhost:7186/api/Table/get-table-info";
         
 
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
@@ -157,6 +184,16 @@ namespace HotelManagementSystem.Services.Table
 
                 return qrCode.GetGraphic(20);
             }
+        }
+
+        public  Task<TableModel> SeeTableInfo(int tableNo)
+        {
+            return  _table.GetTableByNo(tableNo);
+        }
+
+        public async Task<IEnumerable<TableModel>> GetAllTable()
+        {
+            return await _table.GetAllTable();
         }
     }
 }
