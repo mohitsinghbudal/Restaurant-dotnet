@@ -150,14 +150,14 @@ namespace HotelManagementSystem.Controllers.TableController
                     return BadRequest(new { message = "Error encountered while attempting to book the table." });
                 }
 
-                return Ok(new { affectedRows = result, message = "Table successfully booked and waiter assigned!" });
+                return Ok(new { sessionid = result, message = "Table successfully booked and waiter assigned!" });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
-        [AllowAnonymous]
+
         [HttpPost("clean-table")]
         public async Task<IActionResult> CleanTable([FromBody] CleanTable table)
         {

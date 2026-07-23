@@ -94,14 +94,14 @@ namespace HotelManagementSystem.Services.Table
                 throw new Exception("error in table");
             }
 
-            var session = await _din.CreateDinningAsync(existingTable.TableId);
+            var sessionId = await _din.CreateDinningAsync(existingTable.TableId, userId);
 
-            if (session <=0)
+            if (sessionId <=0)
             {
                 return 0;
             }
 
-            return table;
+            return sessionId;
         }
 
         public async Task<int> FreeTableAsync(UpdateTable table)

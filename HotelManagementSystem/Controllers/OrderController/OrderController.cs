@@ -1,10 +1,13 @@
-﻿using HotelManagementSystem.Interfaces.OrderInterface;
+﻿using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Interfaces.OrderInterface;
 using HotelManagementSystem.Models.Order;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSystem.Controllers.OrderController
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -71,6 +74,26 @@ namespace HotelManagementSystem.Controllers.OrderController
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("place-order")]
+        public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderItems req)
+        {
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+            if (roleId != 1)
+            {
+                return Unauthorized("Please login first");
+            }
+
+            try
+            {
+                var order = await _orderService.PlaceOrder(req, userId);
+                return Ok(order);
+            }catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
         //    public async Task<IActionResult> CreateOrder([FromQuery] int menuId, [FromQuery] int quantity, [FromBody] Order order)

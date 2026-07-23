@@ -85,6 +85,34 @@ namespace HotelManagementSystem.Services.OrderService
             return createdOrder;
 
         }
+
+        public async Task<IEnumerable<Order>> PlaceOrder(CreateOrderItems req, int createdBy)
+        {
+            if (req == null)
+                throw new ArgumentNullException(nameof(req));
+
+            if (req.Items == null || !req.Items.Any())
+                throw new ArgumentException("No order items found.");
+
+            List<Order> orders = new();
+
+            foreach (var item in req.Items)
+            {
+                item.CreatedBy = createdBy;
+                item.CreatedAt = DateTime.UtcNow;
+                item.IsActive = true;
+
+                var createdOrder = await CreateOrderAsync(item);
+
+                if (createdOrder == null)
+                    throw new Exception($"Failed to create order for MenuId {item.MenuId}");
+
+                orders.Add(createdOrder);
+            }
+
+            return orders;
+        }
+
         public async Task<int> UpdateOrderAsync(int id, int wid)
         {
             var order = await _orderDLL.GetOrderByIdAsync(id);

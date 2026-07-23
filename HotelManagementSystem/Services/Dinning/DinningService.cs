@@ -19,7 +19,12 @@ namespace HotelManagementSystem.Services.Dinning
             _tableDLL = tableDLL;
         }
 
-        public async Task<int> CreateDinningAsync(int tableId)
+        public async Task<int> GetDiningSession(int userId)
+        {
+            return await _dinningDLL.GetDiningSession( userId);
+        }
+
+        public async Task<int> CreateDinningAsync(int tableId, int userId)
         {
             var table = await _tableDLL.GetTableByIdAsync(tableId);
 
@@ -40,7 +45,8 @@ namespace HotelManagementSystem.Services.Dinning
                 TableId = tableId,
                 StartedAt = DateTime.UtcNow,
                 SessionStatus = "Active",
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = userId
             };
 
             return await _dinningDLL.CreateDinningAsync(newDinning);

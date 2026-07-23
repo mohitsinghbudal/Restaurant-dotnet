@@ -166,6 +166,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "HotelManagementSystem.Controllers.DinningController.DinningController",
+    "Method": "GetSessionByUserId",
+    "RelativePath": "api/Dinning/user",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "HotelManagementSystem.Controllers.InventoryController.InventoryController",
     "Method": "GetInventoryItems",
     "RelativePath": "api/Inventory",
@@ -302,6 +312,22 @@
       {
         "Name": "newOrder",
         "Type": "HotelManagementSystem.Models.Order.CreateOrder",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.OrderController.OrderController",
+    "Method": "PlaceOrder",
+    "RelativePath": "api/Order/place-order",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "HotelManagementSystem.Models.Order.CreateOrderItems",
         "IsRequired": true
       }
     ],

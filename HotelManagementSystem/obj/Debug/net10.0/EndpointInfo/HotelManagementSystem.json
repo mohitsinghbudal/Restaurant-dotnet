@@ -471,7 +471,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Table/free-table": {
@@ -946,7 +951,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Order/sessionId/{id}": {
@@ -979,7 +989,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Order": {
@@ -1012,7 +1027,50 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Order/place-order": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "operationId": "Order_PlaceOrder",
+        "requestBody": {
+          "x-name": "req",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderItems"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Menu/get-all": {
@@ -1273,6 +1331,32 @@
         }
       }
     },
+    "/api/Dinning/user": {
+      "get": {
+        "tags": [
+          "Dinning"
+        ],
+        "operationId": "Dinning_GetSessionByUserId",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/api/Dinning/Create-Session": {
       "post": {
         "tags": [
@@ -1303,7 +1387,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Dinning/End-Session/{sessionId}": {
@@ -1336,7 +1425,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Category/Create": {
@@ -1877,6 +1971,18 @@
           }
         }
       },
+      "CreateOrderItems": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateOrder"
+            }
+          }
+        }
+      },
       "CreateMenu": {
         "type": "object",
         "additionalProperties": false,
@@ -2029,6 +2135,10 @@
         "additionalProperties": false,
         "properties": {
           "tableId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
             "type": "integer",
             "format": "int32"
           }

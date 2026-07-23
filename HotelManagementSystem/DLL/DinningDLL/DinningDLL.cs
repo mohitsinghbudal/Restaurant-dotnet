@@ -16,6 +16,17 @@ namespace HotelManagementSystem.DLL.DinningDLL
             _dbconn = dbconn;
         }
 
+        public async Task<int> GetDiningSession(int userId)
+        {
+            using var connection = _dbconn.CreateConnection();
+
+            var sql = @"
+        SELECT sessionid from DinningSessions WHERE CreatedBy = @UserId;";
+
+            var sessionId = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { UserId = userId });
+
+            return sessionId ?? 0;
+        }
         public async Task<int> CreateDinningAsync(DinningModel dinning)
         {
             using var connection = _dbconn.CreateConnection();
@@ -23,12 +34,15 @@ namespace HotelManagementSystem.DLL.DinningDLL
             // 1. Corrected table name to DinningSessions
             // 2. Removed CustomerUserId to match your Model properties
             var sql = @"
-                INSERT INTO DinningSessions (TableId, StartedAt, SessionStatus, UpdatedAt)
+                INSERT INTO DinningSessions (TableId, StartedAt, SessionStatus, UpdatedAt,CreatedBy)
                 OUTPUT INSERTED.SessionId
-                VALUES (@TableId, GETUTCDATE(), @SessionStatus, NULL);";
+                VALUES (@TableId, GETUTCDATE(), @SessionStatus, NULL,@CreatedBy);";
 
             // Using QuerySingleAsync to cleanly pull back the newly generated primary key identity
-            return await connection.QuerySingleAsync<int>(sql, dinning);
+            var sessionId = await connection.QuerySingleAsync<int>(sql, dinning);
+            Console.WriteLine(sessionId);
+
+            return sessionId;
         }
 
         public async Task<DinningModel> GetDinningByIdAsync(int sessionId)
@@ -69,5 +83,14 @@ namespace HotelManagementSystem.DLL.DinningDLL
 
             return await connection.QuerySingleOrDefaultAsync<DinningModel>(sql, new { SessionId = id });
         }
+
+        //public async Task<int> GetDinningsesssionbytableno(int id)
+        //{
+        //    using var connection = _dbconn.CreateConnection();
+
+        //    string sql = @"SELECT * FROM DinningSessions WHERE TableNo = @Id;";
+
+        //    return await connection.QuerySingleOrDefaultAsync<int>(sql, new { Id = id });
+        //}
     }
 }

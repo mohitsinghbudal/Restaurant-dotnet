@@ -13,7 +13,7 @@
         public string SessionStatus { get; set; } = string.Empty;
 
         public DateTime? UpdatedAt { get; set; }
-        
+        public int CreatedBy { get; set; }
 
     }
 }
