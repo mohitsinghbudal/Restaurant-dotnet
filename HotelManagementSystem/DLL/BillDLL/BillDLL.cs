@@ -15,7 +15,14 @@ namespace HotelManagementSystem.DLL.BillDLL
             {
                 _dbConn = dbConn;
             }
+            
+            public async Task<Bill> ViewBillBySessionId(int sessionId)
+        {
+            using var conn = _dbConn.CreateConnection();
+            string sql = @"SELECT * FROM Bills WHERE SessionId = @SessionId;";
 
+            return await conn.QueryFirstOrDefaultAsync<Bill>(sql, new { SessionId = sessionId });
+        }
             public async Task<int> GetNextBillNoAsync()
             {
                 using var conn = _dbConn.CreateConnection();
@@ -30,29 +37,30 @@ namespace HotelManagementSystem.DLL.BillDLL
                 string sql = @"
                 INSERT INTO Bills 
                 (
-                    BillNo, SessionId, TotalAmount, TaxAmount, DiscountAmount, 
+                    BillNo, SessionId, TotalAmount, GrandTotal ,TaxAmount, DiscountAmount, 
                     PaymentMethod, IsPaid, CreatedDate
                 )
                 OUTPUT INSERTED.*
                 VALUES 
                 (
-                    @BillNo, @SessionId, @TotalAmount, @TaxAmount, @DiscountAmount, 
+                    @BillNo, @SessionId, @TotalAmount, @GrandTotal ,@TaxAmount, @DiscountAmount, 
                     @PaymentMethod, @IsPaid, @CreatedDate
                 );";
 
                 return await conn.QueryFirstOrDefaultAsync<Bill>(sql, bill);
             }
 
-            public async Task<Bill> PayBillAsync(bool pay, long bilno)
+            public async Task<Bill> PayBillAsync(bool pay, long bilno, string paymentmethod)
             {
             using var conn = _dbConn.CreateConnection();
             string sql = @"
         UPDATE Bills 
         SET IsPaid = @IsPaid, 
-            PaidAt = GETUTCDATE()
+            PaidAt = GETUTCDATE(),
+            PaymentMethod = @PaymentMethod
         OUTPUT INSERTED.*
         WHERE BillNo = @BillNo;";
-            return await conn.QueryFirstOrDefaultAsync<Bill>(sql, new { IsPaid = pay, BillNo = bilno });
+            return await conn.QueryFirstOrDefaultAsync<Bill>(sql, new { IsPaid = pay, BillNo = bilno, PaymentMethod = paymentmethod });
 
             }
         public async Task<Bill?> GetBillByNoAsync(long billNo)
@@ -63,6 +71,27 @@ namespace HotelManagementSystem.DLL.BillDLL
 
             return await conn.QueryFirstOrDefaultAsync<Bill>(sql, new { BillNo = billNo });
         }
+
+        public async Task<bool> MarkBillAsPaidAsync(int billid)
+        {
+            using var conn = _dbConn.CreateConnection();
+
+            string sql = @"
+                UPDATE Bill
+                SET 
+                    IsPaid = 1,
+                    UpdatedDate = @UpdatedDate
+                WHERE BillId = @BillId AND IsPaid = 0;";
+
+            int rowsAffected = await conn.ExecuteAsync(sql, new
+            {
+                BillId = billid,
+                UpdatedDate = DateTime.UtcNow
+            });
+
+            return rowsAffected > 0;
+        }
+    
 
     }
 

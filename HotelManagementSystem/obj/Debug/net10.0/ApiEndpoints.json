@@ -19,8 +19,45 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
+    "Method": "GetBillPreview",
+    "RelativePath": "api/Bill/calculate-bill/{sessionId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "discountPercentage",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
+    "Method": "EsewaCallback",
+    "RelativePath": "api/Bill/esewa-callback",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
     "Method": "PayBill",
-    "RelativePath": "api/Bill/pay",
+    "RelativePath": "api/Bill/pay/cash",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -35,7 +72,54 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
-    "Method": "GetBillPreview",
+    "Method": "PayBillEsewa",
+    "RelativePath": "api/Bill/pay/esewa/${SessionId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "HotelManagementSystem.Controllers.BillController.EsewaInitiate",
+        "IsRequired": true
+      },
+      {
+        "Name": "SessionId",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
+    "Method": "EsewaFailure",
+    "RelativePath": "api/Bill/pay/esewa/failure",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
+    "Method": "EsewaSuccess",
+    "RelativePath": "api/Bill/pay/esewa/success",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
+    "Method": "ViewBillAsync",
     "RelativePath": "api/Bill/view-bill/{sessionId}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -45,11 +129,6 @@
         "Name": "sessionId",
         "Type": "System.Int32",
         "IsRequired": true
-      },
-      {
-        "Name": "discountPercentage",
-        "Type": "System.Decimal",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -345,6 +424,22 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.PaymentController.PaymentController",
+    "Method": "GetPaymentInfo",
+    "RelativePath": "api/Payment",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uuid",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

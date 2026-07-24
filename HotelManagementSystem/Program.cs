@@ -53,6 +53,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using NSwag.Generation.Processors.Security;
 using NSwag;
+using HotelManagementSystem.Interfaces.PaymentInterface;
+using HotelManagementSystem.Services.PaymentService;
+using HotelManagementSystem.DLL.PaymentDLL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +80,7 @@ builder.Services.AddScoped<IOrderDLL, OrderDLL>();
 builder.Services.AddScoped<IOrderItemDLL, OrderItemDLL>();
 builder.Services.AddScoped<IBillDLL, BillDLL>();
 builder.Services.AddScoped<IReportDLL, ReportDLL>();
+builder.Services.AddScoped<IPaymentDLL, PaymentDLL>();
 
 // For Service layer
 builder.Services.AddScoped<IUserService, UserServices>();
@@ -89,8 +93,14 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ISubCategoryService, SubCategoryServices>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IBillSeervice, BillService>();
+// Register BillService as a scoped service and enable IHttpClientFactory so
+// the service can create HttpClient instances without being registered as a
+// typed HttpClient. This ensures other scoped dependencies (like IPaymentDLL)
+// are resolved correctly.
+builder.Services.AddScoped<IBillService, BillService>();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 builder.Services.AddControllers();
 

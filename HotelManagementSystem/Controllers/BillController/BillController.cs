@@ -1,5 +1,7 @@
-﻿using HotelManagementSystem.Interfaces.BillInterface;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using HotelManagementSystem.Interfaces.BillInterface;
 using HotelManagementSystem.Models.Bill;
+using HotelManagementSystem.Models.Payment;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,15 +11,29 @@ namespace HotelManagementSystem.Controllers.BillController
     [ApiController]
     public class BillController : ControllerBase
     {
-        private readonly IBillSeervice _billService;
+        private readonly IBillService _billService;
 
-        public BillController(IBillSeervice billService)
+        public BillController(IBillService billService)
         {
             _billService = billService;
         }
 
-
         [HttpGet("view-bill/{sessionId}")]
+        public async Task<IActionResult> ViewBillAsync(int sessionId)
+        {
+            try
+            {
+                var existingbill = await _billService.ViewBillAsync(sessionId);
+
+                return Ok(existingbill);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet("calculate-bill/{sessionId}")]
         public async Task<IActionResult> GetBillPreview(int sessionId, [FromQuery] decimal discountPercentage)
         {
             if (_billService == null)
@@ -44,13 +60,13 @@ namespace HotelManagementSystem.Controllers.BillController
             }
         }
 
-        [HttpPost("pay")]
+        [HttpPost("pay/cash")]
         public async Task<IActionResult> PayBill([FromBody] PayBill pay)
         {
             try
             {
                 // This will execute your math calculations and return a preview object DTO
-                var billPreview = await _billService.PayBill(pay);
+                var billPreview = await _billService.PayBillCash(pay);
 
                 if (billPreview == null)
                     return NotFound($"No active orders found for Session ID {pay} to calculate a bill.");
@@ -62,6 +78,73 @@ namespace HotelManagementSystem.Controllers.BillController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("pay/esewa/${SessionId}")]
+        public async Task<IActionResult> PayBillEsewa([FromBody] EsewaInitiate req)
+        {
+            try
+            {
+                var paidbill = await _billService.InitiateEsewaPaymentAsync(req.SessionId);
+
+                
+                return Ok(paidbill);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("esewa-callback")]
+        public async Task<IActionResult> EsewaCallback([FromQuery] string data)
+        {
+            if (string.IsNullOrEmpty(data))
+            {
+                return BadRequest(new { message = "Missing response data." });
+            }
+
+            bool isVerified = await _billService.VerifyAndProcessEsewaCallbackAsync(data);
+
+            if (isVerified)
+            {
+                return Ok(new { status = "Success", message = "Payment verified and bill marked as paid." });
+            }
+
+            return BadRequest(new { status = "Failed", message = "Payment verification failed or status incomplete." });
+        }
+
+        //[HttpGet("pay/esewa/success")]
+        //public async Task<IActionResult> Success(string data)
+        //{
+
+        //    return Ok(new { message = "successfull" });
+            
+        //}
+        [HttpGet("pay/esewa/success")]
+        public async Task<IActionResult> EsewaSuccess([FromQuery] string data)
+        {
+            if (string.IsNullOrEmpty(data))
+            {
+                return BadRequest(new { message = "Missing response payload." });
+            }
+
+            bool isVerified = await _billService.VerifyAndProcessEsewaCallbackAsync(data);
+
+            if (isVerified)
+            {
+                return Ok(new { status = "Success", message = "Payment verified successfully." });
+            }
+
+            return BadRequest(new { status = "Failed", message = "Payment verification failed." });
+        }
+
+        [HttpGet("pay/esewa/failure")]
+        public IActionResult EsewaFailure()
+        {
+            return BadRequest(new { status = "Failed", message = "Payment was canceled or failed at eSewa portal." });
+        }
+
+
         //public async Task<IActionResult> PayBill([FromBody] BillPaymentRequest request)
         //{
         //    if (request == null)
@@ -123,7 +206,11 @@ namespace HotelManagementSystem.Controllers.BillController
         //    public int UserId { get; set; }
         //}
 
-        
+
+    }
+    public class EsewaInitiate
+    {
+        public int SessionId { get; set; }
     }
 }
 

@@ -921,6 +921,37 @@
         }
       }
     },
+    "/api/Payment": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "operationId": "Payment_GetPaymentInfo",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/orderbyid/{id}": {
       "get": {
         "tags": [
@@ -1601,6 +1632,39 @@
         "tags": [
           "Bill"
         ],
+        "operationId": "Bill_ViewBill",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Bill/calculate-bill/{sessionId}": {
+      "get": {
+        "tags": [
+          "Bill"
+        ],
         "operationId": "Bill_GetBillPreview",
         "parameters": [
           {
@@ -1638,7 +1702,7 @@
         }
       }
     },
-    "/api/Bill/pay": {
+    "/api/Bill/pay/cash": {
       "post": {
         "tags": [
           "Bill"
@@ -1656,6 +1720,133 @@
           "required": true,
           "x-position": 1
         },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Bill/pay/esewa/${SessionId}": {
+      "post": {
+        "tags": [
+          "Bill"
+        ],
+        "operationId": "Bill_PayBillEsewa",
+        "parameters": [
+          {
+            "name": "SessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "req",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EsewaInitiate"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Bill/esewa-callback": {
+      "get": {
+        "tags": [
+          "Bill"
+        ],
+        "operationId": "Bill_EsewaCallback",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Bill/pay/esewa/success": {
+      "get": {
+        "tags": [
+          "Bill"
+        ],
+        "operationId": "Bill_EsewaSuccess",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Bill/pay/esewa/failure": {
+      "get": {
+        "tags": [
+          "Bill"
+        ],
+        "operationId": "Bill_EsewaFailure",
         "responses": {
           "200": {
             "description": "",
@@ -2205,6 +2396,9 @@
             "type": "integer",
             "format": "int32"
           },
+          "paymentMethod": {
+            "type": "string"
+          },
           "updatedDate": {
             "type": "string",
             "format": "date-time"
@@ -2214,6 +2408,16 @@
             "format": "date-time"
           },
           "paidBy": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "EsewaInitiate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sessionId": {
             "type": "integer",
             "format": "int32"
           }
