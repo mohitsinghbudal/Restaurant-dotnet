@@ -77,7 +77,7 @@ namespace HotelManagementSystem.DLL.BillDLL
             using var conn = _dbConn.CreateConnection();
 
             string sql = @"
-                UPDATE Bill
+                UPDATE Bills
                 SET 
                     IsPaid = 1,
                     UpdatedDate = @UpdatedDate

@@ -1,4 +1,5 @@
-﻿using HotelManagementSystem.Models.User;
+﻿using HotelManagementSystem.Controllers.usercontroller;
+using HotelManagementSystem.Models.User;
 
 namespace HotelManagementSystem.Interfaces.UserInterfaces
 {
@@ -7,6 +8,8 @@ namespace HotelManagementSystem.Interfaces.UserInterfaces
         Task<IEnumerable<UserModel>> GetUsersAsync();
          Task<int> SignUp(SignUpDTO user);
         Task<LoginResDTO> Login(LoginDTO user);
+
+        Task<bool> VerifyOTP(verifyotp req);
     }
     public interface IUserDLL
     {
@@ -14,7 +17,6 @@ namespace HotelManagementSystem.Interfaces.UserInterfaces
         Task<UserModel?> GetUserByEmailAsync(string email);
         Task<int> SignUp(UserModel user);
         Task<int> AssignWaiterAsync();
-
-
+        Task<bool> VerifyOtpUpdate(string email);
     }
 }

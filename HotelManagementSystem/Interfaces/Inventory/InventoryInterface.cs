@@ -9,9 +9,11 @@ namespace HotelManagementSystem.Interfaces.Inventory
     {
         Task<IEnumerable<InventoryItem>> GetInventoryItemsAsync();
         Task<InventoryItem?> GetInventoryItemById(int id);
-        Task<InventoryItem> AddInventoryItem(InventoryItem inventoryItem);
-        Task<int> UpdateInventoryItem(InventoryItem inventoryItem);
+        Task<InventoryItem> AddInventoryItem(InventoryItem inventoryItem, int userId);
+        Task<int> UpdateInventoryItem(InventoryItem inventoryItem , int userId);
         Task<bool> DeductInventoryForOrderAsync(int menuId, int orderedQuantity);
+        Task<bool> DeleteInventoryItem(int id, int deletedby);
+        Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync();
     }
     public interface IInventoryDLL
     {
@@ -20,5 +22,8 @@ namespace HotelManagementSystem.Interfaces.Inventory
         Task<int> UpdateInventoryItem(InventoryItem inventoryItem);
         Task<InventoryItem?> GetInventoryItemById(int id);
         Task<bool> DeductRawStockAsync(IEnumerable<InventoryDeductionModel> itemsToDeduct);
+        Task<bool> DeleteInventoryItem(int id,int deletedBy);
+
+        Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync();
     }
 }

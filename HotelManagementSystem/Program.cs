@@ -7,6 +7,7 @@ using HotelManagementSystem.DLL.InventoryDLL;
 using HotelManagementSystem.DLL.MenuDLL;
 using HotelManagementSystem.DLL.OrderDLL;
 using HotelManagementSystem.DLL.OrderItemDLL;
+using HotelManagementSystem.DLL.PaymentDLL;
 using HotelManagementSystem.DLL.RecipeDLL;
 using HotelManagementSystem.DLL.ReportDLL;
 using HotelManagementSystem.DLL.Tables;
@@ -17,11 +18,13 @@ using HotelManagementSystem.Interfaces.BillInterface;
 using HotelManagementSystem.Interfaces.CategoryInterface;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.DinningInterface;
+using HotelManagementSystem.Interfaces.EmailInterface;
 using HotelManagementSystem.Interfaces.Inventory;
 using HotelManagementSystem.Interfaces.JWTInterface;
 using HotelManagementSystem.Interfaces.MenuInterface;
 using HotelManagementSystem.Interfaces.OrderInterface;
 using HotelManagementSystem.Interfaces.OrderItemInterface;
+using HotelManagementSystem.Interfaces.PaymentInterface;
 using HotelManagementSystem.Interfaces.RecipeInterface;
 using HotelManagementSystem.Interfaces.Report;
 using HotelManagementSystem.Interfaces.SubCategoryInterface;
@@ -33,9 +36,11 @@ using HotelManagementSystem.Services.BillService;
 using HotelManagementSystem.Services.Categories;
 using HotelManagementSystem.Services.CategoryService;
 using HotelManagementSystem.Services.Dinning;
+using HotelManagementSystem.Services.Email;
 using HotelManagementSystem.Services.Inventory;
 using HotelManagementSystem.Services.MenuService;
 using HotelManagementSystem.Services.OrderService;
+using HotelManagementSystem.Services.PaymentService;
 using HotelManagementSystem.Services.RecipeService;
 using HotelManagementSystem.Services.Report;
 using HotelManagementSystem.Services.Table;
@@ -45,19 +50,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.Linq;
-using System.Reflection;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 using System;
 using System.Data;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using NSwag.Generation.Processors.Security;
-using NSwag;
-using HotelManagementSystem.Interfaces.PaymentInterface;
-using HotelManagementSystem.Services.PaymentService;
-using HotelManagementSystem.DLL.PaymentDLL;
 
 var builder = WebApplication.CreateBuilder(args);
+// Register email service with DI (ensure ILogger can be injected)
+builder.Services.AddScoped<HotelManagementSystem.Interfaces.EmailInterface.IEmailService, HotelManagementSystem.Services.Email.EmailService>();
 
 // Services
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
@@ -101,6 +105,8 @@ builder.Services.AddScoped<IBillService, BillService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddControllers();
 

@@ -79,12 +79,12 @@ namespace HotelManagementSystem.Controllers.BillController
             }
         }
 
-        [HttpPost("pay/esewa/${SessionId}")]
-        public async Task<IActionResult> PayBillEsewa([FromBody] EsewaInitiate req)
+        [HttpPost("pay/esewa")]
+        public async Task<IActionResult> PayBillEsewa([FromQuery] int req)
         {
             try
             {
-                var paidbill = await _billService.InitiateEsewaPaymentAsync(req.SessionId);
+                var paidbill = await _billService.InitiateEsewaPaymentAsync(req);
 
                 
                 return Ok(paidbill);

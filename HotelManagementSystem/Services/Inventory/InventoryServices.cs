@@ -1,4 +1,6 @@
-﻿using HotelManagementSystem.Interfaces.Inventory;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
+using HotelManagementSystem.Interfaces.Inventory;
 using HotelManagementSystem.Interfaces.RecipeInterface;
 using HotelManagementSystem.Models.Inventory;
 using HotelManagementSystem.Models.InventoryItem;
@@ -27,12 +29,21 @@ namespace HotelManagementSystem.Services.Inventory
             return await _inventoryDLL.GetInventoryItemById(id);
         }
 
-        public async Task<InventoryItem> AddInventoryItem(InventoryItem inventoryItem)
+        public async Task<InventoryItem> AddInventoryItem(InventoryItem inventoryItem ,int userId)
         {
-            return await _inventoryDLL.AddInventoryItem(inventoryItem);
+           try{ 
+                inventoryItem.CreatedBy = userId;
+                inventoryItem.CreatedOn = DateTime.UtcNow;
+                inventoryItem.IsActive = true;
+
+                return await _inventoryDLL.AddInventoryItem(inventoryItem);
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public async Task<int> UpdateInventoryItem(InventoryItem incomingItem)
+        public async Task<int> UpdateInventoryItem(InventoryItem incomingItem , int userId)
         {
             // 1. Fetch the current, real state of the item from the DB
             var existingItem = await _inventoryDLL.GetInventoryItemById(incomingItem.InventoryItemId);
@@ -59,6 +70,11 @@ namespace HotelManagementSystem.Services.Inventory
             {
                 existingItem.UnitId = incomingItem.UnitId;
             }
+
+            existingItem.CurrentQuantity = incomingItem.CurrentQuantity;
+            existingItem.MinimumQuantity = incomingItem.MinimumQuantity;
+            existingItem.IsActive = incomingItem.IsActive;
+
 
             // Track who modified it and when
             existingItem.UpdatedBy = incomingItem.UpdatedBy;
@@ -93,6 +109,32 @@ namespace HotelManagementSystem.Services.Inventory
 
             // 4. Send the sanitized parameters down to the DLL under the exact same transaction context
             return await _inventoryDLL.DeductRawStockAsync(deductionPayloads);
+        }
+        public async Task<bool> DeleteInventoryItem(int id, int deletedby)
+        {
+            try
+            {
+
+               var item =  await _inventoryDLL.GetInventoryItemById(id);
+                if (item==null)
+                {
+                    throw new Exception("sorry no item found" );
+                }
+                return await _inventoryDLL.DeleteInventoryItem(id,deletedby);
+            }catch(Exception ex)
+            {
+                throw new Exception("Server Error");
+            }
+        }
+        public async Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync()
+        {
+            try
+            { 
+                return await _inventoryDLL.GetAllInventoryItemsAsync();
+            }catch(Exception ex)
+            {
+                throw new Exception("Server Error");
+            }
         }
     }
 }

@@ -41,7 +41,6 @@ namespace HotelManagementSystem.Services.BillService
             var orders = await _orderDLL.GetOrderBySessionId(sessionId);
 
 
-
             decimal grandTotal = orders.Sum(o => o.TotalAmount);
             
             decimal discount = grandTotal * (discountPercentage / 100M);
@@ -56,8 +55,8 @@ namespace HotelManagementSystem.Services.BillService
             {
                 BillNo = long.Parse(DateTime.UtcNow.ToString("yyMMddHHmmss")),
                 SessionId = sessionId,
-                GrandTotal = grandTotal, //final after all addition and deduction
-                TotalAmount = TotalAmount, //food amount only
+                GrandTotal = grandTotal, 
+                TotalAmount = TotalAmount, 
                 TaxAmount = tax,
                 DiscountAmount = discount,
                 PaymentMethod = "any",
@@ -115,24 +114,45 @@ namespace HotelManagementSystem.Services.BillService
             return await _billDLL.PayBillAsync(bill.IsPaid, pay.BillNo,bill.PaymentMethod);
         }
 
+       
         public async Task<EsewaInitiateResponseDto> InitiateEsewaPaymentAsync(int sessionId)
         {
             var bill = await _billDLL.ViewBillBySessionId(sessionId);
+
             if (bill == null) throw new Exception("No bill found for this session.");
             if (bill.IsPaid) throw new Exception("This bill has already been paid.");
 
-            string transactionUuid = Guid.NewGuid().ToString();
-            string productCode = _config["Esewa:ProductCode"] ?? "EPAYTEST";
+            //always constant
+
+            string transactionUuid = Guid.NewGuid().ToString(); /////
+            string productCode = _config["Esewa:ProductCode"] ?? "EPAYTEST"; 
             string secretKey = _config["Esewa:SecretKey"] ?? "8gBm/:&EnhH.1/q";
 
-            // Strictly format to 2 decimal places
-            string formattedTotalAmount = bill.GrandTotal.ToString("0.00"); // Base + Tax
-            string formattedTaxAmount = bill.TaxAmount.ToString("0.00");   // Tax portion
-            string formattedAmount = bill.TotalAmount.ToString("0.00");     // Base portion
+            // eSewa configuration URLs
 
-            // HMAC Message string strictly: total_amount,transaction_uuid,product_code
-            string message = $"total_amount={formattedTotalAmount},transaction_uuid={transactionUuid},product_code={productCode}";
+            string successUrl = _config["Esewa:SuccessUrl"] ?? "https://developer.esewa.com.np/success";
+            string failureUrl = _config["Esewa:FailureUrl"] ?? "https://developer.esewa.com.np/failure";
+            string signedFieldNames = "total_amount,transaction_uuid,product_code";
+
+            //Strictly format to 2 decimal places
+            string TaxAmount = bill.TaxAmount.ToString("0.00");   // Tax portion
+            string Amount = bill.GrandTotal.ToString("0.00");     // Base portion
+            string TotalAmount = bill.TotalAmount.ToString("0.00"); // Base + Tax
+
+            Console.WriteLine(TotalAmount);
+            Console.WriteLine(TotalAmount);
+            Console.WriteLine(TotalAmount);
+
+            Console.WriteLine(transactionUuid);
+
+
+            string ServiceCharge = "0.00";
+            string DeliveryCharge = "0.00";
+
+            // HMAC Message string: total_amount,transaction_uuid,product_code
+            string message = $"total_amount={TotalAmount},transaction_uuid={transactionUuid},product_code={productCode}";
             string signature = GenerateSignature(message, secretKey);
+
 
             // Record initial pending payment
             var payment = new Payment
@@ -140,21 +160,28 @@ namespace HotelManagementSystem.Services.BillService
                 BillId = bill.BillId,
                 TransactionUuid = transactionUuid,
                 PaymentGateway = "eSewa",
-                Amount = bill.GrandTotal,
+                Amount = bill.TotalAmount,
                 Status = "Pending",
                 Signature = signature,
                 CreatedDate = DateTime.UtcNow
             };
             await _paymentDLL.CreatePaymentAsync(payment);
 
+
+
             return new EsewaInitiateResponseDto
             {
-                Amount = formattedAmount,                
-                TaxAmount = formattedTaxAmount,          
-                TotalAmount = formattedTotalAmount,      
+                Amount = Amount,
+                TaxAmount = TaxAmount,
+                TotalAmount = TotalAmount,
+                ProductDeliveryCharge = DeliveryCharge,
+                ProductServiceCharge = ServiceCharge,
                 TransactionUuid = transactionUuid,
                 ProductCode = productCode,
                 Signature = signature,
+                SignedFieldNames = signedFieldNames,
+                SuccessUrl = successUrl,
+                FailureUrl = failureUrl,
                 PaymentUrl = _config["Esewa:PaymentUrl"] ?? "https://rc-epay.esewa.com.np/api/epay/main/v2/form"
             };
         }
@@ -162,46 +189,95 @@ namespace HotelManagementSystem.Services.BillService
         // --- Step B: Verify Callback Response from eSewa ---
         public async Task<bool> VerifyAndProcessEsewaCallbackAsync(string encodedData)
         {
-            // 1. Base64 Decode callback data payload
-            byte[] base64Bytes = Convert.FromBase64String(encodedData);
-            string decodedJson = Encoding.UTF8.GetString(base64Bytes);
-            var callbackData = JsonSerializer.Deserialize<EsewaCallbackDecodedData>(decodedJson);
-
-            if (callbackData == null || string.IsNullOrEmpty(callbackData.transaction_uuid))
-                return false;
-
-            // 2. Fetch locally saved pending payment record
-            var payment = await _paymentDLL.GetPaymentByUuidAsync(callbackData.transaction_uuid);
-            if (payment == null) return false;
-
-            string productCode = _config["Esewa:ProductCode"] ?? "EPAYTEST";
-
-            // 3. Double-check status with eSewa Status Verification API
-            string statusApiUrl = $"https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code={productCode}&total_amount={callbackData.total_amount}&transaction_uuid={callbackData.transaction_uuid}";
-
-            var statusResponse = await _httpClient.GetFromJsonAsync<EsewaStatusApiResponse>(statusApiUrl);
-
-            // 4. Update Payment & Bill records if verification passes
-            if (statusResponse != null && statusResponse.status == "COMPLETE")
+            try
             {
-                payment.Status = "Completed";
-                payment.GatewayTransactionId = callbackData.transaction_code;
-                payment.ResponseData = decodedJson;
 
-                await _paymentDLL.UpdatePaymentAsync(payment);
+                Console.WriteLine("reached the verification process");
 
-                // Update Bill table status to Paid
-                await _billDLL.MarkBillAsPaidAsync(payment.BillId);
-                return true;
+                if (string.IsNullOrWhiteSpace(encodedData)) return false;
+
+                // 1. Base64 Decode callback data payload
+                byte[] base64Bytes = Convert.FromBase64String(encodedData);
+                string decodedJson = Encoding.UTF8.GetString(base64Bytes);
+                var callbackData = JsonSerializer.Deserialize<EsewaCallbackDecodedData>(decodedJson);
+
+                if (callbackData == null || string.IsNullOrEmpty(callbackData.transaction_uuid))
+                    return false;
+
+                // 2. Fetch locally saved pending payment record
+                var payment = await _paymentDLL.GetPaymentByUuidAsync(callbackData.transaction_uuid);
+                if (payment == null) return false;
+
+                // Idempotency Guard: prevent duplicate processing if already completed
+                if (payment.Status == "Completed") return true;
+
+                string productCode = _config["Esewa:ProductCode"] ?? "EPAYTEST";
+
+                // Sanitize total_amount: prefer the callback numeric value if present, format with two decimals
+                string totalAmountStr = callbackData.total_amount.HasValue
+                    ? callbackData.total_amount.Value.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)
+                    : payment.Amount.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+
+                // Ensure two decimal places format if string comes back as "113.0"
+
+
+                Console.WriteLine(productCode);
+                Console.WriteLine(totalAmountStr);
+                Console.WriteLine(callbackData.transaction_uuid);
+
+                // 3. Double-check status with eSewa Status Verification API
+                // CORRECT API PATH: /api/epay/transaction/status/
+                string statusApiUrl = $"https://rc.esewa.com.np/api/epay/transaction/status/?product_code={productCode}&total_amount={totalAmountStr}&transaction_uuid={callbackData.transaction_uuid}";
+
+
+
+                var request = new HttpRequestMessage(HttpMethod.Get, statusApiUrl);
+                request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+
+                var response = await _httpClient.SendAsync(request);
+
+                Console.WriteLine("checking out the verififcation process");
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    payment.Status = "Failed";
+                    payment.ResponseData = $"eSewa API returned HTTP {response.StatusCode}";
+                    await _paymentDLL.UpdatePaymentAsync(payment);
+                    return false;
+                }
+
+                var statusResponse = await response.Content.ReadFromJsonAsync<EsewaStatusApiResponse>();
+
+                // 4. Update Payment & Bill records if verification passes
+                if (statusResponse != null && statusResponse.status == "COMPLETE")
+                {
+                    payment.Status = "Completed";
+                    payment.GatewayTransactionId = callbackData.transaction_code;
+                    payment.ResponseData = decodedJson;
+
+                    await _paymentDLL.UpdatePaymentAsync(payment);
+                    await _billDLL.MarkBillAsPaidAsync(payment.BillId);
+                    return true;
+                }
+                else
+                {
+                    payment.Status = "Failed";
+                    payment.ResponseData = decodedJson;
+                    await _paymentDLL.UpdatePaymentAsync(payment);
+                    return false;
+                }
             }
-            else
+
+            catch (Exception ex)
             {
-                payment.Status = "Failed";
-                payment.ResponseData = decodedJson;
-                await _paymentDLL.UpdatePaymentAsync(payment);
+                // Unhandled exception fallback
                 return false;
             }
         }
+
+       
+
         private string GenerateSignature(string message, string secretKey)
         {
             using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey));

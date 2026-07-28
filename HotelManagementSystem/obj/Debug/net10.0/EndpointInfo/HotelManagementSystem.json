@@ -133,6 +133,39 @@
         }
       }
     },
+    "/api/User/verify-otp": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_VerifyOTP",
+        "requestBody": {
+          "x-name": "req",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Verifyotp"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Units": {
       "get": {
         "tags": [
@@ -1252,7 +1285,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -1283,7 +1321,38 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Inventory/admin": {
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "operationId": "Inventory_GetAllInventoryItems",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Inventory/{id}": {
@@ -1316,7 +1385,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -1329,10 +1403,9 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             },
-            "x-position": 1
+            "x-position": 2
           }
         ],
         "requestBody": {
@@ -1345,7 +1418,7 @@
             }
           },
           "required": true,
-          "x-position": 2
+          "x-position": 1
         },
         "responses": {
           "200": {
@@ -1359,7 +1432,48 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Inventory"
+        ],
+        "operationId": "Inventory_DeleteInventoryItem",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Dinning/user": {
@@ -1735,7 +1849,7 @@
         }
       }
     },
-    "/api/Bill/pay/esewa/${SessionId}": {
+    "/api/Bill/pay/esewa": {
       "post": {
         "tags": [
           "Bill"
@@ -1743,27 +1857,15 @@
         "operationId": "Bill_PayBillEsewa",
         "parameters": [
           {
-            "name": "SessionId",
-            "in": "path",
-            "required": true,
+            "name": "req",
+            "in": "query",
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             },
-            "x-position": 2
+            "x-position": 1
           }
         ],
-        "requestBody": {
-          "x-name": "req",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EsewaInitiate"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
         "responses": {
           "200": {
             "description": "",
@@ -1900,10 +2002,6 @@
           "lastName": {
             "type": "string"
           },
-          "roleId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "email": {
             "type": "string"
           },
@@ -1927,6 +2025,18 @@
             "type": "string"
           },
           "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Verifyotp": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "otp": {
             "type": "string"
           }
         }
@@ -2408,16 +2518,6 @@
             "format": "date-time"
           },
           "paidBy": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "EsewaInitiate": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "sessionId": {
             "type": "integer",
             "format": "int32"
           }

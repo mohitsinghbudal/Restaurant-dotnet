@@ -40,7 +40,6 @@ namespace HotelManagementSystem.Controllers.usercontroller
         {
             try
             {
-             
                 var success = await _userService.SignUp(user);
 
                 if (success <= 0)
@@ -72,5 +71,29 @@ namespace HotelManagementSystem.Controllers.usercontroller
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOTP([FromBody] verifyotp req)
+        {
+
+
+            try
+            {
+
+                var verify = await _userService.VerifyOTP(req);
+                return Ok(new {message = "successfully verified email" });
+
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        
+    }
+    public class verifyotp
+    {
+        public string Email { get; set; }
+        public string otp { get; set; }
     }
 }

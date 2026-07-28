@@ -2,6 +2,7 @@
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.UserInterfaces;
 using HotelManagementSystem.Models.User;
+using static QRCoder.PayloadGenerator;
 
 namespace HotelManagementSystem.DLL.Users
 {
@@ -87,6 +88,31 @@ VALUES
                 throw new InvalidOperationException("No active waiters found in the system.");
 
             return (int)waiter.UserId;
+        }
+
+        public async Task<bool> VerifyOtpUpdate(string email)
+        {
+            try{
+                
+                using var conn = _dbConnection.CreateConnection();
+
+                string sql = @"
+                    UPDATE Users
+                    SET 
+                        IsEmailVerified = 1,
+                        EmailOtp = NULL,
+                        OtpExpiry = GETUTCDATE(),
+                        UpdatedAt = GETUTCDATE()
+                    WHERE Email = @Email;";
+
+                int rowsAffected = await conn.ExecuteAsync(sql, new { Email = email });
+                return rowsAffected > 0;
+
+                
+            }catch(Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
