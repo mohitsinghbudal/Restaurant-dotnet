@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.OrderInterface;
 using HotelManagementSystem.Models.Order;
@@ -15,6 +16,15 @@ namespace HotelManagementSystem.DLL.OrderDLL
             _dbConn = dbConn;
         }
 
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        {
+            using var conn = _dbConn.CreateConnection();
+            string sql = @"SELECT * FROM Orders;";
+
+            return await conn.QueryAsync<Order>(sql);
+        }
+        
+
         public async Task<Order> GetOrderByIdAsync(int id)
         {
             using var conn = _dbConn.CreateConnection();
@@ -30,7 +40,7 @@ namespace HotelManagementSystem.DLL.OrderDLL
             return await conn.QueryAsync<Order>(sql, new { DiningSessionId = Id });
         }
 
-        public async Task<int> UpdateOrderAsync(Order order)
+        public async Task<bool> UpdateOrderAsync(Order order)
         {
             using var conn = _dbConn.CreateConnection();
 
@@ -44,7 +54,9 @@ namespace HotelManagementSystem.DLL.OrderDLL
                 WHERE OrderId = @OrderId
                 AND IsActive = 1;";
 
-            return await conn.ExecuteAsync(sql, order);
+            var result = await conn.ExecuteAsync(sql, order);
+
+            return result > 0;
         }
 
         public async Task<Order> CreateOrderAsync(Order order)

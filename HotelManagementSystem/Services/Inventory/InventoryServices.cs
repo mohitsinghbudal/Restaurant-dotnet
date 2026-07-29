@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Wordprocessing;
 using HotelManagementSystem.Interfaces.Inventory;
 using HotelManagementSystem.Interfaces.RecipeInterface;
@@ -126,14 +127,18 @@ namespace HotelManagementSystem.Services.Inventory
                 throw new Exception("Server Error");
             }
         }
-        public async Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync()
+        public async Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync(int page = 1)
         {
             try
-            { 
-                return await _inventoryDLL.GetAllInventoryItemsAsync();
+            {
+                int pageSize = 10;
+
+                int offset = (page - 1) * pageSize;
+
+                return await _inventoryDLL.GetAllInventoryItemsAsync(offset, pageSize);
             }catch(Exception ex)
             {
-                throw new Exception("Server Error");
+                throw new Exception("Server Error"+ex);
             }
         }
     }

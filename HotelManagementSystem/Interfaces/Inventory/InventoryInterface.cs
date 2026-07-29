@@ -13,7 +13,7 @@ namespace HotelManagementSystem.Interfaces.Inventory
         Task<int> UpdateInventoryItem(InventoryItem inventoryItem , int userId);
         Task<bool> DeductInventoryForOrderAsync(int menuId, int orderedQuantity);
         Task<bool> DeleteInventoryItem(int id, int deletedby);
-        Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync();
+        Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync(int page);
     }
     public interface IInventoryDLL
     {
@@ -24,6 +24,6 @@ namespace HotelManagementSystem.Interfaces.Inventory
         Task<bool> DeductRawStockAsync(IEnumerable<InventoryDeductionModel> itemsToDeduct);
         Task<bool> DeleteInventoryItem(int id,int deletedBy);
 
-        Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync();
+        Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync(int offset, int pageSize);
     }
 }

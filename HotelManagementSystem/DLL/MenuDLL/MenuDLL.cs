@@ -62,7 +62,7 @@ namespace HotelManagementSystem.DLL.MenuDLL
                 SELECT *
                 FROM Menus
                 WHERE MenuId = @MenuId
-                  AND IsActive = 1;";
+                AND IsActive = 1;";
 
             return await connection.QuerySingleOrDefaultAsync<Menu>(
                 sql,

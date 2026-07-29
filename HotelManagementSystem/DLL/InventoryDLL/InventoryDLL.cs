@@ -24,14 +24,28 @@ namespace HotelManagementSystem.DLL.InventoryDLL
             return await conn.QueryAsync<InventoryItem>(sql);
         }
 
-        public async Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync()
+        public async Task<IEnumerable<InventoryItem>> GetAllInventoryItemsAsync(int offset, int pageSize)
         {
-            using var conn = _dbConn.CreateConnection();
-
-            string sql = @"SELECT * FROM InventoryItems";
+           try{ using var conn = _dbConn.CreateConnection();
 
 
-            return await conn.QueryAsync<InventoryItem>(sql);
+
+            string sql = @" SELECT * 
+                            FROM InventoryItems
+                            ORDER BY InventoryItemId 
+                            OFFSET @Offset ROWS
+                            FETCH NEXT @PageSize ROWS ONLY;";
+
+
+                return await conn.QueryAsync<InventoryItem>(sql, new
+                {
+                    Offset = offset,
+                    PageSize = pageSize
+                });
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<InventoryItem> AddInventoryItem(InventoryItem inventoryItem)

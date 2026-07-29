@@ -40,13 +40,32 @@ namespace HotelManagementSystem.Services.MenuService
             return await _menuDLL.GetMenuItemByIdAsync(menuId);
         }
 
-        public async Task<int> UpdateMenuAsync(UpdateMenu menu)
+        public async Task<int> UpdateMenuAsync(UpdateMenu menu, int UserId)
         {
-            return await _menuDLL.UpdateMenuAsync(menu);
+               try{
+
+                var item = await _menuDLL.GetMenuItemByIdAsync(menu.MenuId);
+
+
+
+                if(item == null)
+                {
+                    throw new Exception("now menu found");
+                }
+            menu.LastUpdatedOn = DateTime.UtcNow;
+            menu.LastUpdatedBy = UserId;
+
+                return await _menuDLL.UpdateMenuAsync(menu);
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public async Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync()
+        public async Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync(int page)
         {
+            const int pageSize = 10;
+
             var menus = (await _menuDLL.GetAllMenuItemsAsync()).ToList();
             var recipes = (await _recipeDLL.GetAllRecipesAsync()).ToList();
             var inventoryItems = (await _inventoryDLL.GetInventoryItemAsync()).ToList();
@@ -83,13 +102,12 @@ namespace HotelManagementSystem.Services.MenuService
                         break;
                     }
 
-                    Console.WriteLine(inventory.CurrentQuantity);
-                    Console.WriteLine(recipe.QuantityRequired);
 
                     if (recipe.QuantityRequired <= 0)
                     {
                         continue;
                     }
+
                     int possible = (int)(inventory.CurrentQuantity / recipe.QuantityRequired);
                     availablePortions = Math.Min(availablePortions, possible);
                 }
@@ -99,7 +117,13 @@ namespace HotelManagementSystem.Services.MenuService
                 menu.IsAvailable = menu.IsAvailable && menu.AvailablePortions > 0;
             }
 
-            return menus;
+
+
+
+
+            return menus
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
         }
 
         public async Task<int> GetAvailablePortionsAsync(int menuId)

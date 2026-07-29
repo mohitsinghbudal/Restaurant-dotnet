@@ -1,10 +1,13 @@
-﻿using HotelManagementSystem.Interfaces.MenuInterface;
+﻿using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Interfaces.MenuInterface;
 using HotelManagementSystem.Models.MenuItems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSystem.Controllers.MenuController
 {
+
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MenuController : ControllerBase
@@ -20,15 +23,22 @@ namespace HotelManagementSystem.Controllers.MenuController
         // GET: api/Menu
         //[AllowAnonymous]
         [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllMenuItems()
+        public async Task<IActionResult> GetAllMenuItems([FromQuery] int page = 1)
         {
-            var menus = await _menuService.GetAllMenuItemsAsync();
+            
+            try    
 
-            return Ok(new
+            {var menus = await _menuService.GetAllMenuItemsAsync(page);
+
+                return Ok(new
+                {
+                    message = "Success",
+                    items = menus
+                });
+            }catch(Exception ex)
             {
-                message = "Success",
-                items = menus
-            });
+                return BadRequest(ex);
+            }
         }
 
 
@@ -59,44 +69,63 @@ namespace HotelManagementSystem.Controllers.MenuController
         public async Task<IActionResult> CreateMenuItem(
             [FromBody] CreateMenu menu)
         {
-            var createdMenu = await _menuService.CreateMenuItemAsync(menu);
+            try{var createdMenu = await _menuService.CreateMenuItemAsync(menu);
 
-            return Ok(new
+                return Ok(new
+                {
+                    message = "Menu item created successfully",
+                    item = createdMenu
+                });
+            }catch(Exception ex)
             {
-                message = "Menu item created successfully",
-                item = createdMenu
-            });
+                return BadRequest(ex);
+            }
         }
 
 
         // PUT: api/Menu/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> UpdateMenuItem(
-            int id,
             [FromBody] UpdateMenu menu)
         {
+
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            if(roleId != 5 )
+            {
+                return BadRequest("Unauthorized");
+            }
+            
             if (menu == null)
             {
-                return BadRequest();
+                return BadRequest("Enter the valid menu Item");
             }
 
             // Ensure the MenuId expected by the SQL is provided from the route
-            menu.MenuId = id;
 
-            var result = await _menuService.UpdateMenuAsync(menu);
+           try{
+                var result = await _menuService.UpdateMenuAsync(menu , userId);
 
-            if (result == 0)
-            {
-                return NotFound(new
+                if (result == 0)
                 {
-                    message = "Menu item not found"
+                    return NotFound(new
+                    {
+                        message = "Menu item not found"
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "Menu item updated successfully"
                 });
             }
-
-            return Ok(new
+            catch(Exception ex)
             {
-                message = "Menu item updated successfully"
-            });
+                return BadRequest("server errro");
+            }
+
+            
         }
     }
 }

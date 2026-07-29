@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSystem.Controllers.CategoryController
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase

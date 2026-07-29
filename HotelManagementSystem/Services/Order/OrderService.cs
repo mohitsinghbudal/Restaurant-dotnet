@@ -21,6 +21,11 @@ namespace HotelManagementSystem.Services.OrderService
             _menuDLL = menuDLL;
         }
 
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        {
+            return await _orderDLL.GetAllOrdersAsync();
+        }
+
         //get order by id
         public async Task<Order?> GetOrderByIdAsync(int id)
         {
@@ -113,7 +118,7 @@ namespace HotelManagementSystem.Services.OrderService
             return orders;
         }
 
-        public async Task<int> UpdateOrderAsync(int id, int wid)
+        public async Task<bool> UpdateOrderAsync(int id, int wid)
         {
             var order = await _orderDLL.GetOrderByIdAsync(id);
 
@@ -134,7 +139,7 @@ namespace HotelManagementSystem.Services.OrderService
             return await _orderDLL.UpdateOrderAsync(order);
 
         }
-        public async Task<int> UpdateOrderAsync(Order order, int currentOrderedQuantity, int newOrderedQuantity, int menuId)
+        public async Task<bool> UpdateOrderAsync(Order order, int currentOrderedQuantity, int newOrderedQuantity, int menuId)
         {
             if (order == null || order.OrderId <= 0)
                 throw new ArgumentException("Invalid order data.");
@@ -158,6 +163,29 @@ namespace HotelManagementSystem.Services.OrderService
 
             // 3. Forward the updated metadata to the DLL
             return await _orderDLL.UpdateOrderAsync(order);
+        }
+
+        public async Task<bool> CancelOrderAsync(int orderId, int userId)
+        {
+            try
+            {
+                var existingOrder = await _orderDLL.GetOrderByIdAsync(orderId);
+
+                if (existingOrder == null) throw new Exception("invalid order");
+
+                if(DateTime.UtcNow - existingOrder.CreatedAt > TimeSpan.FromMinutes(5) && existingOrder.OrderStatus =="Preparing") throw new Exception("can't be deleted its already preparing");
+
+                existingOrder.OrderStatus = "Cancelled";
+                existingOrder.UpdatedBy = userId;
+                existingOrder.UpdatedAt = DateTime.UtcNow;
+
+                return await _orderDLL.UpdateOrderAsync(existingOrder);
+
+            }catch(Exception ex)
+            {
+                throw new Exception("please enter valid order");
+            }
+            
         }
     }
 }

@@ -37,11 +37,18 @@ namespace HotelManagementSystem.Controllers.InventoryController
         }
 
         [HttpGet("admin")]
-        public async Task<IActionResult> GetAllInventoryItems()
+        public async Task<IActionResult> GetAllInventoryItems([FromQuery] int page)
         {
+            
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            if (roleId != 5)
+                return Unauthorized("user allowed is not allowed");
+
             try
             {
-                var inventoryItems = await _inventoryService.GetAllInventoryItemsAsync();
+                if (page < 0) throw new Exception("page can't be less than zero");
+                var inventoryItems = await _inventoryService.GetAllInventoryItemsAsync(page);
 
                 return Ok(new
                 {

@@ -17,7 +17,28 @@ namespace HotelManagementSystem.Controllers.OrderController
         {
             _orderService = orderService;
         }
-        [HttpGet("/orderbyid/{id}")]
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllOrdersAsync()
+        {
+            int roleId = ClaimHelper.GetRoleId(User);
+            if (roleId != 5)
+            {
+                return BadRequest(new { message = "User is not allowed" });
+            }
+            try
+            {
+                var orders = await _orderService.GetAllOrdersAsync();
+                return Ok(new { message = "success", orders = orders });
+            }
+            catch (Exception ex)
+            {
+               return BadRequest(new { message = "server error"+ex.Message });
+            }
+        }
+
+
+        [HttpGet("orderbyid/{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
             if (id <= 0)
@@ -65,6 +86,7 @@ namespace HotelManagementSystem.Controllers.OrderController
         {
             try
             {
+                
                 var createOrder = await _orderService.CreateOrderAsync(newOrder);
                 if (createOrder == null)
                     throw new Exception("Server Error");
@@ -94,6 +116,30 @@ namespace HotelManagementSystem.Controllers.OrderController
             }catch(Exception ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("cancel")]
+        public async Task<IActionResult> CancelOrderAsync([FromQuery] int OrderId )
+        {
+
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            if (roleId != 1)
+                return Unauthorized("user is not allowed");
+
+            try
+            {   
+                if (OrderId <= 0) throw new Exception("Please enter the order values");
+
+                bool cancelorder = await _orderService.CancelOrderAsync(OrderId, userId);
+
+                return Ok(new { message = "sucessfull" });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "server error" });
             }
         }
         //    public async Task<IActionResult> CreateOrder([FromQuery] int menuId, [FromQuery] int quantity, [FromBody] Order order)

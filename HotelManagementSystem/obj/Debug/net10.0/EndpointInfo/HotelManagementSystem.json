@@ -985,7 +985,33 @@
         }
       }
     },
-    "/orderbyid/{id}": {
+    "/api/Order/all": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "operationId": "Order_GetAllOrders",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Order/orderbyid/{id}": {
       "get": {
         "tags": [
           "Order"
@@ -1137,12 +1163,25 @@
         ]
       }
     },
-    "/api/Menu/get-all": {
-      "get": {
+    "/api/Order/cancel": {
+      "put": {
         "tags": [
-          "Menu"
+          "Order"
         ],
-        "operationId": "Menu_GetAllMenuItems",
+        "operationId": "Order_CancelOrder",
+        "requestBody": {
+          "x-name": "OrderId",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -1155,7 +1194,50 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Menu/get-all": {
+      "get": {
+        "tags": [
+          "Menu"
+        ],
+        "operationId": "Menu_GetAllMenuItems",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Menu/{id}": {
@@ -1188,50 +1270,12 @@
               }
             }
           }
-        }
-      },
-      "put": {
-        "tags": [
-          "Menu"
-        ],
-        "operationId": "Menu_UpdateMenuItem",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "menu",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateMenu"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
         },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
+        "security": [
+          {
+            "Bearer": []
           }
-        }
+        ]
       }
     },
     "/api/Menu": {
@@ -1264,7 +1308,48 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Menu"
+        ],
+        "operationId": "Menu_UpdateMenuItem",
+        "requestBody": {
+          "x-name": "menu",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenu"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/api/Inventory": {
@@ -1335,6 +1420,17 @@
           "Inventory"
         ],
         "operationId": "Inventory_GetAllInventoryItems",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -2423,6 +2519,9 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "isDeleted": {
+            "type": "boolean"
           },
           "updatedOn": {
             "type": "string",
