@@ -7,6 +7,7 @@ using HotelManagementSystem.Models.Table;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Bcpg;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -107,9 +108,15 @@ namespace HotelManagementSystem.Controllers.TableController
         {
             if (table == null) return BadRequest(new { message = "Invalid table data payload." });
 
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            if (roleId != 5)
+                return Unauthorized("user not allowed ");
+
             try
             {
-                var createdTable = await _tableService.CreateTableAsync(table);
+                var createdTable = await _tableService.CreateTableAsync(table , userId);
 
                 if (createdTable == null)
                 {
@@ -134,8 +141,8 @@ namespace HotelManagementSystem.Controllers.TableController
             int userId = ClaimHelper.GetUserId(User);
             int roleId = ClaimHelper.GetRoleId(User);
 
-            if (roleId != 1)
-                    return Unauthorized("user allowed is not an customer");
+            if (roleId != 5)
+                    return Unauthorized("user is not allowed" );
 
 
             if (tableNo <=0) return BadRequest(new { message = "Invalid update payload." });
@@ -176,7 +183,7 @@ namespace HotelManagementSystem.Controllers.TableController
             try
             {
                 var result = await _tableService.CleanTableAsync(table);
-                if (result <= 0)
+                if (!result )
                 {
                     return BadRequest(new { message = "Error encountered while attempting to clear the cleaning status." });
                 }
@@ -198,7 +205,7 @@ namespace HotelManagementSystem.Controllers.TableController
             try
             {
                 var result = await _tableService.FreeTableAsync(table);
-                if (result <= 0)
+                if (!result )
                 {
                     return BadRequest(new { message = "Error encountered while attempting to free the table." });
                 }
@@ -223,5 +230,27 @@ namespace HotelManagementSystem.Controllers.TableController
 
             return File(imageBytes, "image/png");
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateTableInfoAsync([FromBody] TableModel table)
+        {
+            try
+            {
+                int userId = ClaimHelper.GetUserId(User);
+                int roleId = ClaimHelper.GetRoleId(User);
+
+                if (roleId != 5) throw new Exception("User not allowed");
+
+
+
+                var result = await _tableService.UpdateTableInfoAsync(table, userId);
+                return Ok(new { result = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
+    
 }

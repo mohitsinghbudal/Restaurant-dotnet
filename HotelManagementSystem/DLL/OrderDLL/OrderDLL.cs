@@ -48,6 +48,7 @@ namespace HotelManagementSystem.DLL.OrderDLL
                 UPDATE Orders
                 SET
                     OrderStatus = @OrderStatus,
+                    IsActive = @IsActive,
                     Description = @Description,
                     UpdatedAt = GETUTCDATE(),
                     UpdatedBy = @UpdatedBy
@@ -91,6 +92,22 @@ namespace HotelManagementSystem.DLL.OrderDLL
         );";
 
             return await conn.QueryFirstOrDefaultAsync<Order>(sql, order);
+        }
+
+        public async Task<bool> UpdateOrderQuantityAsync(int quantity, int orderId)
+        {
+
+            using var conn = _dbConn.CreateConnection();
+
+            string sql = @" UPDATE Orders
+                SET
+                Quantity = @Quantity
+                WHERE OrderId = @OrderId
+                AND IsActive = 1; ";
+            var order = await conn.ExecuteAsync(sql, new { Quantity = quantity, OrderId = orderId });
+
+            return order > 0;
+
         }
     }
 }

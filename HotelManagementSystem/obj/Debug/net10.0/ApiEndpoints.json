@@ -209,6 +209,16 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.DinningController.DinningController",
+    "Method": "GetAllDinningSessions",
+    "RelativePath": "api/Dinning/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.DinningController.DinningController",
     "Method": "CreateDinningSession",
     "RelativePath": "api/Dinning/Create-Session",
     "HttpMethod": "POST",
@@ -399,13 +409,7 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "page",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -445,7 +449,7 @@
       {
         "Name": "OrderId",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -494,6 +498,32 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.OrderController.OrderController",
+    "Method": "UpdateOrderQuantity",
+    "RelativePath": "api/Order/updateQuantity",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemQuantity",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "menuId",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -688,6 +718,22 @@
       {
         "Name": "subCategory",
         "Type": "HotelManagementSystem.Models.Categories.SubCategory",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "UpdateTableInfoAsync",
+    "RelativePath": "api/Table",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "table",
+        "Type": "HotelManagementSystem.Models.Table.TableModel",
         "IsRequired": true
       }
     ],

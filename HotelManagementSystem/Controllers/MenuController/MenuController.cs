@@ -23,12 +23,12 @@ namespace HotelManagementSystem.Controllers.MenuController
         // GET: api/Menu
         //[AllowAnonymous]
         [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllMenuItems([FromQuery] int page = 1)
+        public async Task<IActionResult> GetAllMenuItems()
         {
             
             try    
 
-            {var menus = await _menuService.GetAllMenuItemsAsync(page);
+            {var menus = await _menuService.GetAllMenuItemsAsync();
 
                 return Ok(new
                 {

@@ -6,7 +6,7 @@ namespace HotelManagementSystem.Interfaces.MenuInterface
     {
         Task<int> CreateMenuItemAsync(CreateMenu menu);
         Task<Menu?> GetMenuItemByIdAsync(int menuId);
-        Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync(int page);
+        Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync();
         Task<int> UpdateMenuAsync(UpdateMenu menu, int userId);
     }
 

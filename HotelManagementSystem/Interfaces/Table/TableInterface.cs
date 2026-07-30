@@ -5,23 +5,24 @@ namespace HotelManagementSystem.Interfaces.TableInterface
 {
     public interface ITableService
     {
-        Task<TableModel> CreateTableAsync(CreateTable table);
-        Task<int> UpdateTableAsync(UpdateTable table);
+        Task<TableModel> CreateTableAsync(CreateTable table, int userid);
+        Task<bool> UpdateTableAsync(UpdateTable table, int tableId);
         Task<int> BookTableAsync(int table, int userId);
-        Task<int> FreeTableAsync(UpdateTable table);
-        Task<int> CleanTableAsync(CleanTable table);
+        Task<bool> FreeTableAsync(UpdateTable table);
+        Task<bool> CleanTableAsync(CleanTable table);
         byte[] GenerateTableQRCode(int tableNo);
         public Task<TableModel> SeeTableInfo(int tableNo);
         Task<IEnumerable<TableModel>> GetAllTable();
 
         Task<TableModel> GetMyBookings(int userId);
         Task<IEnumerable<TableModel>> GetMyAllBookings(int userId);
+        Task<bool> UpdateTableInfoAsync(TableModel table, int userid);
     }
 
     public interface ITableDLL
     {
         Task<TableModel> CreateTableAsync(TableModel table);
-        Task<int> UpdateTableAsync(UpdateTable table);
+        Task<bool> UpdateTableAsync(UpdateTable table);
         Task<TableModel> GetTableByTableNoAsync(int tableNo);
         Task<TableModel> GetTableByIdAsync(int tableId);
 
@@ -33,5 +34,6 @@ namespace HotelManagementSystem.Interfaces.TableInterface
 
         Task<TableModel> GetMyBookings(int userId);
         Task<IEnumerable<TableModel>> GetMyAllBookings(int userId);
+        Task<bool> UpdateTableInfoAsync(TableModel table);
     }
 }

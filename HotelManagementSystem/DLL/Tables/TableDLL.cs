@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Interfaces.UserInterfaces;
@@ -69,7 +70,7 @@ namespace HotelManagementSystem.DLL.Tables
             return await connection.QuerySingleOrDefaultAsync<TableModel>(sql, new { TableNo = tableNo });
         }
 
-        public async Task<int> UpdateTableAsync(UpdateTable table)
+        public async Task<bool> UpdateTableAsync(UpdateTable table)
         {
             using var connection = _dbConnection.CreateConnection();
 
@@ -77,11 +78,14 @@ namespace HotelManagementSystem.DLL.Tables
             // 2. Switched UpdatedAt to execute directly using SQL's GETUTCDATE()
             var sql = @"UPDATE Tables 
                         SET [Status] = @Status, 
+                            TableNo=@TableNo
                             UpdatedAt = GETUTCDATE(), 
                             UpdatedBy = @UpdatedBy 
                         WHERE TableNo = @TableNo;";
 
-            return await connection.ExecuteAsync(sql, table);
+            var result =  await connection.ExecuteAsync(sql, table);
+
+            return result > 0;
         }
 
         public async Task<int> BookTableAsync(TableModel table)
@@ -113,8 +117,36 @@ namespace HotelManagementSystem.DLL.Tables
         public async Task<IEnumerable<TableModel>> GetAllTable()
         {
             using var connection = _dbConnection.CreateConnection();
-            string sql = @"SELECT * FROM Tables WHERE Status = 'Available' AND IsActive = 1"; 
+            string sql = @"SELECT * FROM Tables;"; 
             return await connection.QueryAsync<TableModel>(sql);
+        }
+        public async Task<bool> UpdateTableInfoAsync(TableModel table)
+        {
+            const string sql = @"
+UPDATE Tables
+SET
+    TableNo = @TableNo,
+    Capacity = @Capacity,
+    Status = @Status,
+    IsActive = @IsActive,
+    UpdatedAt = @UpdatedAt,
+    UpdatedBy = @UpdatedBy
+WHERE TableId = @TableId; ";
+
+            using var conn = _dbConnection.CreateConnection();
+
+            int rowsAffected = await conn.ExecuteAsync(sql, new
+            {
+               TableId = table.TableId,
+                TableNo=table.TableNo,
+                Capacity=table.Capacity,
+                Status = table.Status,
+                IsActive = table.IsActive,
+                UpdatedAt=table.UpdatedAt,
+                UpdatedBy=table.UpdatedBy
+            });
+
+            return rowsAffected > 0;
         }
     }
 }

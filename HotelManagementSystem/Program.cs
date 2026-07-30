@@ -157,6 +157,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Register IHttpContextAccessor so services can access HttpContext when needed
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

@@ -5,11 +5,12 @@ namespace HotelManagementSystem.Interfaces.DinningInterface
 {
     public interface IDinningService
     {
-        Task<int> CreateDinningAsync(int tableId,int userId);
+        Task<int> CreateDinningAsync(int tableId, int userId);
 
         // Recommended addition for your upcoming Service Layer implementation:
         Task<int> EndDinningSessionAsync(int sessionId);
         Task<int> GetDiningSession(int userId);
+        Task<IEnumerable<DinningModel>> GetAllDinningSessions();
 
     }
 
@@ -24,5 +25,7 @@ namespace HotelManagementSystem.Interfaces.DinningInterface
 
         // Fixed parameter name to remain consistent across implementations
         Task<DinningModel> GetDinningBySessionId(int id);
+
+        Task<IEnumerable<DinningModel>> GetAllDinningSessions();
     }
 }

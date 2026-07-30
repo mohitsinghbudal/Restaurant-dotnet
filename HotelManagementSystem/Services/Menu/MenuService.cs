@@ -62,9 +62,9 @@ namespace HotelManagementSystem.Services.MenuService
             }
         }
 
-        public async Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync(int page)
+        public async Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync()
         {
-            const int pageSize = 10;
+            //const int pageSize = 10;
 
             var menus = (await _menuDLL.GetAllMenuItemsAsync()).ToList();
             var recipes = (await _recipeDLL.GetAllRecipesAsync()).ToList();
@@ -121,9 +121,8 @@ namespace HotelManagementSystem.Services.MenuService
 
 
 
-            return menus
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+            return menus;
+                
         }
 
         public async Task<int> GetAvailablePortionsAsync(int menuId)

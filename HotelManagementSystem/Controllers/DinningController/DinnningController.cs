@@ -19,6 +19,28 @@ namespace HotelManagementSystem.Controllers.DinningController
         {
             _dinningService = dinningService;
         }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllDinningSessions()
+        {
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            if (roleId != 5)
+            {
+                return Unauthorized("User Not Allowed");
+            }
+            try
+            {
+                var sessions = await _dinningService.GetAllDinningSessions();
+
+                return Ok( new{ message = "success",Sessions = sessions});
+
+            }catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+        }
 
         [HttpGet("user")]
         public async Task<IActionResult> GetSessionByUserId()
@@ -28,7 +50,7 @@ namespace HotelManagementSystem.Controllers.DinningController
 
             if (roleId != 1)
             {
-                return Unauthorized("Please login first");
+                return Unauthorized("User not allowed");
             }
             try
             {

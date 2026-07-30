@@ -9,7 +9,7 @@ namespace HotelManagementSystem.Interfaces.OrderInterface
         Task<bool> UpdateOrderAsync(Order order );
         Task<Order> CreateOrderAsync(Order order);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
-
+        Task<bool> UpdateOrderQuantityAsync(int quantity, int orderId);
 
     }
     public interface IOrderService
@@ -22,7 +22,7 @@ namespace HotelManagementSystem.Interfaces.OrderInterface
         Task<bool> UpdateOrderAsync(Order order, int currentOrderedQuantity, int newOrderedQuantity, int menuId);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
         Task<bool> CancelOrderAsync(int orderId, int userId);
-
+        Task<bool> UpdateOrderQuantityAsync(int quantity, int orderId, int menuId);
 
     }
 }

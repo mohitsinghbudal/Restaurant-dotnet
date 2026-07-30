@@ -1,10 +1,12 @@
-﻿using HotelManagementSystem.Interfaces.DatabaseConnection;
+﻿using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.DinningInterface;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Interfaces.UserInterfaces;
 using HotelManagementSystem.Models.Table;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using QRCoder;
 using System;
 using System.Threading.Tasks;
@@ -16,12 +18,14 @@ namespace HotelManagementSystem.Services.Table
         private readonly ITableDLL _table;
         private readonly IUserDLL _userDLL;
         private readonly IDinningService _din;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TableService(ITableDLL table, IUserDLL userDLL, IDinningService din)
+        public TableService(ITableDLL table, IUserDLL userDLL, IDinningService din, IHttpContextAccessor httpContextAccessor)
         {
             _table = table;
             _userDLL = userDLL;
             _din = din;
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
         public async Task<TableModel> GetMyBookings(int userId)
         {
@@ -31,13 +35,13 @@ namespace HotelManagementSystem.Services.Table
         {
             return await _table.GetMyAllBookings(userId);
         }
-        public async Task<TableModel> CreateTableAsync(CreateTable table)
+        public async Task<TableModel> CreateTableAsync(CreateTable table, int userId)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
 
             var existingTable = await _table.GetTableByTableNoAsync(table.TableNo);
 
-            if (existingTable != null && existingTable.TableNo > 0)
+            if (existingTable != null && existingTable.TableNo == table.TableNo)
             {
                 throw new InvalidOperationException($"Table number {table.TableNo} already exists.");
             }
@@ -47,7 +51,7 @@ namespace HotelManagementSystem.Services.Table
                 TableNo = table.TableNo,
                 Capacity = table.Capacity,
                 Status = "Available",
-                CreatedBy = table.CreatedBy,
+                CreatedBy = userId,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             };
@@ -55,9 +59,23 @@ namespace HotelManagementSystem.Services.Table
             return await _table.CreateTableAsync(newTable);
         }
 
-        public async Task<int> UpdateTableAsync(UpdateTable table)
+        public async Task<bool> UpdateTableAsync(UpdateTable table,int tableId)
         {
+            var user = _httpContextAccessor?.HttpContext?.User;
+            if (user == null) throw new InvalidOperationException("Unable to determine current user from HttpContext.");
+
+            int userId = ClaimHelper.GetUserId(user);
+            int roleId = ClaimHelper.GetRoleId(user);
+
+            if (roleId != 5) throw new Exception("User not allowed");
+
             if (table == null) throw new ArgumentNullException(nameof(table));
+            var existingTable = await _table.GetTableByTableNoAsync(table.TableNo);
+
+            if(existingTable!=null && existingTable.TableId != tableId)
+            {
+                throw new Exception("table no already exists");
+            }
             return await _table.UpdateTableAsync(table);
         }
 
@@ -83,8 +101,8 @@ namespace HotelManagementSystem.Services.Table
 
             // 1. Double Assignment Protection: Handled internally inside TableDLL via AssignWaiterAsync
             existingTable.Status = "Occupied";
-            existingTable.UpdatedBy = userId;
-            existingTable.UpdatedAt = DateTime.UtcNow;
+            //existingTable.UpdatedBy = userId;
+            //existingTable.UpdatedAt = DateTime.UtcNow;
 
             // 2. Delegate to DLL which safely assigns the workload-based waiter
             var table = await _table.BookTableAsync(existingTable);
@@ -104,7 +122,7 @@ namespace HotelManagementSystem.Services.Table
             return sessionId;
         }
 
-        public async Task<int> FreeTableAsync(UpdateTable table)
+        public async Task<bool> FreeTableAsync(UpdateTable table)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
 
@@ -115,8 +133,7 @@ namespace HotelManagementSystem.Services.Table
                 throw new KeyNotFoundException($"Table number {table.TableNo} does not exist.");
             }
 
-            // FIX: Logical inversion. To FREE a table, it MUST be occupied. 
-            if (existingTable.Status == "Occupied")
+            if (existingTable.Status == "Available")
             {
                 throw new InvalidOperationException("Table is already available.");
             }
@@ -129,14 +146,14 @@ namespace HotelManagementSystem.Services.Table
             var updatedData = new UpdateTable
             {
                 TableNo = table.TableNo,
-                UpdatedBy = table.UpdatedBy,
+                //UpdatedBy = table.UpdatedBy,
                 Status = "Available" // Standard Restaurant Workflow: Available -> Occupied -> Cleaning -> 
             };
 
             return await _table.UpdateTableAsync(updatedData);
         }
 
-        public async Task<int> CleanTableAsync(CleanTable table)
+        public async Task<bool> CleanTableAsync(CleanTable table)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
 
@@ -164,7 +181,7 @@ namespace HotelManagementSystem.Services.Table
             var updatedData = new UpdateTable
             {
                 TableNo = table.tableno,
-                UpdatedBy = table.updatedby,
+                //UpdatedBy = table.updatedby,
                 Status = "Cleaning" // Once cleaning is done, it transitions back to Available
             };
 
@@ -194,6 +211,24 @@ namespace HotelManagementSystem.Services.Table
         public async Task<IEnumerable<TableModel>> GetAllTable()
         {
             return await _table.GetAllTable();
+        }
+
+        public async Task<bool> UpdateTableInfoAsync(TableModel table, int userId)
+        {
+            var existingTable = await _table.GetTableByIdAsync(table.TableNo);
+
+            if (existingTable == null) throw new Exception("table doesnot exits");
+
+
+            //existingTable.TableNo = table.TableNo;
+            existingTable.Status = table.Status;
+            existingTable.IsActive = table.IsActive;
+            existingTable.UpdatedAt = DateTime.UtcNow;
+            existingTable.Capacity = table.Capacity;
+            existingTable.UpdatedBy = userId;
+
+            return await _table.UpdateTableInfoAsync(existingTable);
+
         }
     }
 }

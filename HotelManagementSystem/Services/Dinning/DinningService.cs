@@ -97,5 +97,10 @@ namespace HotelManagementSystem.Services.Dinning
 
             return rowsAffected;
         }
+
+        public async Task<IEnumerable<DinningModel>> GetAllDinningSessions()
+        {
+            return await _dinningDLL.GetAllDinningSessions();
+        }
     }
 }

@@ -119,6 +119,8 @@ namespace HotelManagementSystem.Controllers.OrderController
             }
         }
 
+        
+
         [HttpPut("cancel")]
         public async Task<IActionResult> CancelOrderAsync([FromQuery] int OrderId )
         {
@@ -126,7 +128,7 @@ namespace HotelManagementSystem.Controllers.OrderController
             int userId = ClaimHelper.GetUserId(User);
             int roleId = ClaimHelper.GetRoleId(User);
 
-            if (roleId != 1)
+            if (roleId != 5)
                 return Unauthorized("user is not allowed");
 
             try
@@ -137,11 +139,33 @@ namespace HotelManagementSystem.Controllers.OrderController
 
                 return Ok(new { message = "sucessfull" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "server error" });
+                return BadRequest(new { message = "server error" + ex});
             }
         }
+
+        [HttpPut("updateQuantity")]
+        public async Task<IActionResult> UpdateOrderQuantity([FromQuery] int itemQuantity, [FromQuery] int orderId ,  [FromQuery] int menuId)
+        {
+            int userId = ClaimHelper.GetUserId(User);
+            int roleId = ClaimHelper.GetRoleId(User);
+
+            if (roleId != 5)
+                return Unauthorized("user is not allowed");
+
+            try
+            {
+                bool updateOrder = await _orderService.UpdateOrderQuantityAsync(itemQuantity,orderId, menuId);
+
+                return Ok(new { message = "sucessfull" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("server error" + ex );
+            }
+        }
+
         //    public async Task<IActionResult> CreateOrder([FromQuery] int menuId, [FromQuery] int quantity, [FromBody] Order order)
         //    {
 

@@ -1,6 +1,7 @@
 ﻿using HotelManagementSystem.Interfaces.Inventory;
 using HotelManagementSystem.Interfaces.MenuInterface;
 using HotelManagementSystem.Interfaces.OrderInterface;
+using HotelManagementSystem.Models.MenuItems;
 using HotelManagementSystem.Models.Order;
 
 namespace HotelManagementSystem.Services.OrderService
@@ -11,14 +12,16 @@ namespace HotelManagementSystem.Services.OrderService
         //private readonly IOrderItemService _orderItemService;
         private readonly IInventoryService _inventoryService;
         private readonly IMenuDLL _menuDLL;
+        private readonly IMenuServices _menuServices;
 
 
-        public OrderService(IOrderDLL orderDLL, IInventoryService inventoryService , IMenuDLL menuDLL)
+        public OrderService(IOrderDLL orderDLL, IInventoryService inventoryService , IMenuDLL menuDLL, IMenuServices menuServices)
         {
             _orderDLL = orderDLL;
             //_orderItemService = orderItemService;
             _inventoryService = inventoryService;
             _menuDLL = menuDLL;
+            _menuServices = menuServices;
         }
 
         public async Task<IEnumerable<Order>> GetAllOrdersAsync()
@@ -178,6 +181,7 @@ namespace HotelManagementSystem.Services.OrderService
                 existingOrder.OrderStatus = "Cancelled";
                 existingOrder.UpdatedBy = userId;
                 existingOrder.UpdatedAt = DateTime.UtcNow;
+                existingOrder.IsActive = false;
 
                 return await _orderDLL.UpdateOrderAsync(existingOrder);
 
@@ -186,6 +190,42 @@ namespace HotelManagementSystem.Services.OrderService
                 throw new Exception("please enter valid order");
             }
             
+        }
+        public async Task<bool> UpdateOrderQuantityAsync(int quantity, int orderId, int menuId)
+        {
+            if (quantity <= 0)
+                throw new Exception("Quantity must be greater than zero.");
+
+            var menuitem = await _menuServices.GetMenuItemByIdAsync(menuId);
+
+            var order = await _orderDLL.GetOrderByIdAsync(orderId);
+
+            if (order.OrderStatus == "Ready" || order.OrderStatus == "Completed"|| order.OrderStatus == "Cancelled") throw new Exception("order is already prepared create new order");
+
+            if (menuitem == null)
+                throw new Exception("Menu item not found.");
+
+            if (!menuitem.IsAvailable)
+                throw new Exception("Menu item is not available.");
+
+            var menu = (await _menuServices.GetAllMenuItemsAsync())
+                    .FirstOrDefault(m => m.MenuId == menuId);
+
+            Console.WriteLine(menu);
+
+            if (menu == null)
+                throw new Exception("Menu item not found.");
+
+            if (!menu.IsAvailable)
+                throw new Exception("Menu item is not available.");
+
+            if (menu.AvailablePortions < quantity)
+                throw new Exception($"Only {menu.AvailablePortions} portion(s) are available.");
+
+
+
+
+            return await _orderDLL.UpdateOrderQuantityAsync(quantity, orderId);
         }
     }
 }

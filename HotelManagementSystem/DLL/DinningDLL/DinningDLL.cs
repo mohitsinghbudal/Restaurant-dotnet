@@ -16,6 +16,15 @@ namespace HotelManagementSystem.DLL.DinningDLL
             _dbconn = dbconn;
         }
 
+        public async Task<IEnumerable<DinningModel>> GetAllDinningSessions()
+        {
+            using var connection = _dbconn.CreateConnection();
+
+            var sql = "SELECT * FROM DinningSessions";
+
+            return await connection.QueryAsync<DinningModel>(sql);
+        }
+
         public async Task<int> GetDiningSession(int userId)
         {
             using var connection = _dbconn.CreateConnection();
