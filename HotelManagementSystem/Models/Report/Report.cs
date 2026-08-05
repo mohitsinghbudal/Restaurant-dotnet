@@ -24,5 +24,14 @@
     {
         public decimal TotalRevenue { get; set; }
         public int TotalOrders { get; set; }
+        public int CustomersServed { get; set; }    
+        public decimal AverageBill { get; set; }
+    }
+
+    public class TopCustomer
+    {
+        public int UserId { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public decimal TotalSpent { get; set; }
     }
 }

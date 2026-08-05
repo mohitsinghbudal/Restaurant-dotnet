@@ -22,12 +22,11 @@ namespace HotelManagementSystem.Controllers.DinningController
         [HttpGet("all")]
         public async Task<IActionResult> GetAllDinningSessions()
         {
-            int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 5)
+            //int userId = ClaimHelper.GetUserId(User);
+            //var roleId = ClaimHelper.GetRoleId(User);
+            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
             {
-                return Unauthorized("User Not Allowed");
+                throw new Exception("User not allowed");
             }
             try
             {

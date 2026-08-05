@@ -92,7 +92,14 @@ namespace HotelManagementSystem.DLL.BillDLL
             return rowsAffected > 0;
         }
     
+        public async Task<IEnumerable<Bill>> GetBillAsync()
+        {
+            using var conn = _dbConn.CreateConnection();
 
+            string sql = @"SELECT * FROM Bills;";
+
+            return await conn.QueryAsync<Bill>(sql);
+        }
     }
 
 }

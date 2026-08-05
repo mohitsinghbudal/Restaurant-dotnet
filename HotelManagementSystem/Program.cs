@@ -1,6 +1,7 @@
 using HotelManagementSystem.Controllers.CategoryController;
 using HotelManagementSystem.DLL.AssignWaiterDLL;
 using HotelManagementSystem.DLL.BillDLL;
+using HotelManagementSystem.DLL.CartDLL;
 using HotelManagementSystem.DLL.CategoryDLL;
 using HotelManagementSystem.DLL.DinningDLL;
 using HotelManagementSystem.DLL.InventoryDLL;
@@ -14,6 +15,7 @@ using HotelManagementSystem.DLL.Tables;
 using HotelManagementSystem.DLL.UnitDLL;
 using HotelManagementSystem.DLL.Users;
 using HotelManagementSystem.Helper.JWT;
+using HotelManagementSystem.Interfaces;
 using HotelManagementSystem.Interfaces.BillInterface;
 using HotelManagementSystem.Interfaces.CategoryInterface;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
@@ -33,6 +35,7 @@ using HotelManagementSystem.Interfaces.Units;
 using HotelManagementSystem.Interfaces.User;
 using HotelManagementSystem.Interfaces.UserInterfaces;
 using HotelManagementSystem.Services.BillService;
+using HotelManagementSystem.Services.CartService;
 using HotelManagementSystem.Services.Categories;
 using HotelManagementSystem.Services.CategoryService;
 using HotelManagementSystem.Services.Dinning;
@@ -85,6 +88,8 @@ builder.Services.AddScoped<IOrderItemDLL, OrderItemDLL>();
 builder.Services.AddScoped<IBillDLL, BillDLL>();
 builder.Services.AddScoped<IReportDLL, ReportDLL>();
 builder.Services.AddScoped<IPaymentDLL, PaymentDLL>();
+builder.Services.AddScoped<ICartDLL, CartDLL>();
+
 
 // For Service layer
 builder.Services.AddScoped<IUserService, UserServices>();
@@ -97,6 +102,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ISubCategoryService, SubCategoryServices>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICartService, CartService>();
 // Register BillService as a scoped service and enable IHttpClientFactory so
 // the service can create HttpClient instances without being registered as a
 // typed HttpClient. This ensures other scoped dependencies (like IPaymentDLL)

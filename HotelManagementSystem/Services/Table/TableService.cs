@@ -65,9 +65,8 @@ namespace HotelManagementSystem.Services.Table
             if (user == null) throw new InvalidOperationException("Unable to determine current user from HttpContext.");
 
             int userId = ClaimHelper.GetUserId(user);
-            int roleId = ClaimHelper.GetRoleId(user);
 
-            if (roleId != 5) throw new Exception("User not allowed");
+            if (!user.IsInRole("Admin")) throw new Exception("User not allowed");
 
             if (table == null) throw new ArgumentNullException(nameof(table));
             var existingTable = await _table.GetTableByTableNoAsync(table.TableNo);
@@ -215,12 +214,22 @@ namespace HotelManagementSystem.Services.Table
 
         public async Task<bool> UpdateTableInfoAsync(TableModel table, int userId)
         {
-            var existingTable = await _table.GetTableByIdAsync(table.TableNo);
+            var existingTable = await _table.GetTableByIdAsync(table.TableId);
 
             if (existingTable == null) throw new Exception("table doesnot exits");
 
+            if (existingTable.TableNo != table.TableNo)
+            {
+                var checktableno = await _table.GetTableByNo(table.TableNo);
 
-            //existingTable.TableNo = table.TableNo;
+                if (checktableno != null && checktableno.TableId != existingTable.TableId )
+                {
+                    throw new Exception("table no already exists.");
+                }
+                existingTable.TableNo = table.TableNo;
+            }
+           
+            
             existingTable.Status = table.Status;
             existingTable.IsActive = table.IsActive;
             existingTable.UpdatedAt = DateTime.UtcNow;
@@ -229,6 +238,10 @@ namespace HotelManagementSystem.Services.Table
 
             return await _table.UpdateTableInfoAsync(existingTable);
 
+        }
+        public async Task<bool> DeleteTableAsync(int tableId, int userid)
+        {
+            return await _table.DeleteTableAsync(tableId, userid);
         }
     }
 }

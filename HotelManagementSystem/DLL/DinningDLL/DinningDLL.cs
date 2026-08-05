@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.DinningInterface;
 using HotelManagementSystem.Models.Dinning;
@@ -92,7 +93,7 @@ namespace HotelManagementSystem.DLL.DinningDLL
 
             return await connection.QuerySingleOrDefaultAsync<DinningModel>(sql, new { SessionId = id });
         }
-
+       
         //public async Task<int> GetDinningsesssionbytableno(int id)
         //{
         //    using var connection = _dbconn.CreateConnection();

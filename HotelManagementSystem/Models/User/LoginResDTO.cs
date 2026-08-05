@@ -4,6 +4,6 @@
     {
         public string token { get; set; } = string.Empty;
         public int userId { get; set; }
-        public int roleId { get; set; }
+        public List<int> roles { get; set; }
     }
 }

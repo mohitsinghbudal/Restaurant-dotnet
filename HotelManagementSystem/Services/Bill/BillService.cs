@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
+using HotelManagementSystem.Interfaces.DinningInterface;
 
 namespace HotelManagementSystem.Services.BillService
 {
@@ -20,7 +21,8 @@ namespace HotelManagementSystem.Services.BillService
         private readonly IConfiguration _config;
         private readonly IPaymentDLL _paymentDLL;
         private readonly HttpClient _httpClient;
-        public BillService(IBillDLL billDLL, IOrderDLL orderDLL, IConfiguration config, IHttpClientFactory httpClientFactory, IPaymentDLL paymentDLL)
+        private readonly IDinningService _dinningService;
+        public BillService(IBillDLL billDLL, IOrderDLL orderDLL, IConfiguration config, IHttpClientFactory httpClientFactory, IPaymentDLL paymentDLL, IDinningService dinningService)
         {
             _billDLL = billDLL;
             _orderDLL = orderDLL;
@@ -28,6 +30,7 @@ namespace HotelManagementSystem.Services.BillService
             // Create a HttpClient from the factory to avoid lifetime mismatches
             _httpClient = httpClientFactory.CreateClient();
             _paymentDLL = paymentDLL;
+            _dinningService = dinningService;
         }
 
         public async Task<Bill> ViewBillAsync(int sessionId)
@@ -71,6 +74,7 @@ namespace HotelManagementSystem.Services.BillService
             if (sessionId <= 0) throw new ArgumentException("Invalid Session ID.");
             if (subTotalAmount < 0) throw new ArgumentException("Subtotal cannot be negative.");
 
+            await _dinningService.EndDinningSessionAsync(sessionId);
             // 1. Math Calculation Blocks
             decimal discountAmount = subTotalAmount * (discountPercentage / 100m);
             decimal taxableAmount = subTotalAmount - discountAmount;
@@ -283,6 +287,11 @@ namespace HotelManagementSystem.Services.BillService
             using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey));
             byte[] hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(message));
             return Convert.ToBase64String(hash);
+        }
+
+        public async Task<IEnumerable<Bill>> GetBillAsync()
+        {
+            return await _billDLL.GetBillAsync();
         }
     }
 }

@@ -24,5 +24,9 @@ namespace HotelManagementSystem.Services.PaymentService
         {
             return await _paydll.GetPaymentByUuidAsync(transactionUuid);
         }
+        public async Task<IEnumerable<Payment>> GetALLPaymentsAsync()
+        {
+            return await _paydll.GetALLPaymentsAsync();
+        }
     }
 }

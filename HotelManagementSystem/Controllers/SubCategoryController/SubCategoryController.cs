@@ -1,3 +1,4 @@
+using HotelManagementSystem.Helper.ClaimHelper;
 using HotelManagementSystem.Interfaces.SubCategoryInterface;
 using HotelManagementSystem.Models.Categories;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,8 @@ namespace HotelManagementSystem.Controllers.SubCategoryController
         {
             if (subCategory == null)
                 return BadRequest(new { message = "Invalid data payload." });
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
 
             try
             {
@@ -94,6 +97,8 @@ namespace HotelManagementSystem.Controllers.SubCategoryController
         {
             if (subCategory == null || subCategory.SubCategoryId <= 0)
                 return BadRequest(new { message = "Invalid update structural details." });
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
 
             try
             {
@@ -113,15 +118,19 @@ namespace HotelManagementSystem.Controllers.SubCategoryController
             }
         }
 
-        [HttpDelete("Delete/{id}/{deletedBy}")]
-        public async Task<IActionResult> DeleteSubCategory(int id, int deletedBy)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> DeleteSubCategory(int id)
         {
-            if (id <= 0 || deletedBy <= 0)
+            int userId = ClaimHelper.GetUserId(User);
+
+            if (id <= 0 )
                 return BadRequest(new { message = "Invalid parameters passed." });
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
 
             try
             {
-                var result = await _subCategoryService.DeleteSubCategoryAsync(id, deletedBy);
+                var result = await _subCategoryService.DeleteSubCategoryAsync(id, userId);
                 if (result <= 0)
                     return BadRequest(new { message = "Deletion operation was unsuccessful." });
 

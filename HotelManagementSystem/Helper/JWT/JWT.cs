@@ -1,5 +1,4 @@
-﻿using HotelManagementSystem.Interfaces.DatabaseConnection;
-using HotelManagementSystem.Interfaces.JWTInterface;
+﻿using HotelManagementSystem.Interfaces.JWTInterface;
 using HotelManagementSystem.Models.User;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,24 +9,32 @@ namespace HotelManagementSystem.Helper.JWT
 {
     public class JWT : IJWT
     {
-        
         private readonly IConfiguration _config;
-        public JWT (IConfiguration config)
+
+        public JWT(IConfiguration config)
         {
             _config = config;
         }
-        public string JwtToken(UserModel user)
+
+        public string JwtToken(UserModel user, List<int> roleIds)
         {
-            var claims = new[]
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+        new Claim(ClaimTypes.Name, string.IsNullOrWhiteSpace(user.MiddleName)
+            ? user.FirstName
+            : $"{user.FirstName} {user.MiddleName}"),
+        new Claim(ClaimTypes.Email, user.Email)
+    };
+
+            // Add integer Role IDs as string claims
+            foreach (var roleId in roleIds)
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.FirstName+user.MiddleName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim("RoleId", user.RoleId.ToString())
-            };
+                claims.Add(new Claim(ClaimTypes.Role, roleId.ToString()));
+            }
+
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    _config["Jwt:Key"]!));
+                Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
 
             var credentials = new SigningCredentials(
                 key,
@@ -40,9 +47,7 @@ namespace HotelManagementSystem.Helper.JWT
                 expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler()
-                .WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        
     }
 }

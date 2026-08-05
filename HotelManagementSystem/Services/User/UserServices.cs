@@ -5,6 +5,9 @@ using HotelManagementSystem.Interfaces.EmailInterface;
 using HotelManagementSystem.Interfaces.JWTInterface;
 using HotelManagementSystem.Interfaces.UserInterfaces;
 using HotelManagementSystem.Models.User;
+using Microsoft.AspNetCore.Identity;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Data;
 
 namespace HotelManagementSystem.Services.User
 {
@@ -21,9 +24,25 @@ namespace HotelManagementSystem.Services.User
             _emailService = emailService;
         }
 
-        public async Task<IEnumerable<UserModel>> GetUsersAsync()
+        public async Task<IEnumerable<UserModelShow>> GetUsersAsync()
         {
-            return await _userDLL.GetUsersAsync();
+            var users = await _userDLL.GetAllUserAsync();
+
+            var result = new List<UserModelShow>();
+
+            foreach (var user in users)
+            {
+               List<int> roles = await _userDLL.GetUserRoleIdsAsync(user.UserId);
+
+                result.Add(new UserModelShow
+                {
+                    
+                    User = user,
+                    Roles = roles
+                });
+            }
+
+            return result;
         }
 
         public async Task<int> SignUp(SignUpDTO user)
@@ -72,42 +91,40 @@ namespace HotelManagementSystem.Services.User
             
             return User;
         }
-        
+
         public async Task<LoginResDTO> Login(LoginDTO user)
         {
             var existingUser = await _userDLL.GetUserByEmailAsync(user.Email);
 
-            
-
             if (existingUser == null)
-            {
                 return null;
-            }
 
-            if (existingUser.IsEmailVerified != true) return null;
+            if (!existingUser.IsEmailVerified)
+                return null;
 
-            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(user.Password, existingUser.PasswordHash);
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(
+                user.Password,
+                existingUser.PasswordHash);
+
             if (!isPasswordValid)
-            {
                 return null;
-            }
 
-            var token = _jwt.JwtToken(existingUser);
-            if (token == null)
-            {
-                throw new Exception("token generation failed");
-            }
+            // Get all roles of the user
+            List<int> roles = await _userDLL.GetUserRoleIdsAsync(existingUser.UserId);
 
-            var res = new LoginResDTO
+            // Generate JWT with multiple roles
+            var token = _jwt.JwtToken(existingUser, roles);
+
+
+            if (string.IsNullOrEmpty(token))
+                throw new Exception("Token generation failed.");
+
+            return new LoginResDTO
             {
                 token = token,
                 userId = existingUser.UserId,
-                roleId = existingUser.RoleId
+                roles = roles
             };
-
-            
-
-            return res;
         }
 
         public async Task<bool> VerifyOTP(verifyotp req)
@@ -135,6 +152,46 @@ namespace HotelManagementSystem.Services.User
 
             
             else return false;
+        }
+
+        public async Task<bool> UpdateUser(UserModel user)
+        {
+            return await _userDLL.UpdateUser(user);
+        }
+        public async Task<bool> UpdateUserRolesAsync(int userId, IEnumerable<int> roleIds, int assignedBy)
+        {
+            var currentRoles = await _userDLL.GetUserRoleIdsAsync(userId);
+
+            var existingRoles = currentRoles.OrderBy(x => x).ToList();
+            var newRoles = roleIds.Distinct().OrderBy(x => x).ToList();
+
+            // Nothing changed
+            if (existingRoles.SequenceEqual(newRoles))
+                return true;
+
+            // Roles removed
+            var rolesToRemove = existingRoles.Except(newRoles).ToList();
+
+            // Roles added
+            var rolesToAdd = newRoles.Except(existingRoles).ToList();
+
+            if (rolesToRemove.Any())
+            {
+                await _userDLL.SoftDeleteRolesAsync(userId, rolesToRemove, assignedBy);
+            }
+
+            if (rolesToAdd.Any())
+            {
+                await _userDLL.AddRolesAsync(userId, rolesToAdd, assignedBy);
+            }
+
+            return true;
+        }
+
+        public async Task<bool> AssignRolesAsync(int userId, IEnumerable<int> roleIds, int adminUserId)
+        {
+            // Delegate to the existing UpdateUserRolesAsync implementation to avoid duplication
+            return await UpdateUserRolesAsync(userId, roleIds, adminUserId);
         }
     }
 }

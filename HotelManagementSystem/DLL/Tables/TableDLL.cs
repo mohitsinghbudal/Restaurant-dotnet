@@ -78,7 +78,7 @@ namespace HotelManagementSystem.DLL.Tables
             // 2. Switched UpdatedAt to execute directly using SQL's GETUTCDATE()
             var sql = @"UPDATE Tables 
                         SET [Status] = @Status, 
-                            TableNo=@TableNo
+                            TableNo=@TableNo,
                             UpdatedAt = GETUTCDATE(), 
                             UpdatedBy = @UpdatedBy 
                         WHERE TableNo = @TableNo;";
@@ -137,13 +137,37 @@ WHERE TableId = @TableId; ";
 
             int rowsAffected = await conn.ExecuteAsync(sql, new
             {
-               TableId = table.TableId,
+                TableId = table.TableId,
                 TableNo=table.TableNo,
                 Capacity=table.Capacity,
                 Status = table.Status,
                 IsActive = table.IsActive,
                 UpdatedAt=table.UpdatedAt,
                 UpdatedBy=table.UpdatedBy
+            });
+
+            return rowsAffected > 0;
+        }
+
+        public async Task<bool> DeleteTableAsync(int tableId, int deletedBy)
+        {
+            using var conn = _dbConnection.CreateConnection();
+
+            string sql = @"
+        UPDATE Tables
+        SET
+            Status = 'Deleted',
+            IsActive = 0,
+            DeletedBy = @DeletedBy,
+            DeletedAt = GETUTCDATE()
+        WHERE
+            TableId = @TableId
+            AND IsActive = 1;";
+
+            int rowsAffected = await conn.ExecuteAsync(sql, new
+            {
+                TableId = tableId,
+                DeletedBy = deletedBy
             });
 
             return rowsAffected > 0;

@@ -21,10 +21,9 @@ namespace HotelManagementSystem.Controllers.OrderController
         [HttpGet("all")]
         public async Task<IActionResult> GetAllOrdersAsync()
         {
-            int roleId = ClaimHelper.GetRoleId(User);
-            if (roleId != 5)
+            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
             {
-                return BadRequest(new { message = "User is not allowed" });
+                throw new Exception("User not allowed");
             }
             try
             {
@@ -103,8 +102,7 @@ namespace HotelManagementSystem.Controllers.OrderController
         public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderItems req)
         {
             int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-            if (roleId != 1)
+            if (!User.IsInRole("5"))
             {
                 return Unauthorized("Please login first");
             }
@@ -126,10 +124,9 @@ namespace HotelManagementSystem.Controllers.OrderController
         {
 
             int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 5)
-                return Unauthorized("user is not allowed");
+            
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
 
             try
             {   
@@ -149,10 +146,8 @@ namespace HotelManagementSystem.Controllers.OrderController
         public async Task<IActionResult> UpdateOrderQuantity([FromQuery] int itemQuantity, [FromQuery] int orderId ,  [FromQuery] int menuId)
         {
             int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 5)
-                return Unauthorized("user is not allowed");
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
 
             try
             {

@@ -45,6 +45,10 @@ namespace HotelManagementSystem.Controllers.RecipeController
         [HttpPost]
         public async Task<IActionResult> CreateRecipe([FromBody] Recipe recipe)
         {
+            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            {
+                throw new Exception("User not allowed");
+            }
             var createdRecipe = await _recipeService.CreateRecipeAsync(recipe);
 
             return Ok(new
@@ -58,6 +62,10 @@ namespace HotelManagementSystem.Controllers.RecipeController
         [HttpPut]
         public async Task<IActionResult> UpdateRecipe([FromBody] Recipe recipe)
         {
+            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            {
+                throw new Exception("User not allowed");
+            }
             var result = await _recipeService.UpdateRecipeAsync(recipe);
 
             if (result == 0)
@@ -78,6 +86,10 @@ namespace HotelManagementSystem.Controllers.RecipeController
         [HttpDelete("{recipeId}")]
         public async Task<IActionResult> DeleteRecipe(int recipeId)
         {
+            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            {
+                throw new Exception("User not allowed");
+            }
             var result = await _recipeService.DeleteRecipeAsync(recipeId);
 
             if (result == 0)

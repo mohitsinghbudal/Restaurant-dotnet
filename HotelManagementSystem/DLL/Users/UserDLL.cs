@@ -1,7 +1,9 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.UserInterfaces;
 using HotelManagementSystem.Models.User;
+using System.Data;
 using static QRCoder.PayloadGenerator;
 
 namespace HotelManagementSystem.DLL.Users
@@ -26,14 +28,38 @@ namespace HotelManagementSystem.DLL.Users
             return await connection.QueryAsync<UserModel>(sql);
         }
 
-        public async Task<UserModel?> GetUserByEmailAsync(string email)
+        public async Task<IEnumerable<UserModel>> GetAllUserAsync()
         {
             using var connection = _dbConnection.CreateConnection();
 
             const string sql = @"
-                SELECT *
-                FROM Users
-                WHERE Email = @Email;";
+                SELECT
+    UserId,
+    FirstName,
+    MiddleName,
+    LastName,
+    Email,
+    PhoneNo,
+    IsActive,
+    CreatedAt,
+    UpdatedAt,
+    EmailOtp,
+    OtpExpiry,
+    IsEmailVerified    
+FROM Users";
+
+            return await connection.QueryAsync<UserModel>(
+                sql);
+        }
+        public async Task<UserModel> GetUserByEmailAsync(string email)
+        {
+            using var connection = _dbConnection.CreateConnection();
+
+            const string sql = @"
+                SELECT
+    *
+FROM Users
+WHERE Email = @Email;";
 
             return await connection.QuerySingleOrDefaultAsync<UserModel>(
                 sql,
@@ -46,10 +72,10 @@ namespace HotelManagementSystem.DLL.Users
 
             const string sql = @"
                 INSERT INTO Users
-(FirstName,MiddleName,LastName,PhoneNo,Email,PasswordHash,RoleId,IsActive,CreatedAt
+(FirstName,MiddleName,LastName,PhoneNo,Email,PasswordHash,IsActive,CreatedAt
 )
 VALUES
-(@FirstName,@MiddleName,@LastName,@PhoneNo,@Email,@PasswordHash,@RoleId,@IsActive,@CreatedAt
+(@FirstName,@MiddleName,@LastName,@PhoneNo,@Email,@PasswordHash,@IsActive,@CreatedAt
 )";
 
             return await connection.ExecuteAsync(sql, user);
@@ -59,35 +85,38 @@ VALUES
         {
             using var conn = _dbConnection.CreateConnection();
 
-           
             var sql = @"
         SELECT TOP 1
-            u.UserId,
-            u.FirstName,
-            COUNT(d.SessionId) AS ActiveSessions
+            u.UserId
         FROM Users u
-        LEFT JOIN Tables t 
+        INNER JOIN UserRoles ur
+            ON u.UserId = ur.UserId
+        LEFT JOIN Tables t
             ON u.UserId = t.WaiterId
-        LEFT JOIN DinningSessions d 
+        LEFT JOIN DinningSessions d
             ON d.TableId = t.TableId
             AND d.SessionStatus <> 'Completed'
             AND d.UpdatedAt > DATEADD(HOUR, -6, GETUTCDATE())
-        WHERE u.RoleId = 2  
-          AND u.IsActive = 1
-        GROUP BY 
-            u.UserId, 
-            u.FirstName
-        ORDER BY 
-            ActiveSessions ASC, 
+        WHERE
+            ur.RoleId = @RoleId
+            AND ur.IsDeleted = 0
+            AND u.IsActive = 1
+        GROUP BY
+            u.UserId
+        ORDER BY
+            COUNT(d.SessionId) ASC,
             u.UserId ASC;";
 
-            // Use <dynamic> so Dapper can implicitly map the properties without needing a new class
-            var waiter = await conn.QueryFirstOrDefaultAsync<dynamic>(sql);
+            const int WaiterRoleId = 2;
 
-            if (waiter == null)
+            int? waiterId = await conn.QueryFirstOrDefaultAsync<int?>(
+                sql,
+                new { RoleId = WaiterRoleId });
+
+            if (!waiterId.HasValue)
                 throw new InvalidOperationException("No active waiters found in the system.");
 
-            return (int)waiter.UserId;
+            return waiterId.Value;
         }
 
         public async Task<bool> VerifyOtpUpdate(string email)
@@ -112,6 +141,151 @@ VALUES
             }catch(Exception ex)
             {
                 return false;
+            }
+        }
+
+        public async Task<List<int>> GetUserRoleIdsAsync(int userId)
+        {
+            using var conn = _dbConnection.CreateConnection();
+
+            // Fixed SQL string formatting with proper spacing
+            string sql = @"
+        SELECT RoleId 
+        FROM UserRoles 
+        WHERE UserId = @UserId 
+          AND IsDeleted = 0;";
+
+            var roles = await conn.QueryAsync<int>(sql, new { UserId = userId });
+
+            return roles.ToList();
+        }
+
+        public async Task SoftDeleteRolesAsync(int userId, IEnumerable<int> roleIds, int deletedBy)
+        {
+            using var conn = _dbConnection.CreateConnection();
+
+            string sql = @"
+        UPDATE UserRoles
+        SET
+            IsDeleted = 1,
+            DeletedAt = @DeletedAt,
+            DeletedBy = @DeletedBy
+        WHERE UserId = @UserId
+          AND RoleId IN @RoleIds
+          AND IsDeleted = 0;";
+
+            await conn.ExecuteAsync(sql, new
+            {
+                UserId = userId,
+                RoleIds = roleIds,
+                DeletedAt = DateTime.UtcNow,
+                DeletedBy = deletedBy
+            });
+        }
+        public async Task AddRolesAsync(int userId, IEnumerable<int> roleIds, int assignedBy)
+        {
+            using var conn = _dbConnection.CreateConnection();
+
+            string sql = @"
+        INSERT INTO UserRoles
+        (
+            UserId,
+            RoleId,
+            AssignedAt,
+            AssignedBy,
+            IsDeleted
+        )
+        VALUES
+        (
+            @UserId,
+            @RoleId,
+            @AssignedAt,
+            @AssignedBy,
+            0
+        );";
+
+            var parameters = roleIds.Select(roleId => new
+            {
+                UserId = userId,
+                RoleId = roleId,
+                AssignedAt = DateTime.UtcNow,
+                AssignedBy = assignedBy
+            });
+
+            await conn.ExecuteAsync(sql, parameters);
+        }
+        public async Task<bool> UpdateUser(UserModel user)
+        {
+            using var conn = _dbConnection.CreateConnection();
+
+            string sql = @"
+        UPDATE [Users]
+        SET 
+            FirstName = @FirstName,
+            MiddleName = @MiddleName,
+            LastName = @LastName,
+            Email = @Email,
+            PhoneNo = @PhoneNo,
+            IsActive = @IsActive,
+            IsEmailVerified = @IsEmailVerified,
+            UpdatedAt = GETUTCDATE()
+        WHERE UserId = @UserId;";
+
+            int rowsAffected = await conn.ExecuteAsync(sql, new
+            {
+                user.UserId,
+                user.FirstName,
+                user.MiddleName,
+                user.LastName,
+                user.Email,
+                user.PhoneNo,
+                user.IsActive,
+                user.IsEmailVerified
+            });
+
+            return rowsAffected > 0;
+        }
+
+        public async Task<bool> UpdateUserRolesAsync(int userId, IEnumerable<int> roleIds, int assignedBy)
+        {
+            using var conn = _dbConnection.CreateConnection();
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+            }
+
+            using var transaction = conn.BeginTransaction();
+
+            try
+            {
+                // 1. Delete current role mappings
+                string deleteSql = "DELETE FROM UserRoles WHERE UserId = @UserId;";
+                await conn.ExecuteAsync(deleteSql, new { UserId = userId }, transaction);
+
+                // 2. Insert new role mappings
+                if (roleIds != null && roleIds.Any())
+                {
+                    string insertSql = @"
+                    INSERT INTO UserRoles (UserId, RoleId, AssignedAt, AssignedBy)
+                    VALUES (@UserId, @RoleId, GETDATE(), @AssignedBy);";
+
+                    var roleParameters = roleIds.Distinct().Select(roleId => new
+                    {
+                        UserId = userId,
+                        RoleId = roleId,
+                        AssignedBy = assignedBy
+                    });
+
+                    await conn.ExecuteAsync(insertSql, roleParameters, transaction);
+                }
+
+                transaction.Commit();
+                return true;
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
             }
         }
     }

@@ -18,6 +18,8 @@ namespace HotelManagementSystem.Controllers.UnitsController
         [HttpGet]
         public async Task<IActionResult> GetAllUnits()
         {
+            if (!User.IsInRole("5"))
+                throw new System.Exception("User not allowed");
             var units = await _unitServices.GetAllUnitsAsync();
             return Ok(units);
         }
@@ -27,6 +29,9 @@ namespace HotelManagementSystem.Controllers.UnitsController
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (!User.IsInRole("5"))
+                throw new System.Exception("User not allowed");
 
             var result = await _unitServices.AddUnitAsync(unit);
 
@@ -41,6 +46,9 @@ namespace HotelManagementSystem.Controllers.UnitsController
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (!User.IsInRole("5"))
+                throw new System.Exception("User not allowed");
 
             var result = await _unitServices.UpdateUnitAsync(unit);
 

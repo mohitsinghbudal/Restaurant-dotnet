@@ -20,6 +20,8 @@ namespace HotelManagementSystem.Controllers.CategoryController
         [HttpPost("Create")]
         public async Task<IActionResult> CreateCategory([FromBody] Category category)
         {
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
             if (category == null)
                 return BadRequest(new { message = "Invalid category payload." });
 
@@ -73,6 +75,8 @@ namespace HotelManagementSystem.Controllers.CategoryController
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateCategory([FromBody] Category category)
         {
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
             if (category == null || category.CategoryId <= 0)
                 return BadRequest(new { message = "Invalid update payload details." });
 
@@ -97,6 +101,8 @@ namespace HotelManagementSystem.Controllers.CategoryController
         [HttpDelete("Delete/{id}/{deletedBy}")]
         public async Task<IActionResult> DeleteCategory(int id, int deletedBy)
         {
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
             if (id <= 0 || deletedBy <= 0)
                 return BadRequest(new { message = "Invalid deletion parameters provided." });
 

@@ -8,7 +8,6 @@ namespace HotelManagementSystem.Models.User
         public int UserId { get; set; }
         public string MiddleName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public int RoleId { get; set; }
         public string Email { get; set; } = string.Empty;
         public string? PasswordHash { get; set; }
         public string PhoneNo { get; set; } = string.Empty;
@@ -18,5 +17,13 @@ namespace HotelManagementSystem.Models.User
         public string EmailOtp { get; set; } = string.Empty;
         public DateTime OtpExpiry { get; set; }
         public bool IsEmailVerified { get; set; }
+
+       
+    }
+    public class UserModelShow
+    {
+        public UserModel User { get; set; } = new();
+
+        public List<int> Roles { get; set; } = new();
     }
 }

@@ -27,5 +27,6 @@ namespace HotelManagementSystem.Interfaces.DinningInterface
         Task<DinningModel> GetDinningBySessionId(int id);
 
         Task<IEnumerable<DinningModel>> GetAllDinningSessions();
+       
     }
 }

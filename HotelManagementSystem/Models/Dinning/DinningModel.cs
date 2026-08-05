@@ -14,6 +14,7 @@
 
         public DateTime? UpdatedAt { get; set; }
         public int CreatedBy { get; set; }
+        public int EndedBy { get; set; }
 
     }
 }

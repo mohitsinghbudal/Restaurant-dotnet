@@ -13,9 +13,8 @@ namespace HotelManagementSystem.Interfaces.BillInterface
         Task<bool> VerifyAndProcessEsewaCallbackAsync(string encodedData);
         //Task<IActionResult> PayBillEsewaSuccess(object obj);
 
-
-
         Task<Bill> ViewBillAsync(int sessionId);
+        Task<IEnumerable<Bill>> GetBillAsync();
     }
     public interface IBillDLL
     {
@@ -25,5 +24,6 @@ namespace HotelManagementSystem.Interfaces.BillInterface
         Task<Bill?> GetBillByNoAsync(long billNo);
         Task<Bill> ViewBillBySessionId(int sessionId);
         Task<bool> MarkBillAsPaidAsync(int billid);
+        Task<IEnumerable<Bill>> GetBillAsync();
     }
 }

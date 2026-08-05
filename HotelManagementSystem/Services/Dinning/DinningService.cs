@@ -1,10 +1,12 @@
-﻿using HotelManagementSystem.Interfaces.DinningInterface;
+﻿using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Interfaces.DinningInterface;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Models.Dinning;
 using HotelManagementSystem.Models.Table;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace HotelManagementSystem.Services.Dinning
 {
@@ -12,11 +14,13 @@ namespace HotelManagementSystem.Services.Dinning
     {
         private readonly IDinningDLL _dinningDLL;
         private readonly ITableDLL _tableDLL;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public DinningService(IDinningDLL dinningDLL, ITableDLL tableDLL)
+        public DinningService(IDinningDLL dinningDLL, ITableDLL tableDLL, IHttpContextAccessor httpContextAccessor )
         {
             _dinningDLL = dinningDLL;
             _tableDLL = tableDLL;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<int> GetDiningSession(int userId)
@@ -55,6 +59,13 @@ namespace HotelManagementSystem.Services.Dinning
         // FIX: Changed return type contract from DinningModel to int to match your interface
         public async Task<int> EndDinningSessionAsync(int sessionId)
         {
+            var claimPrincipal = _httpContextAccessor.HttpContext?.User;
+            if (claimPrincipal == null)
+            {
+                throw new Exception("user is not allowed");
+            }
+            int userId = ClaimHelper.GetUserId(claimPrincipal);
+
             // 1. Fetch the active dining session
             var getDinning = await _dinningDLL.GetDinningByIdAsync(sessionId);
             if (getDinning == null)
@@ -78,6 +89,7 @@ namespace HotelManagementSystem.Services.Dinning
             getDinning.SessionStatus = "Closed"; // Consolidated casing format
             getDinning.EndAt = DateTime.UtcNow;
             getDinning.UpdatedAt = DateTime.UtcNow;
+            getDinning.EndedBy = userId;
 
             // 4. Persist the session close down to the database
             var rowsAffected = await _dinningDLL.EndDinningSessionAsync(getDinning);
@@ -102,5 +114,8 @@ namespace HotelManagementSystem.Services.Dinning
         {
             return await _dinningDLL.GetAllDinningSessions();
         }
+
+
+
     }
 }

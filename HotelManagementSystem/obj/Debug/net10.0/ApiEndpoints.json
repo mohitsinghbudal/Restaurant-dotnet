@@ -19,6 +19,16 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
+    "Method": "GetBillAsync",
+    "RelativePath": "api/Bill/all-bills",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
     "Method": "GetBillPreview",
     "RelativePath": "api/Bill/calculate-bill/{sessionId}",
     "HttpMethod": "GET",
@@ -124,6 +134,70 @@
         "Name": "sessionId",
         "Type": "System.Int32",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.CartController.CartController",
+    "Method": "GetMyCart",
+    "RelativePath": "api/Cart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.CartController.CartController",
+    "Method": "AddToCart",
+    "RelativePath": "api/Cart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cart",
+        "Type": "HotelManagementSystem.Models.Cart.Cart",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.CartController.CartController",
+    "Method": "UpdateCart",
+    "RelativePath": "api/Cart",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cart",
+        "Type": "HotelManagementSystem.Models.Cart.Cart",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.CartController.CartController",
+    "Method": "DeleteCart",
+    "RelativePath": "api/Cart",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cartId",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -545,6 +619,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "HotelManagementSystem.Controllers.PaymentController.PaymentController",
+    "Method": "GetALLPaymentsAsync",
+    "RelativePath": "api/Payment/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "HotelManagementSystem.Controllers.RecipeController.RecipeController",
     "Method": "GetAllRecipes",
     "RelativePath": "api/Recipe",
@@ -629,6 +713,69 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "HotelManagementSystem.Controllers.ReportController.ReportController",
+    "Method": "GetFinancialReport",
+    "RelativePath": "api/Report/get-total-financial-order",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.ReportController.ReportController",
+    "Method": "GetTopCustomer",
+    "RelativePath": "api/Report/top-customer",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.ReportController.ReportController",
+    "Method": "GetTopSellingItem",
+    "RelativePath": "api/Report/top-selling-item",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "HotelManagementSystem.Controllers.SubCategoryController.SubCategoryController",
     "Method": "GetSubCategoryById",
     "RelativePath": "api/SubCategory/{id}",
@@ -689,18 +836,13 @@
   {
     "ContainingType": "HotelManagementSystem.Controllers.SubCategoryController.SubCategoryController",
     "Method": "DeleteSubCategory",
-    "RelativePath": "api/SubCategory/Delete/{id}/{deletedBy}",
+    "RelativePath": "api/SubCategory/Delete/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "deletedBy",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -735,6 +877,22 @@
         "Name": "table",
         "Type": "HotelManagementSystem.Models.Table.TableModel",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "DeleteTableAsync",
+    "RelativePath": "api/Table",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tableId",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -926,7 +1084,7 @@
   {
     "ContainingType": "HotelManagementSystem.Controllers.usercontroller.UserController",
     "Method": "GetUserAsync",
-    "RelativePath": "api/User",
+    "RelativePath": "api/User/all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -960,6 +1118,38 @@
       {
         "Name": "user",
         "Type": "HotelManagementSystem.Models.User.SignUpDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.usercontroller.UserController",
+    "Method": "updateuserprofile",
+    "RelativePath": "api/User/update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "HotelManagementSystem.Models.User.UserModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.usercontroller.UserController",
+    "Method": "UpdateRoles",
+    "RelativePath": "api/User/update-roles",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "HotelManagementSystem.Models.AssignRolesDto",
         "IsRequired": true
       }
     ],

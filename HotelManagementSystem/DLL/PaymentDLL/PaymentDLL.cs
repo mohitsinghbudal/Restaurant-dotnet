@@ -74,5 +74,14 @@ namespace HotelManagementSystem.DLL.PaymentDLL
 
             return await conn.QueryFirstOrDefaultAsync<Payment>(sql, new { TransactionUuid = transactionUuid });
         }
+
+        public async Task<IEnumerable<Payment>> GetALLPaymentsAsync()
+        {
+            using var conn = _dbConn.CreateConnection();
+
+            string sql = @"SELECT * FROM Payment;";
+
+            return await conn.QueryAsync<Payment>(sql);
+        }
     }
 }

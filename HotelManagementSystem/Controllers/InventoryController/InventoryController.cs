@@ -39,11 +39,11 @@ namespace HotelManagementSystem.Controllers.InventoryController
         [HttpGet("admin")]
         public async Task<IActionResult> GetAllInventoryItems([FromQuery] int page)
         {
-            
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 5)
-                return Unauthorized("user allowed is not allowed");
+          
+            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            {
+                throw new Exception("User not allowed");
+            }
 
             try
             {
@@ -88,10 +88,8 @@ namespace HotelManagementSystem.Controllers.InventoryController
         public async Task<IActionResult> AddInventoryItem([FromBody] InventoryItem inventoryItem)
         {
             int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 5)
-                return Unauthorized("user allowed is not an customer");
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
             try
             {
                 
@@ -115,11 +113,9 @@ namespace HotelManagementSystem.Controllers.InventoryController
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInventoryItem( [FromBody] InventoryItem inventoryItem)
         {
-            int userId = ClaimHelper.GetUserId(User);   
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 5)
-                return Unauthorized("user allowed is not an customer");
+            int userId = ClaimHelper.GetUserId(User);
+            if (!User.IsInRole("5"))
+                throw new Exception("User not allowed");
             try
             {
 
@@ -149,10 +145,8 @@ namespace HotelManagementSystem.Controllers.InventoryController
             try
             {
                 int userId = ClaimHelper.GetUserId(User);
-                int roleId = ClaimHelper.GetRoleId(User);
-
-                if (roleId != 5)
-                    return Unauthorized("user allowed is not an customer");
+                if (!User.IsInRole("5"))
+                    throw new Exception("User not allowed");
 
                 await _inventoryService.DeleteInventoryItem(id, userId);
                 return Ok(new

@@ -2,11 +2,14 @@
 using HotelManagementSystem.Interfaces.BillInterface;
 using HotelManagementSystem.Models.Bill;
 using HotelManagementSystem.Models.Payment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HotelManagementSystem.Controllers.BillController
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BillController : ControllerBase
@@ -98,6 +101,7 @@ namespace HotelManagementSystem.Controllers.BillController
         [HttpGet("esewa-callback")]
         public async Task<IActionResult> EsewaCallback([FromQuery] string data)
         {
+
             if (string.IsNullOrEmpty(data))
             {
                 return BadRequest(new { message = "Missing response data." });
@@ -144,6 +148,24 @@ namespace HotelManagementSystem.Controllers.BillController
             return BadRequest(new { status = "Failed", message = "Payment was canceled or failed at eSewa portal." });
         }
 
+        [HttpGet("all-bills")]
+        public async Task<IActionResult> GetBillAsync()
+        {
+            try
+            {
+                if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+                {
+                    throw new Exception("User not allowed");
+                }
+
+                var bills = await _billService.GetBillAsync();
+
+                return Ok(new { allbills = bills });
+            }catch(Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
         //public async Task<IActionResult> PayBill([FromBody] BillPaymentRequest request)
         //{

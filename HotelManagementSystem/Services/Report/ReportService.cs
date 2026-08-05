@@ -1,5 +1,8 @@
-﻿using HotelManagementSystem.Interfaces.Report;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office.CustomUI;
+using HotelManagementSystem.DLL.ReportDLL;
+using HotelManagementSystem.Interfaces.Report;
+using HotelManagementSystem.Models.Report;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,17 +11,17 @@ namespace HotelManagementSystem.Services.Report
 {
     public class ReportService : IReportService
     {
-        private readonly IReportDLL _service;
+        private readonly IReportDLL _reportDLL;
 
-        public ReportService(IReportDLL service)
+        public ReportService(IReportDLL reportDLL)
         {
-            _service = service;
+            _reportDLL = reportDLL;
         }
 
         public async Task<byte[]> ExportDashboardReportAsync()
         {
             // 1. Retrieve the analytical datasets from the data layer via Dapper
-            var data = await _service.GetDashboardReportAsync();
+            var data = await _reportDLL.GetDashboardReportAsync();
 
             // 2. Initialize the ClosedXML Workbook
             using (var workbook = new XLWorkbook())
@@ -201,6 +204,38 @@ namespace HotelManagementSystem.Services.Report
                     return stream.ToArray();
                 }
             }
+
+
+        }
+
+        public async Task<IEnumerable<TopItemReport>> GetMostOrderedItems(
+    DateTime startDate,
+    DateTime endDate)
+        {
+            if (startDate > endDate)
+                throw new Exception("Start date cannot be greater than End date.");
+
+            return await _reportDLL.GetMostOrderedItems(startDate, endDate);
+        }
+
+        public async Task<IEnumerable<TopCustomer>> TopCustomer(
+            DateTime startDate,
+            DateTime endDate)
+        {
+            if (startDate > endDate)
+                throw new Exception("Start date cannot be greater than End date.");
+
+            return await _reportDLL.TopCustomer(startDate, endDate);
+        }
+
+        public async Task<FinancialSummary> GetRevenueByOrder(
+            DateTime startDate,
+            DateTime endDate)
+        {
+            if (startDate > endDate)
+                throw new Exception("Start date cannot be greater than End date.");
+
+            return await _reportDLL.GetRevenueByOrder(startDate, endDate);
         }
     }
 }

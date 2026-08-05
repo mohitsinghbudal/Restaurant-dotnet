@@ -28,7 +28,8 @@ namespace HotelManagementSystem.Controllers.MenuController
             
             try    
 
-            {var menus = await _menuService.GetAllMenuItemsAsync();
+            {
+                var menus = await _menuService.GetAllMenuItemsAsync();
 
                 return Ok(new
                 {
@@ -90,11 +91,10 @@ namespace HotelManagementSystem.Controllers.MenuController
         {
 
             int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
 
-            if(roleId != 5 )
+            if (!User.IsInRole("5")) 
             {
-                return BadRequest("Unauthorized");
+                throw new Exception("User not allowed");
             }
             
             if (menu == null)

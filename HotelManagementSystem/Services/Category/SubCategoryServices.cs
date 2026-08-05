@@ -60,6 +60,7 @@ namespace HotelManagementSystem.Services.Categories
 
             // 2. Verify parent category context remains valid
             var parentCategory = await _categoryDLL.GetCategoryByIdAsync(subCategory.CategoryId);
+
             if (parentCategory == null)
             {
                 throw new KeyNotFoundException($"Cannot update SubCategory. Target Category with ID {subCategory.CategoryId} does not exist.");

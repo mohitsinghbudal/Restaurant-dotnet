@@ -35,23 +35,28 @@ namespace HotelManagementSystem.Controllers.TableController
         [HttpGet("get-all-table")]
         public async Task<IActionResult> GetAllTable()
         {
-
-            var tables = _tableService.GetAllTable();
-            return Ok(new { message = "this is tables info", alltables = tables });
+            try
+            {
+                var tables = _tableService.GetAllTable();
+                return Ok(new { message = "this is tables info", alltables = tables });
+            }catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
+            
         }
 
 
         [HttpGet("my-active-bookings")]
         public async Task<IActionResult> getmybookings()
         {
-            int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-            if (roleId != 1)
-            {
-                return Unauthorized("Please login first");
-            }
+            
             try
             {
+                int userId = ClaimHelper.GetUserId(User);
+                if (!User.IsInRole("1"))
+                {
+                    throw new Exception("user not allowed");
+                }
                 var items = await _tableService.GetMyBookings(userId);
                 return Ok(new { bookings = items });
             }
@@ -65,12 +70,11 @@ namespace HotelManagementSystem.Controllers.TableController
         public async Task<IActionResult> getallbookings()
         {
             int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 1)
+            if (!User.IsInRole("1"))
             {
-                return Unauthorized("Please login first");
+                throw new Exception("user not allowed");
             }
+
 
             try
             {
@@ -85,6 +89,9 @@ namespace HotelManagementSystem.Controllers.TableController
         [HttpGet("get-single-table-info")]
         public async Task<IActionResult> SeeTableInfo([FromQuery] int tableNo)
         {
+
+
+
             var table = await _tableService.SeeTableInfo(tableNo);
 
             if (table == null)
@@ -109,10 +116,11 @@ namespace HotelManagementSystem.Controllers.TableController
             if (table == null) return BadRequest(new { message = "Invalid table data payload." });
 
             int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 5)
-                return Unauthorized("user not allowed ");
+            //var roleId = ClaimHelper.GetRoleId(User);
+            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            {
+                throw new Exception("User not allowed");
+            }
 
             try
             {
@@ -139,10 +147,10 @@ namespace HotelManagementSystem.Controllers.TableController
         {
 
             int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
-
-            if (roleId != 5)
-                    return Unauthorized("user is not allowed" );
+            if (!User.IsInRole("1"))
+            {
+                throw new Exception("user not allowed");
+            }
 
 
             if (tableNo <=0) return BadRequest(new { message = "Invalid update payload." });
@@ -174,10 +182,12 @@ namespace HotelManagementSystem.Controllers.TableController
             //int userId = ClaimHelper.GetUserId(User);
             //int roleId = ClaimHelper.GetRoleId(User);
 
-            
+
 
             //if (roleId != 2)
             //    return Unauthorized("user not allowed is not an waiter")
+
+
 
 
             try
@@ -248,7 +258,25 @@ namespace HotelManagementSystem.Controllers.TableController
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(new {message = ex});
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTableAsync([FromQuery] int tableId)
+        {
+            try
+            {
+                int userId = ClaimHelper.GetUserId(User);
+                int roleId = ClaimHelper.GetRoleId(User);
+                if (roleId != 5) throw new Exception("User is not allowed");
+
+                var result = await _tableService.DeleteTableAsync(tableId,userId);
+
+                return Ok(new { result = result });
+            }catch(Exception ex)
+            {
+                return BadRequest(new { message = ex });
             }
         }
     }
