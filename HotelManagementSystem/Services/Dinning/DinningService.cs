@@ -66,6 +66,7 @@ namespace HotelManagementSystem.Services.Dinning
             }
             int userId = ClaimHelper.GetUserId(claimPrincipal);
 
+            Console.WriteLine(userId);
             // 1. Fetch the active dining session
             var getDinning = await _dinningDLL.GetDinningByIdAsync(sessionId);
             if (getDinning == null)
@@ -114,7 +115,10 @@ namespace HotelManagementSystem.Services.Dinning
         {
             return await _dinningDLL.GetAllDinningSessions();
         }
-
+        public async Task<int?> GetMySessionId(int userId)
+        {
+            return await _dinningDLL.GetMySessionId(userId);
+        }
 
 
     }

@@ -11,6 +11,7 @@ namespace HotelManagementSystem.Interfaces.DinningInterface
         Task<int> EndDinningSessionAsync(int sessionId);
         Task<int> GetDiningSession(int userId);
         Task<IEnumerable<DinningModel>> GetAllDinningSessions();
+        Task<int?> GetMySessionId(int userId);
 
     }
 
@@ -27,6 +28,8 @@ namespace HotelManagementSystem.Interfaces.DinningInterface
         Task<DinningModel> GetDinningBySessionId(int id);
 
         Task<IEnumerable<DinningModel>> GetAllDinningSessions();
-       
+        Task<int?> GetMySessionId(int userId);
+
+
     }
 }

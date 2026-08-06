@@ -24,6 +24,14 @@ namespace HotelManagementSystem.DLL.CartDLL
             // Use QueryFirstOrDefaultAsync to return a single Cart object (or null)
             return await conn.QueryAsync<Cart>(sql, new { UserId = userID });
         }
+        public async Task<Cart?> GetCartAsync(int userID, int MenuId)
+        {
+            using var conn = _dbconn.CreateConnection();
+            string sql = @"SELECT * FROM Cart WHERE UserId = @UserId AND MenuId = @MenuId;";
+
+            // Use QueryFirstOrDefaultAsync to return a single Cart object (or null)
+            return await conn.QueryFirstOrDefaultAsync<Cart>(sql, new { UserId = userID ,MenuId = MenuId});
+        }
         public async Task<Cart?> GetMyCartByItemAsync(int cartId)
         {
             using var conn = _dbconn.CreateConnection();
@@ -50,20 +58,18 @@ namespace HotelManagementSystem.DLL.CartDLL
         UPDATE Cart 
         SET UpdatedAt = @UpdatedAt,
             Quantity = @Quantity
-        WHERE CartId = @CartId 
-        AND UserId = @UserId
-        AND MenuId = @MenuId";
+        WHERE CartId = @CartId;";
 
             int rowsAffected = await conn.ExecuteAsync(sql, cart);
             return rowsAffected > 0;
         }
 
-        public async Task<bool> DeleteCartAsync(int cartId, int userId)
+        public async Task<bool> DeleteCartAsync(int cartId)
         {
             using var conn = _dbconn.CreateConnection();
-            string sql = @"DELETE FROM Cart WHERE CartId = @Id AND UserId = @UserId;";
+            string sql = @"DELETE FROM Cart WHERE CartId = @Id";
 
-            int rowsAffected = await conn.ExecuteAsync(sql, new { Id = cartId, UserId = userId });
+            int rowsAffected = await conn.ExecuteAsync(sql, new { Id = cartId });
             return rowsAffected > 0;
         }
     }

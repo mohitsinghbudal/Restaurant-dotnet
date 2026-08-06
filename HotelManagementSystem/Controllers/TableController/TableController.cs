@@ -5,13 +5,8 @@ using HotelManagementSystem.Interfaces.DinningInterface;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Models.Table;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Bcpg;
-using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using YamlDotNet.Core.Tokens;
+
 
 namespace HotelManagementSystem.Controllers.TableController
 {
@@ -37,6 +32,7 @@ namespace HotelManagementSystem.Controllers.TableController
         {
             try
             {
+                
                 var tables = _tableService.GetAllTable();
                 return Ok(new { message = "this is tables info", alltables = tables });
             }catch(Exception ex){
@@ -57,7 +53,7 @@ namespace HotelManagementSystem.Controllers.TableController
                 {
                     throw new Exception("user not allowed");
                 }
-                var items = await _tableService.GetMyBookings(userId);
+                var items = await _tableService.GetMyAllBookings(userId);
                 return Ok(new { bookings = items });
             }
             catch (Exception ex)
@@ -80,7 +76,8 @@ namespace HotelManagementSystem.Controllers.TableController
             {
                 var items = await _tableService.GetMyAllBookings(userId);
                 return Ok(new { bookings = items });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -247,9 +244,10 @@ namespace HotelManagementSystem.Controllers.TableController
             try
             {
                 int userId = ClaimHelper.GetUserId(User);
-                int roleId = ClaimHelper.GetRoleId(User);
-
-                if (roleId != 5) throw new Exception("User not allowed");
+                if (!User.IsInRole("5"))
+                {
+                    throw new Exception("User not allowed");
+                }
 
 
 
@@ -266,7 +264,7 @@ namespace HotelManagementSystem.Controllers.TableController
         public async Task<IActionResult> DeleteTableAsync([FromQuery] int tableId)
         {
             try
-            {
+                {
                 int userId = ClaimHelper.GetUserId(User);
                 int roleId = ClaimHelper.GetRoleId(User);
                 if (roleId != 5) throw new Exception("User is not allowed");

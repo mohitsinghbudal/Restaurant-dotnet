@@ -77,8 +77,10 @@ namespace HotelManagementSystem.DLL.DinningDLL
             var sql = @"
                 UPDATE DinningSessions
                 SET EndAt = GETUTCDATE(),
+                    EndedBy =@EndedBy,
                     SessionStatus = @SessionStatus,
                     UpdatedAt = GETUTCDATE()
+
                 WHERE SessionId = @SessionId;";
 
             // ExecuteAsync returns the count of affected rows (should be 1 if successful)
@@ -93,7 +95,7 @@ namespace HotelManagementSystem.DLL.DinningDLL
 
             return await connection.QuerySingleOrDefaultAsync<DinningModel>(sql, new { SessionId = id });
         }
-       
+
         //public async Task<int> GetDinningsesssionbytableno(int id)
         //{
         //    using var connection = _dbconn.CreateConnection();
@@ -102,5 +104,15 @@ namespace HotelManagementSystem.DLL.DinningDLL
 
         //    return await connection.QuerySingleOrDefaultAsync<int>(sql, new { Id = id });
         //}
+
+        public async Task<int?> GetMySessionId(int userId)
+        {
+            using var connection = _dbconn.CreateConnection();
+            string sql = @"SELECT SessionId 
+                   FROM DinningSessions 
+                   WHERE CreatedBy = @UserId AND SessionStatus = 'Active';";
+
+            return await connection.QueryFirstOrDefaultAsync<int?>(sql, new { UserId = userId });
+        }
     }
 }

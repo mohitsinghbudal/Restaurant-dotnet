@@ -27,10 +27,7 @@ namespace HotelManagementSystem.Services.Table
             _din = din;
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
-        public async Task<TableModel> GetMyBookings(int userId)
-        {
-            return await _table.GetMyBookings(userId);
-        }
+      
         public async Task<IEnumerable<TableModel>> GetMyAllBookings(int userId)
         {
             return await _table.GetMyAllBookings(userId);
@@ -83,6 +80,14 @@ namespace HotelManagementSystem.Services.Table
             if (tableNo <=0) throw new ArgumentNullException(nameof(tableNo));
 
             var existingTable = await _table.GetTableByTableNoAsync(tableNo);
+            var allTables = await _table.GetAllTable();
+
+            foreach(var user in allTables)
+            {
+                if (user.UpdatedBy == userId)
+                    throw new Exception("User has already a booking");
+            }
+
 
             if (existingTable == null)
             {
@@ -100,8 +105,8 @@ namespace HotelManagementSystem.Services.Table
 
             // 1. Double Assignment Protection: Handled internally inside TableDLL via AssignWaiterAsync
             existingTable.Status = "Occupied";
-            //existingTable.UpdatedBy = userId;
-            //existingTable.UpdatedAt = DateTime.UtcNow;
+            existingTable.UpdatedBy = userId;
+            existingTable.UpdatedAt = DateTime.UtcNow;
 
             // 2. Delegate to DLL which safely assigns the workload-based waiter
             var table = await _table.BookTableAsync(existingTable);

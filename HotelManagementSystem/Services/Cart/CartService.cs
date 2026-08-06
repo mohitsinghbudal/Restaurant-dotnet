@@ -15,13 +15,13 @@ namespace HotelManagementSystem.Services.CartService
         {
             return await _cartDLL.GetMyCartAsync(userID);
         }
-        public async Task<Cart?> GetMyCartByItemAsync( int userID)
+        public async Task<Cart?> GetMyCartByItemAsync(int cartId)
         {
-            return await _cartDLL.GetMyCartByItemAsync(userID);
+            return await _cartDLL.GetMyCartByItemAsync(cartId);
         }
-        public async Task<bool> CreateCartAsync(Cart cart)
+        public async Task<bool> CreateCartAsync(Cart cart, int userID)
         {
-            var item = await _cartDLL.GetMyCartByItemAsync(cart.UserId );
+            var item = await _cartDLL.GetCartAsync(userID, cart.MenuId);
             if (item!=null)
             {
                 item.Quantity +=cart.Quantity;
@@ -43,23 +43,24 @@ namespace HotelManagementSystem.Services.CartService
         }
         public async Task<bool> UpdateCartAsync(Cart cart)
         {
-            var item = await _cartDLL.GetMyCartByItemAsync(cart.UserId);
-            if (item != null)
+            var item = await _cartDLL.GetMyCartByItemAsync(cart.CartId);
+            if (item == null)
             {
                 throw new Exception("Item doesnot exists");
                 return false;
             }
                 return await _cartDLL.UpdateCartAsync(cart);
         }
-        public async Task<bool> DeleteCartAsync(int cartId,int userId)
+        public async Task<bool> DeleteCartAsync(int cartId)
         {
-            var item = await _cartDLL.GetMyCartByItemAsync(userId);
+            var item = await _cartDLL.GetMyCartByItemAsync(cartId);
+
             if (item == null)
             {
                 throw new Exception("Item doesnot exists");
                 return false;
             }
-            return await _cartDLL.DeleteCartAsync(cartId, userId);
+            return await _cartDLL.DeleteCartAsync(cartId);
         }
     }
 }

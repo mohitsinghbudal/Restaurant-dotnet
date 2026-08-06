@@ -1,9 +1,10 @@
-﻿using HotelManagementSystem.Helper.ClaimHelper;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using HotelManagementSystem.Helper.ClaimHelper;
 using HotelManagementSystem.Interfaces.OrderInterface;
 using HotelManagementSystem.Models.Order;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HotelManagementSystem.Controllers.OrderController
 {
@@ -21,8 +22,9 @@ namespace HotelManagementSystem.Controllers.OrderController
         [HttpGet("all")]
         public async Task<IActionResult> GetAllOrdersAsync()
         {
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
-            {
+            if (!User.IsInRole("5")) 
+            { 
+
                 throw new Exception("User not allowed");
             }
             try
@@ -35,7 +37,25 @@ namespace HotelManagementSystem.Controllers.OrderController
                return BadRequest(new { message = "server error"+ex.Message });
             }
         }
-
+        [HttpGet("my-orders")]
+        public async Task<IActionResult> MyOrdersAsync(int SessionId)
+        {
+            var roles = User.FindAll(ClaimTypes.Role)
+                    .Select(c => c.Value)
+                    .ToList();
+            if (!User.IsInRole("1"))
+            {
+                throw new Exception("User not allowed");
+            }
+            try
+            {
+                var result = await _orderService.GetOrderBySessionId(SessionId);
+                return Ok(new { message = result });
+            }
+            catch (Exception ex) {
+                return BadRequest(new { message = "server error" + ex.Message });
+            }
+        }
 
         [HttpGet("orderbyid/{id}")]
         public async Task<IActionResult> GetOrderById(int id)

@@ -18,12 +18,7 @@ namespace HotelManagementSystem.DLL.Tables
             _userDLL = userDLL;
         }
         
-        public async Task<TableModel> GetMyBookings(int userId)
-        {
-            using var conn = _dbConnection.CreateConnection();
-            string sql = @"SELECT * FROM  Tables WHERE UpdatedBy = @Id AND IsActive = 1";
-            return await conn.QueryFirstOrDefaultAsync<TableModel>(sql, new {Id = userId});
-        }
+       
 
         public async Task<IEnumerable<TableModel>> GetMyAllBookings(int userId)
         {
@@ -80,7 +75,8 @@ namespace HotelManagementSystem.DLL.Tables
                         SET [Status] = @Status, 
                             TableNo=@TableNo,
                             UpdatedAt = GETUTCDATE(), 
-                            UpdatedBy = @UpdatedBy 
+                            UpdatedBy = @UpdatedBy
+                            
                         WHERE TableNo = @TableNo;";
 
             var result =  await connection.ExecuteAsync(sql, table);

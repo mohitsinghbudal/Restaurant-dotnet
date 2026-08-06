@@ -36,7 +36,11 @@ namespace HotelManagementSystem.Controllers.CartController
         [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] Cart cart)
         {
-            try{var result = await _cartService.CreateCartAsync(cart);
+            try{
+                int userId = Convert.ToInt32(cart.UserId);
+
+                
+                var result = await _cartService.CreateCartAsync(cart, userId);
             if (!result)
             {
                 return BadRequest();
@@ -56,7 +60,7 @@ namespace HotelManagementSystem.Controllers.CartController
             {
                 return BadRequest();
             }
-                return Ok();
+                return Ok("success");
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);
@@ -67,14 +71,18 @@ namespace HotelManagementSystem.Controllers.CartController
         public async Task<IActionResult> DeleteCart([FromQuery] int cartId)
         {
            try{
-                int UserId = ClaimHelper.GetUserId(User);
-                var result = await _cartService.DeleteCartAsync(cartId, UserId);
+
+                if (!User.IsInRole("1"))
+                {
+                    throw new Exception("User not allowed");
+                }
+                var result = await _cartService.DeleteCartAsync(cartId);
             
                 if (!result)
             {
                 return BadRequest();
             }
-                return Ok();
+                return Ok("success");
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);

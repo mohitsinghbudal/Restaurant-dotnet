@@ -325,6 +325,16 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.DinningController.DinningController",
+    "Method": "GetMySessionId",
+    "RelativePath": "api/Dinning/my-id",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.DinningController.DinningController",
     "Method": "GetSessionByUserId",
     "RelativePath": "api/Dinning/user",
     "HttpMethod": "GET",
@@ -522,6 +532,22 @@
     "Parameters": [
       {
         "Name": "OrderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.OrderController.OrderController",
+    "Method": "MyOrdersAsync",
+    "RelativePath": "api/Order/my-orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SessionId",
         "Type": "System.Int32",
         "IsRequired": false
       }

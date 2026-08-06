@@ -14,7 +14,7 @@ namespace HotelManagementSystem.Interfaces.TableInterface
         public Task<TableModel> SeeTableInfo(int tableNo);
         Task<IEnumerable<TableModel>> GetAllTable();
 
-        Task<TableModel> GetMyBookings(int userId);
+        //Task<TableModel> GetMyBookings(int userId);
         Task<IEnumerable<TableModel>> GetMyAllBookings(int userId);
         Task<bool> UpdateTableInfoAsync(TableModel table, int userid);
         Task<bool> DeleteTableAsync(int tableid, int userid);
@@ -33,7 +33,7 @@ namespace HotelManagementSystem.Interfaces.TableInterface
         Task<TableModel> GetTableByNo(int Id);
         Task<IEnumerable<TableModel>> GetAllTable();
 
-        Task<TableModel> GetMyBookings(int userId);
+        //Task<TableModel> GetMyBookings(int userId);
         Task<IEnumerable<TableModel>> GetMyAllBookings(int userId);
         Task<bool> UpdateTableInfoAsync(TableModel table);
         Task<bool> DeleteTableAsync(int tableid, int userid);

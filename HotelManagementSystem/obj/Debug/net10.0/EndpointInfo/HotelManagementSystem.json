@@ -1319,6 +1319,43 @@
         ]
       }
     },
+    "/api/Order/my-orders": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "operationId": "Order_MyOrders",
+        "parameters": [
+          {
+            "name": "SessionId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/api/Order/orderbyid/{id}": {
       "get": {
         "tags": [
@@ -2029,6 +2066,32 @@
             "x-position": 1
           }
         ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Dinning/my-id": {
+      "get": {
+        "tags": [
+          "Dinning"
+        ],
+        "operationId": "Dinning_GetMySessionId",
         "responses": {
           "200": {
             "description": "",

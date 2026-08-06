@@ -44,13 +44,21 @@ namespace HotelManagementSystem.Controllers.DinningController
         [HttpGet("user")]
         public async Task<IActionResult> GetSessionByUserId()
         {
-            int userId = ClaimHelper.GetUserId(User);
-            int roleId = ClaimHelper.GetRoleId(User);
+            //if (User?.Identity?.IsAuthenticated != true)
+            //    return Unauthorized("User is not authenticated.");
 
-            if (roleId != 1)
-            {
-                return Unauthorized("User not allowed");
-            }
+            //var roleClaim = User.FindFirst("RoleId");
+            //if (roleClaim == null || string.IsNullOrWhiteSpace(roleClaim.Value))
+            //    return Unauthorized("RoleId claim is missing or empty.");
+
+            int userId = ClaimHelper.GetUserId(User);
+            //int roleId = ClaimHelper.GetRoleId(User);
+
+            //if (roleId != 1)
+            //{
+            //    return Unauthorized("User not allowed");
+            //}
+
             try
             {
                 if (userId <= 0)
@@ -108,6 +116,8 @@ namespace HotelManagementSystem.Controllers.DinningController
 
             try
             {
+
+
                 var rowsAffected = await _dinningService.EndDinningSessionAsync(sessionId);
 
                 if (rowsAffected <= 0)
@@ -124,6 +134,19 @@ namespace HotelManagementSystem.Controllers.DinningController
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An internal server error occurred.", details = ex.Message });
+            }
+        }
+        [HttpGet("my-id")]
+        public async Task<IActionResult> GetMySessionId()
+        {
+            try
+            {
+                int userId = ClaimHelper.GetUserId(User);
+                int? id = await _dinningService.GetMySessionId(userId);
+                return Ok(new { SessionId = id });
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
