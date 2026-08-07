@@ -248,5 +248,9 @@ namespace HotelManagementSystem.Services.Table
         {
             return await _table.DeleteTableAsync(tableId, userid);
         }
+        public async Task<TableModel?> GetAssignedTableAsync(int userId)
+        {
+            return await _table.GetAssignedTableAsync(userId);
+        }
     }
 }

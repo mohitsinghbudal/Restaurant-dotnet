@@ -43,7 +43,7 @@ namespace HotelManagementSystem.Controllers.OrderController
             var roles = User.FindAll(ClaimTypes.Role)
                     .Select(c => c.Value)
                     .ToList();
-            if (!User.IsInRole("1"))
+            if (!User.IsInRole("1")&&!User.IsInRole("2"))
             {
                 throw new Exception("User not allowed");
             }
@@ -122,7 +122,8 @@ namespace HotelManagementSystem.Controllers.OrderController
         public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderItems req)
         {
             int userId = ClaimHelper.GetUserId(User);
-            if (!User.IsInRole("5"))
+            if (!User.IsInRole("1")&&!User.IsInRole("5") &&!User.IsInRole("2"))
+                
             {
                 return Unauthorized("Please login first");
             }
@@ -139,34 +140,34 @@ namespace HotelManagementSystem.Controllers.OrderController
 
         
 
-        [HttpPut("cancel")]
-        public async Task<IActionResult> CancelOrderAsync([FromQuery] int OrderId )
-        {
-
-            int userId = ClaimHelper.GetUserId(User);
-            
-            if (!User.IsInRole("5"))
-                throw new Exception("User not allowed");
-
-            try
-            {   
-                if (OrderId <= 0) throw new Exception("Please enter the order values");
-
-                bool cancelorder = await _orderService.CancelOrderAsync(OrderId, userId);
-
-                return Ok(new { message = "sucessfull" });
-            }
-            catch (Exception ex)
+            [HttpPut("cancel")]
+            public async Task<IActionResult> CancelOrderAsync([FromQuery] int OrderId )
             {
-                return BadRequest(new { message = "server error" + ex});
+
+                int userId = ClaimHelper.GetUserId(User);
+            
+                if (!User.IsInRole("5")&&!User.IsInRole("1"))
+                    throw new Exception("User not allowed");
+
+                try
+                {   
+                    if (OrderId <= 0) throw new Exception("Please enter the order values");
+
+                    bool cancelorder = await _orderService.CancelOrderAsync(OrderId, userId);
+
+                    return Ok(new { message = "sucessfull" });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { message = "server error" + ex});
+                }
             }
-        }
 
         [HttpPut("updateQuantity")]
         public async Task<IActionResult> UpdateOrderQuantity([FromQuery] int itemQuantity, [FromQuery] int orderId ,  [FromQuery] int menuId)
         {
             int userId = ClaimHelper.GetUserId(User);
-            if (!User.IsInRole("5"))
+            if (!User.IsInRole("5")&& !User.IsInRole("2"))
                 throw new Exception("User not allowed");
 
             try

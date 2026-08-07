@@ -40,26 +40,37 @@ namespace HotelManagementSystem.Services.BillService
 
         public async Task<Bill> CalculateSessionTotalAsync(int sessionId, decimal discountPercentage)
         {
-   
             var orders = await _orderDLL.GetOrderBySessionId(sessionId);
 
-
-            decimal grandTotal = orders.Sum(o => o.TotalAmount);
+            // 1. Block bill generation if any order is still in progress (e.g., Placed, Preparing)
             
+            bool hasIncompleteOrders = orders.Any(order =>
+                !order.OrderStatus.Equals("Completed", StringComparison.OrdinalIgnoreCase) &&
+                !order.OrderStatus.Equals("Cancelled", StringComparison.OrdinalIgnoreCase)
+            );
+
+            if (hasIncompleteOrders)
+            {
+                throw new Exception("Current dining session orders are not completed");
+            }
+
+            // 2. Calculate grandTotal by including ONLY Completed orders (ignoring Cancelled)
+            decimal grandTotal = orders
+                .Where(order => order.OrderStatus.Equals("Completed", StringComparison.OrdinalIgnoreCase))
+                .Sum(o => o.TotalAmount);
+
+            // 3. Financial calculations
             decimal discount = grandTotal * (discountPercentage / 100M);
-
             decimal taxableAmount = grandTotal - discount;
-
             decimal tax = taxableAmount * 0.13M;
-
-            decimal TotalAmount = taxableAmount + tax;
+            decimal totalAmount = taxableAmount + tax;
 
             var newBill = new Bill
             {
                 BillNo = long.Parse(DateTime.UtcNow.ToString("yyMMddHHmmss")),
                 SessionId = sessionId,
-                GrandTotal = grandTotal, 
-                TotalAmount = TotalAmount, 
+                GrandTotal = grandTotal,
+                TotalAmount = totalAmount,
                 TaxAmount = tax,
                 DiscountAmount = discount,
                 PaymentMethod = "any",

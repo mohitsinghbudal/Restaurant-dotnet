@@ -309,6 +309,22 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.DinningController.DinningController",
+    "Method": "GetCustomerSessionId",
+    "RelativePath": "api/Dinning/customer-waiter-id",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tableId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.DinningController.DinningController",
     "Method": "EndDinningSession",
     "RelativePath": "api/Dinning/End-Session/{sessionId}",
     "HttpMethod": "POST",
@@ -991,6 +1007,16 @@
     "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
     "Method": "GetAllTable",
     "RelativePath": "api/Table/get-all-table",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.TableController.TableController",
+    "Method": "GetAssignedTable",
+    "RelativePath": "api/Table/get-assigned-table",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

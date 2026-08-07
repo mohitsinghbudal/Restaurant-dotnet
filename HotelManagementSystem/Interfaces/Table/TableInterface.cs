@@ -18,6 +18,7 @@ namespace HotelManagementSystem.Interfaces.TableInterface
         Task<IEnumerable<TableModel>> GetMyAllBookings(int userId);
         Task<bool> UpdateTableInfoAsync(TableModel table, int userid);
         Task<bool> DeleteTableAsync(int tableid, int userid);
+        Task<TableModel?> GetAssignedTableAsync(int userId);
     }
 
     public interface ITableDLL
@@ -37,5 +38,6 @@ namespace HotelManagementSystem.Interfaces.TableInterface
         Task<IEnumerable<TableModel>> GetMyAllBookings(int userId);
         Task<bool> UpdateTableInfoAsync(TableModel table);
         Task<bool> DeleteTableAsync(int tableid, int userid);
+        Task<TableModel?> GetAssignedTableAsync(int userId);
     }
 }

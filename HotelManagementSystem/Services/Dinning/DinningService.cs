@@ -119,7 +119,10 @@ namespace HotelManagementSystem.Services.Dinning
         {
             return await _dinningDLL.GetMySessionId(userId);
         }
-
+        public async Task<int> GetCustomerId(int tableId)
+        {
+            return await _dinningDLL.GetCustomerId(tableId);
+        }
 
     }
 }

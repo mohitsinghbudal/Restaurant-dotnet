@@ -114,5 +114,17 @@ namespace HotelManagementSystem.DLL.DinningDLL
 
             return await connection.QueryFirstOrDefaultAsync<int?>(sql, new { UserId = userId });
         }
+        public async Task<int> GetCustomerId(int tableId)
+        {
+            using var connection = _dbconn.CreateConnection();
+
+            string sql = @"
+        SELECT SessionId
+        FROM DinningSessions
+        WHERE TableId = @TableId
+          AND SessionStatus = 'Active';";
+
+            return await connection.ExecuteScalarAsync<int>(sql, new { TableId = tableId });
+        }
     }
 }

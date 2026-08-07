@@ -141,6 +141,11 @@ namespace HotelManagementSystem.Controllers.DinningController
         {
             try
             {
+                if (!User.IsInRole("1"))
+                {
+                    throw new Exception("User not allowed");
+                }
+
                 int userId = ClaimHelper.GetUserId(User);
                 int? id = await _dinningService.GetMySessionId(userId);
                 return Ok(new { SessionId = id });
@@ -149,5 +154,25 @@ namespace HotelManagementSystem.Controllers.DinningController
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("customer-waiter-id")]
+        public async Task<IActionResult> GetCustomerSessionId([FromQuery] int tableId)
+        {
+            try
+            {
+                if (!User.IsInRole("2")) 
+                {
+                    throw new Exception("User not allowed");
+                }
+                int id = await _dinningService.GetCustomerId(tableId);
+                return Ok(new { SessionId = id });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("error occured" +ex.Message );
+            }
+        }
+        
     }
 }

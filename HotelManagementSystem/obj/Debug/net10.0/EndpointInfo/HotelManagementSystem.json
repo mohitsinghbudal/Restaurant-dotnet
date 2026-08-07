@@ -742,6 +742,32 @@
         ]
       }
     },
+    "/api/Table/get-assigned-table": {
+      "get": {
+        "tags": [
+          "Table"
+        ],
+        "operationId": "Table_GetAssignedTable",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/api/SubCategory/Create": {
       "post": {
         "tags": [
@@ -2092,6 +2118,43 @@
           "Dinning"
         ],
         "operationId": "Dinning_GetMySessionId",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Dinning/customer-waiter-id": {
+      "get": {
+        "tags": [
+          "Dinning"
+        ],
+        "operationId": "Dinning_GetCustomerSessionId",
+        "parameters": [
+          {
+            "name": "tableId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",

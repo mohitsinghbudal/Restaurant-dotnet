@@ -4,6 +4,7 @@ using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Interfaces.UserInterfaces;
 using HotelManagementSystem.Models.Table;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSystem.DLL.Tables
 {
@@ -168,5 +169,18 @@ WHERE TableId = @TableId; ";
 
             return rowsAffected > 0;
         }
+        public async Task<TableModel?> GetAssignedTableAsync(int userId)
+        {
+            using var connection = _dbConnection.CreateConnection();
+
+            const string sql = @"
+        SELECT * 
+        FROM ""Tables"" 
+        WHERE ""WaiterId"" = @UserId 
+          AND ""Status"" <> 'Available';";
+
+            return await connection.QueryFirstOrDefaultAsync<TableModel>(sql, new { UserId = userId });
+        }
+
     }
 }

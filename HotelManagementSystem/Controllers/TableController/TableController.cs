@@ -277,6 +277,20 @@ namespace HotelManagementSystem.Controllers.TableController
                 return BadRequest(new { message = ex });
             }
         }
+
+        [HttpGet("get-assigned-table")]
+        public async Task<IActionResult> GetAssignedTable()
+        {
+            try
+            {
+                int UserId = ClaimHelper.GetUserId(User);
+               var result = await _tableService.GetAssignedTableAsync(UserId);
+                return Ok(new { table = result });
+            }catch(Exception ex)
+            {
+                return BadRequest("error" + ex.Message);
+            }
+        }
     }
     
 }
