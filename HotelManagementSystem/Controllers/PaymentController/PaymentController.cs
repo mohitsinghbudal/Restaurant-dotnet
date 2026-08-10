@@ -21,7 +21,7 @@ namespace HotelManagementSystem.Controllers.PaymentController
         {
             try
             {
-                if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+                if (!User.IsInRole("5")) 
                 {
                     throw new Exception("User not allowed");
                 }

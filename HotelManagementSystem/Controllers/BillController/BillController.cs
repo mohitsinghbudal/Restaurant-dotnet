@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
+using HotelManagementSystem.Helper.ClaimHelper;
 using HotelManagementSystem.Interfaces.BillInterface;
 using HotelManagementSystem.Models.Bill;
 using HotelManagementSystem.Models.Payment;
@@ -21,7 +22,7 @@ namespace HotelManagementSystem.Controllers.BillController
             _billService = billService;
         }
 
-        [HttpGet("view-bill/{sessionId}")]
+        [HttpGet("view-bill")]
         public async Task<IActionResult> ViewBillAsync(int sessionId)
         {
             try
@@ -62,7 +63,6 @@ namespace HotelManagementSystem.Controllers.BillController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
         [HttpPost("pay/cash")]
         public async Task<IActionResult> PayBill([FromBody] PayBill pay)
         {
@@ -98,16 +98,18 @@ namespace HotelManagementSystem.Controllers.BillController
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("esewa-callback")]
         public async Task<IActionResult> EsewaCallback([FromQuery] string data)
         {
 
+            int userId = ClaimHelper.GetUserId(User);
             if (string.IsNullOrEmpty(data))
             {
                 return BadRequest(new { message = "Missing response data." });
             }
 
-            bool isVerified = await _billService.VerifyAndProcessEsewaCallbackAsync(data);
+            bool isVerified = await _billService.VerifyAndProcessEsewaCallbackAsync(data,userId);
 
             if (isVerified)
             {
@@ -122,8 +124,9 @@ namespace HotelManagementSystem.Controllers.BillController
         //{
 
         //    return Ok(new { message = "successfull" });
-            
+
         //}
+        [AllowAnonymous]
         [HttpGet("pay/esewa/success")]
         public async Task<IActionResult> EsewaSuccess([FromQuery] string data)
         {
@@ -131,8 +134,9 @@ namespace HotelManagementSystem.Controllers.BillController
             {
                 return BadRequest(new { message = "Missing response payload." });
             }
+            int userId = ClaimHelper.GetUserId(User);
 
-            bool isVerified = await _billService.VerifyAndProcessEsewaCallbackAsync(data);
+            bool isVerified = await _billService.VerifyAndProcessEsewaCallbackAsync(data, userId);
 
             if (isVerified)
             {

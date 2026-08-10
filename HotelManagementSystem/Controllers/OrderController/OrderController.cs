@@ -22,19 +22,19 @@ namespace HotelManagementSystem.Controllers.OrderController
         [HttpGet("all")]
         public async Task<IActionResult> GetAllOrdersAsync()
         {
-            if (!User.IsInRole("5")) 
-            { 
-
-                throw new Exception("User not allowed");
-            }
+            
             try
             {
+                if (!User.IsInRole("5") && !User.IsInRole("4"))
+                {
+                    throw new Exception("User not allowed");
+                }
                 var orders = await _orderService.GetAllOrdersAsync();
                 return Ok(new { message = "success", orders = orders });
             }
             catch (Exception ex)
             {
-               return BadRequest(new { message = "server error"+ex.Message });
+               return BadRequest(new { message = "server error  " +ex.Message });
             }
         }
         [HttpGet("my-orders")]
@@ -146,7 +146,7 @@ namespace HotelManagementSystem.Controllers.OrderController
 
                 int userId = ClaimHelper.GetUserId(User);
             
-                if (!User.IsInRole("5")&&!User.IsInRole("1"))
+                if (!User.IsInRole("5")&&!User.IsInRole("1")&&!User.IsInRole("4"))
                     throw new Exception("User not allowed");
 
                 try
@@ -179,6 +179,23 @@ namespace HotelManagementSystem.Controllers.OrderController
             catch (Exception ex)
             {
                 return BadRequest("server error" + ex );
+            }
+        }
+
+        [HttpPut("update-status")]
+        public async Task<IActionResult> UpdateStatus([FromQuery] string status, [FromQuery] int OrderId)
+        {
+            try
+            {
+                if (!User.IsInRole("4"))
+                    throw new Exception("user is not allowed");
+
+                var result = await _orderService.UpdateStatus(status , OrderId);
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

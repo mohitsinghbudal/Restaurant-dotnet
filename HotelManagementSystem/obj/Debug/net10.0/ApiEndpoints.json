@@ -125,7 +125,7 @@
   {
     "ContainingType": "HotelManagementSystem.Controllers.BillController.BillController",
     "Method": "ViewBillAsync",
-    "RelativePath": "api/Bill/view-bill/{sessionId}",
+    "RelativePath": "api/Bill/view-bill",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -133,7 +133,7 @@
       {
         "Name": "sessionId",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -620,6 +620,27 @@
   },
   {
     "ContainingType": "HotelManagementSystem.Controllers.OrderController.OrderController",
+    "Method": "UpdateStatus",
+    "RelativePath": "api/Order/update-status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.OrderController.OrderController",
     "Method": "UpdateOrderQuantity",
     "RelativePath": "api/Order/updateQuantity",
     "HttpMethod": "PUT",
@@ -813,6 +834,64 @@
         "Name": "endDate",
         "Type": "System.DateTime",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RolesController.RolesController",
+    "Method": "Get",
+    "RelativePath": "api/Roles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RolesController.RolesController",
+    "Method": "Post",
+    "RelativePath": "api/Roles",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "role",
+        "Type": "HotelManagementSystem.Models.Roles.Role",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RolesController.RolesController",
+    "Method": "Put",
+    "RelativePath": "api/Roles",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "role",
+        "Type": "HotelManagementSystem.Models.Roles.Role",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HotelManagementSystem.Controllers.RolesController.RolesController",
+    "Method": "Delete",
+    "RelativePath": "api/Roles",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "role",
+        "Type": "HotelManagementSystem.Models.Roles.Role",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

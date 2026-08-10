@@ -10,7 +10,7 @@ namespace HotelManagementSystem.Interfaces.BillInterface
         Task<Bill> CalculateSessionTotalAsync(int sessionId, decimal discountPercentage);
         Task<Bill?> GenerateBillAsync(int sessionId, decimal subTotalAmount, decimal discountPercentage, string paymentMethod, int userId);
         Task<EsewaInitiateResponseDto> InitiateEsewaPaymentAsync(int sessionId);
-        Task<bool> VerifyAndProcessEsewaCallbackAsync(string encodedData);
+        Task<bool> VerifyAndProcessEsewaCallbackAsync(string encodedData , int id);
         //Task<IActionResult> PayBillEsewaSuccess(object obj);
 
         Task<Bill> ViewBillAsync(int sessionId);

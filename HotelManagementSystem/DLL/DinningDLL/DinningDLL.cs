@@ -31,7 +31,7 @@ namespace HotelManagementSystem.DLL.DinningDLL
             using var connection = _dbconn.CreateConnection();
 
             var sql = @"
-        SELECT sessionid from DinningSessions WHERE CreatedBy = @UserId;";
+        SELECT sessionid from DinningSessions WHERE CreatedBy = @UserId AND SessionStatus = 'Active';";
 
             var sessionId = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { UserId = userId });
 
@@ -106,7 +106,7 @@ namespace HotelManagementSystem.DLL.DinningDLL
         //}
 
         public async Task<int?> GetMySessionId(int userId)
-        {
+            {
             using var connection = _dbconn.CreateConnection();
             string sql = @"SELECT SessionId 
                    FROM DinningSessions 

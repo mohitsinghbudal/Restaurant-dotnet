@@ -36,7 +36,11 @@ namespace HotelManagementSystem.DLL.OrderDLL
         public async Task<IEnumerable<Order>> GetOrderBySessionId(int Id)
         {
             using var conn = _dbConn.CreateConnection();
-            string sql = @"SELECT * FROM Orders WHERE DiningSessionId = @DiningSessionId;";
+            string sql = @"SELECT o.* 
+FROM Orders o
+INNER JOIN DinningSessions ds ON o.DiningSessionId = ds.SessionId
+WHERE o.DiningSessionId = @DiningSessionId
+  AND ds.SessionStatus = 'Active';";
             return await conn.QueryAsync<Order>(sql, new { DiningSessionId = Id });
         }
 
@@ -108,6 +112,34 @@ namespace HotelManagementSystem.DLL.OrderDLL
 
             return order > 0;
 
+        }
+        public async Task<bool> UpdateStatus(string status, int OrderId)
+        {
+            using var conn = _dbConn.CreateConnection();
+
+            string sql = @" UPDATE Orders
+                SET
+                OrderStatus = @Status,
+                WHERE OrderId = @OrderId
+                AND IsActive = 1; ";
+            var order = await conn.ExecuteAsync(sql, new {Status = status, OrderId = OrderId });
+
+            return order > 0;
+        }
+        public async Task<bool> UpdateStatusBySessionId(string status,int sessionId)
+        {
+            using var conn = _dbConn.CreateConnection();
+
+            string sql = @" UPDATE Orders
+SET
+    OrderStatus = 'Completed',
+    IsActive = 0,
+    UpdatedAt = GETUTCDATE()
+WHERE DiningSessionId = @OrderId
+  AND IsActive = 1;";
+            var order = await conn.ExecuteAsync(sql, new { Status = status, OrderId = sessionId });
+
+            return order > 0;
         }
     }
 }

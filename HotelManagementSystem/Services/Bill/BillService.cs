@@ -22,7 +22,8 @@ namespace HotelManagementSystem.Services.BillService
         private readonly IPaymentDLL _paymentDLL;
         private readonly HttpClient _httpClient;
         private readonly IDinningService _dinningService;
-        public BillService(IBillDLL billDLL, IOrderDLL orderDLL, IConfiguration config, IHttpClientFactory httpClientFactory, IPaymentDLL paymentDLL, IDinningService dinningService)
+        private readonly IOrderService _orderService;
+        public BillService(IBillDLL billDLL, IOrderDLL orderDLL, IConfiguration config, IHttpClientFactory httpClientFactory, IPaymentDLL paymentDLL, IDinningService dinningService, IOrderService orderService)
         {
             _billDLL = billDLL;
             _orderDLL = orderDLL;
@@ -31,6 +32,7 @@ namespace HotelManagementSystem.Services.BillService
             _httpClient = httpClientFactory.CreateClient();
             _paymentDLL = paymentDLL;
             _dinningService = dinningService;
+            _orderService = orderService;
         }
 
         public async Task<Bill> ViewBillAsync(int sessionId)
@@ -120,10 +122,13 @@ namespace HotelManagementSystem.Services.BillService
             
             var bill = await _billDLL.GetBillByNoAsync(pay.BillNo);
 
+            if (bill == null) throw new Exception("no bill found for this bill no Or is already paid");
 
             bill.PaymentMethod = "Cash";
             bill.IsPaid = true;
             bill.PaidAt = DateTime.UtcNow;
+            await _orderService.UpdateStatusBySession("Paid",bill.SessionId);
+            await _dinningService.EndDinningSessionAsync(bill.SessionId);
 
 
             return await _billDLL.PayBillAsync(bill.IsPaid, pay.BillNo,bill.PaymentMethod);
@@ -131,7 +136,7 @@ namespace HotelManagementSystem.Services.BillService
 
        
         public async Task<EsewaInitiateResponseDto> InitiateEsewaPaymentAsync(int sessionId)
-        {
+        {   
             var bill = await _billDLL.ViewBillBySessionId(sessionId);
 
             if (bill == null) throw new Exception("No bill found for this session.");
@@ -145,8 +150,8 @@ namespace HotelManagementSystem.Services.BillService
 
             // eSewa configuration URLs
 
-            string successUrl = _config["Esewa:SuccessUrl"] ?? "https://developer.esewa.com.np/success";
-            string failureUrl = _config["Esewa:FailureUrl"] ?? "https://developer.esewa.com.np/failure";
+            string successUrl = _config["Esewa:SuccessUrl"] ?? "https://localhost:7186/api/Bill/pay/esewa/success";
+            string failureUrl = _config["Esewa:FailureUrl"] ?? "https://localhost:7186/api/Bill/pay/esewa/failure";
             string signedFieldNames = "total_amount,transaction_uuid,product_code";
 
             //Strictly format to 2 decimal places
@@ -202,7 +207,7 @@ namespace HotelManagementSystem.Services.BillService
         }
 
         // --- Step B: Verify Callback Response from eSewa ---
-        public async Task<bool> VerifyAndProcessEsewaCallbackAsync(string encodedData)
+        public async Task<bool> VerifyAndProcessEsewaCallbackAsync(string encodedData , int userId)
         {
             try
             {
@@ -233,12 +238,7 @@ namespace HotelManagementSystem.Services.BillService
                     ? callbackData.total_amount.Value.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)
                     : payment.Amount.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
 
-                // Ensure two decimal places format if string comes back as "113.0"
-
-
-                Console.WriteLine(productCode);
-                Console.WriteLine(totalAmountStr);
-                Console.WriteLine(callbackData.transaction_uuid);
+                
 
                 // 3. Double-check status with eSewa Status Verification API
                 // CORRECT API PATH: /api/epay/transaction/status/
@@ -273,6 +273,8 @@ namespace HotelManagementSystem.Services.BillService
 
                     await _paymentDLL.UpdatePaymentAsync(payment);
                     await _billDLL.MarkBillAsPaidAsync(payment.BillId);
+                    int session = await _dinningService.GetDiningSession(userId);
+                    await _dinningService.EndDinningSessionAsync(session);
                     return true;
                 }
                 else

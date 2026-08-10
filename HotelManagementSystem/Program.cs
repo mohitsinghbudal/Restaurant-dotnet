@@ -11,6 +11,7 @@ using HotelManagementSystem.DLL.OrderItemDLL;
 using HotelManagementSystem.DLL.PaymentDLL;
 using HotelManagementSystem.DLL.RecipeDLL;
 using HotelManagementSystem.DLL.ReportDLL;
+using HotelManagementSystem.DLL.RolesDLL;
 using HotelManagementSystem.DLL.Tables;
 using HotelManagementSystem.DLL.UnitDLL;
 using HotelManagementSystem.DLL.Users;
@@ -29,6 +30,7 @@ using HotelManagementSystem.Interfaces.OrderItemInterface;
 using HotelManagementSystem.Interfaces.PaymentInterface;
 using HotelManagementSystem.Interfaces.RecipeInterface;
 using HotelManagementSystem.Interfaces.Report;
+using HotelManagementSystem.Interfaces.Roles;
 using HotelManagementSystem.Interfaces.SubCategoryInterface;
 using HotelManagementSystem.Interfaces.TableInterface;
 using HotelManagementSystem.Interfaces.Units;
@@ -46,6 +48,7 @@ using HotelManagementSystem.Services.OrderService;
 using HotelManagementSystem.Services.PaymentService;
 using HotelManagementSystem.Services.RecipeService;
 using HotelManagementSystem.Services.Report;
+using HotelManagementSystem.Services.Roles;
 using HotelManagementSystem.Services.Table;
 using HotelManagementSystem.Services.Units;
 using HotelManagementSystem.Services.User;
@@ -89,6 +92,7 @@ builder.Services.AddScoped<IBillDLL, BillDLL>();
 builder.Services.AddScoped<IReportDLL, ReportDLL>();
 builder.Services.AddScoped<IPaymentDLL, PaymentDLL>();
 builder.Services.AddScoped<ICartDLL, CartDLL>();
+builder.Services.AddScoped<IRoleDLL,RolesDLL>();
 
 
 // For Service layer
@@ -103,6 +107,7 @@ builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ISubCategoryService, SubCategoryServices>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IRoleService, RolesService>();
 // Register BillService as a scoped service and enable IHttpClientFactory so
 // the service can create HttpClient instances without being registered as a
 // typed HttpClient. This ensures other scoped dependencies (like IPaymentDLL)

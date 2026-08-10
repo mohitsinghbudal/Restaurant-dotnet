@@ -954,6 +954,120 @@
         }
       }
     },
+    "/api/Roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "Roles_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "Roles_Post",
+        "requestBody": {
+          "x-name": "role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "Roles_Put",
+        "requestBody": {
+          "x-name": "role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "Roles_Delete",
+        "requestBody": {
+          "x-name": "role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Report/dashboard/excel": {
       "get": {
         "tags": [
@@ -1604,6 +1718,51 @@
               "format": "int32"
             },
             "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/Order/update-status": {
+      "put": {
+        "tags": [
+          "Order"
+        ],
+        "operationId": "Order_UpdateStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "OrderId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -2482,7 +2641,7 @@
         ]
       }
     },
-    "/api/Bill/view-bill/{sessionId}": {
+    "/api/Bill/view-bill": {
       "get": {
         "tags": [
           "Bill"
@@ -2491,8 +2650,7 @@
         "parameters": [
           {
             "name": "sessionId",
-            "in": "path",
-            "required": true,
+            "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2670,12 +2828,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
+        }
       }
     },
     "/api/Bill/pay/esewa/success": {
@@ -2706,12 +2859,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
+        }
       }
     },
     "/api/Bill/pay/esewa/failure": {
@@ -3102,6 +3250,26 @@
           "updatedOn": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "roleName": {
+            "type": "string"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
             "nullable": true
           }
         }

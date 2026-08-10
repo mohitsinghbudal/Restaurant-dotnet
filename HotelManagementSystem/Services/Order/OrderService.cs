@@ -227,5 +227,39 @@ namespace HotelManagementSystem.Services.OrderService
 
             return await _orderDLL.UpdateOrderQuantityAsync(quantity, orderId);
         }
+
+        public async Task<bool> UpdateStatus(string status, int orderId)
+        {
+            var order = await _orderDLL.GetOrderByIdAsync(orderId);
+
+            if (order == null)
+                throw new Exception("Order does not exist.");
+
+            if (order.OrderStatus == "Completed" || order.OrderStatus == "Cancelled")
+                throw new InvalidOperationException("Cannot update status for an order that is already completed or cancelled.");
+
+            return await _orderDLL.UpdateStatus(status, orderId);
+        }
+        public async Task<bool> UpdateStatusBySession(string status, int sessionId)
+        {
+            var order = await _orderDLL.GetOrderBySessionId(sessionId);
+
+            foreach(var or in order){
+
+         
+
+                if (or.OrderStatus != "Completed" && or.OrderStatus != "Cancelled")
+                   { 
+                    
+                    await _orderDLL.UpdateStatus(status, sessionId);
+
+                }
+
+
+            }
+            return true;
+
+
+        }
     }
 }

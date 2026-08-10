@@ -11,7 +11,9 @@ namespace HotelManagementSystem.Interfaces.OrderInterface
         Task<Order> CreateOrderAsync(Order order);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
         Task<bool> UpdateOrderQuantityAsync(int quantity, int orderId);
+        Task<bool> UpdateStatus(string status, int OrderId);
 
+        Task<bool> UpdateStatusBySessionId(string status, int sessionId);
     }
     public interface IOrderService
     {
@@ -25,6 +27,8 @@ namespace HotelManagementSystem.Interfaces.OrderInterface
         Task<IEnumerable<Order>> GetAllOrdersAsync();
         Task<bool> CancelOrderAsync(int orderId, int userId);
         Task<bool> UpdateOrderQuantityAsync(int quantity, int orderId, int menuId);
+        Task<bool> UpdateStatus(string status, int OrderId);
+        Task<bool> UpdateStatusBySession(string status, int sessionId);
 
     }
 }
