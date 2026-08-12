@@ -131,7 +131,9 @@ namespace HotelManagementSystem.Services.BillService
             await _dinningService.EndDinningSessionAsync(bill.SessionId);
 
 
-            return await _billDLL.PayBillAsync(bill.IsPaid, pay.BillNo,bill.PaymentMethod);
+            // Set the payer and persist payment via DLL
+            bill.PaidBy = pay.PaidBy;
+            return await _billDLL.PayBillAsync(bill.IsPaid, pay.BillNo, bill.PaymentMethod, pay.PaidBy);
         }
 
        

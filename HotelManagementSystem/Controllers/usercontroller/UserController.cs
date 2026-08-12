@@ -133,7 +133,7 @@ namespace HotelManagementSystem.Controllers.usercontroller
         [HttpPut("update-roles")]
         public async Task<IActionResult> UpdateRoles([FromBody] AssignRolesDto model)
         {
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            if (!User.IsInRole("5"))
             {
                 throw new Exception("User not allowed");
             }
@@ -147,6 +147,7 @@ namespace HotelManagementSystem.Controllers.usercontroller
 
             try
             {
+
                 bool isUpdated = await _userService.AssignRolesAsync(model.UserId, model.RoleIds, adminUserId);
 
                 if (isUpdated)

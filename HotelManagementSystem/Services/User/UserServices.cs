@@ -158,31 +158,53 @@ namespace HotelManagementSystem.Services.User
         {
             return await _userDLL.UpdateUser(user);
         }
-        public async Task<bool> UpdateUserRolesAsync(int userId, IEnumerable<int> roleIds, int assignedBy)
+        public async Task<bool> UpdateUserRolesAsync(
+    int userId,
+    IEnumerable<int> roleIds,
+    int assignedBy)
         {
             var currentRoles = await _userDLL.GetUserRoleIdsAsync(userId);
 
-            var existingRoles = currentRoles.OrderBy(x => x).ToList();
-            var newRoles = roleIds.Distinct().OrderBy(x => x).ToList();
+            var existingRoles = currentRoles
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            var newRoles = roleIds
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
 
             // Nothing changed
             if (existingRoles.SequenceEqual(newRoles))
                 return true;
 
-            // Roles removed
-            var rolesToRemove = existingRoles.Except(newRoles).ToList();
+            // Roles that user no longer has
+            var rolesToRemove = existingRoles
+                .Except(newRoles)
+                .ToList();
 
-            // Roles added
-            var rolesToAdd = newRoles.Except(existingRoles).ToList();
+            // Roles that user needs
+            var rolesToAdd = newRoles
+                .Except(existingRoles)
+                .ToList();
 
+            // Soft delete removed roles
             if (rolesToRemove.Any())
             {
-                await _userDLL.SoftDeleteRolesAsync(userId, rolesToRemove, assignedBy);
+                await _userDLL.SoftDeleteRolesAsync(
+                    userId,
+                    rolesToRemove,
+                    assignedBy);
             }
 
+            // Add or reactivate roles
             if (rolesToAdd.Any())
             {
-                await _userDLL.AddRolesAsync(userId, rolesToAdd, assignedBy);
+                await _userDLL.AddOrReactivateRolesAsync(
+                    userId,
+                    rolesToAdd,
+                    assignedBy);
             }
 
             return true;

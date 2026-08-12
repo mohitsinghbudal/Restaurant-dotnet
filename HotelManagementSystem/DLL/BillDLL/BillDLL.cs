@@ -50,17 +50,18 @@ namespace HotelManagementSystem.DLL.BillDLL
                 return await conn.QueryFirstOrDefaultAsync<Bill>(sql, bill);
             }
 
-            public async Task<Bill> PayBillAsync(bool pay, long bilno, string paymentmethod)
+            public async Task<Bill> PayBillAsync(bool pay, long bilno, string paymentmethod, int userId)
             {
             using var conn = _dbConn.CreateConnection();
             string sql = @"
         UPDATE Bills 
         SET IsPaid = @IsPaid, 
             PaidAt = GETUTCDATE(),
-            PaymentMethod = @PaymentMethod
+            PaymentMethod = @PaymentMethod,
+            PaidBy = @userId
         OUTPUT INSERTED.*
         WHERE BillNo = @BillNo;";
-            return await conn.QueryFirstOrDefaultAsync<Bill>(sql, new { IsPaid = pay, BillNo = bilno, PaymentMethod = paymentmethod });
+            return await conn.QueryFirstOrDefaultAsync<Bill>(sql, new { IsPaid = pay, BillNo = bilno, PaymentMethod = paymentmethod, userId = userId });
 
             }
         public async Task<Bill?> GetBillByNoAsync(long billNo)

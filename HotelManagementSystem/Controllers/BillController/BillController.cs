@@ -68,6 +68,8 @@ namespace HotelManagementSystem.Controllers.BillController
         {
             try
             {
+                int userId = ClaimHelper.GetUserId(User);
+                pay.PaidBy = userId;
                 // This will execute your math calculations and return a preview object DTO
                 var billPreview = await _billService.PayBillCash(pay);
 

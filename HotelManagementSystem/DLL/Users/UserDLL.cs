@@ -160,6 +160,66 @@ VALUES
             return roles.ToList();
         }
 
+        public async Task AddOrReactivateRolesAsync(
+    int userId,
+    IEnumerable<int> roleIds,
+    int assignedBy)
+        {
+            using var conn = _dbConnection.CreateConnection();
+
+            foreach (var roleId in roleIds.Distinct())
+            {
+                string sql = @"
+            IF EXISTS
+            (
+                SELECT 1
+                FROM UserRoles
+                WHERE UserId = @UserId
+                  AND RoleId = @RoleId
+            )
+            BEGIN
+
+                UPDATE UserRoles
+                SET
+                    IsDeleted = 0,
+                    AssignedAt = @AssignedAt,
+                    AssignedBy = @AssignedBy
+                WHERE UserId = @UserId
+                  AND RoleId = @RoleId;
+
+            END
+            ELSE
+            BEGIN
+
+                INSERT INTO UserRoles
+                (
+                    UserId,
+                    RoleId,
+                    AssignedAt,
+                    AssignedBy,
+                    IsDeleted
+                )
+                VALUES
+                (
+                    @UserId,
+                    @RoleId,
+                    @AssignedAt,
+                    @AssignedBy,
+                    0
+                );
+
+            END";
+
+                await conn.ExecuteAsync(sql, new
+                {
+                    UserId = userId,
+                    RoleId = roleId,
+                    AssignedAt = DateTime.UtcNow,
+                    AssignedBy = assignedBy
+                });
+            }
+        }
+
         public async Task SoftDeleteRolesAsync(int userId, IEnumerable<int> roleIds, int deletedBy)
         {
             using var conn = _dbConnection.CreateConnection();
@@ -182,11 +242,15 @@ VALUES
                 DeletedBy = deletedBy
             });
         }
-        public async Task AddRolesAsync(int userId, IEnumerable<int> roleIds, int assignedBy)
-        {
-            using var conn = _dbConnection.CreateConnection();
+        
+        public async Task AddRolesAsync(
+    int userId,
+    IEnumerable<int> roleIds,
+    int assignedBy)
+{
+    using var conn = _dbConnection.CreateConnection();
 
-            string sql = @"
+    string sql = @"
         INSERT INTO UserRoles
         (
             UserId,
@@ -204,16 +268,16 @@ VALUES
             0
         );";
 
-            var parameters = roleIds.Select(roleId => new
-            {
-                UserId = userId,
-                RoleId = roleId,
-                AssignedAt = DateTime.UtcNow,
-                AssignedBy = assignedBy
-            });
+    var parameters = roleIds.Select(roleId => new
+    {
+        UserId = userId,
+        RoleId = roleId,
+        AssignedAt = DateTime.UtcNow,
+        AssignedBy = assignedBy
+    });
 
-            await conn.ExecuteAsync(sql, parameters);
-        }
+    await conn.ExecuteAsync(sql, parameters);
+}
         public async Task<bool> UpdateUser(UserModel user)
         {
             using var conn = _dbConnection.CreateConnection();

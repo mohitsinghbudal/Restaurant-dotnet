@@ -20,7 +20,7 @@ namespace HotelManagementSystem.Interfaces.BillInterface
     {
         Task<int> GetNextBillNoAsync();
         Task<Bill> CreateBillAsync(Bill bill);
-        Task<Bill> PayBillAsync(bool pay, long bilno, string paymentmethod);
+        Task<Bill> PayBillAsync(bool pay, long bilno, string paymentmethod,int paidby);
         Task<Bill?> GetBillByNoAsync(long billNo);
         Task<Bill> ViewBillBySessionId(int sessionId);
         Task<bool> MarkBillAsPaidAsync(int billid);

@@ -119,7 +119,7 @@ WHERE o.DiningSessionId = @DiningSessionId
 
             string sql = @" UPDATE Orders
                 SET
-                OrderStatus = @Status,
+                OrderStatus = @Status
                 WHERE OrderId = @OrderId
                 AND IsActive = 1; ";
             var order = await conn.ExecuteAsync(sql, new {Status = status, OrderId = OrderId });

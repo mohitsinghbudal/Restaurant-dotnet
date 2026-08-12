@@ -22,6 +22,10 @@ namespace HotelManagementSystem.Interfaces.UserInterfaces
         Task<bool> VerifyOtpUpdate(string email);
         Task<bool> UpdateUser(UserModel user);
         Task<List<int>> GetUserRoleIdsAsync(int userId);
+        Task AddOrReactivateRolesAsync(
+    int userId,
+    IEnumerable<int> roleIds,
+    int assignedBy);
         Task SoftDeleteRolesAsync(int userId, IEnumerable<int> roleIds, int deletedBy);
         Task AddRolesAsync(int userId, IEnumerable<int> roleIds, int assignedBy);
         Task<IEnumerable<UserModel>> GetAllUserAsync();

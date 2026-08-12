@@ -138,6 +138,8 @@ builder.Services.AddOpenApiDocument(options =>
     options.OperationProcessors.Add(
         new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
 });
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
