@@ -46,7 +46,7 @@ namespace HotelManagementSystem.Services.Inventory
 
         public async Task<int> UpdateInventoryItem(InventoryItem incomingItem , int userId)
         {
-            // 1. Fetch the current, real state of the item from the DB
+            
             var existingItem = await _inventoryDLL.GetInventoryItemById(incomingItem.InventoryItemId);
 
             if (existingItem == null)
@@ -54,14 +54,14 @@ namespace HotelManagementSystem.Services.Inventory
                 throw new KeyNotFoundException($"Inventory item with ID {incomingItem.InventoryItemId} not found.");
             }
 
-            // 2. Apply business logic / Patch only what changed
-            // If incoming CostPrice is greater than 0, update it. Otherwise, keep the old one.
+            
+            
             if (incomingItem.CostPrice > 0 && incomingItem.CostPrice != existingItem.CostPrice)
             {
                 existingItem.CostPrice = incomingItem.CostPrice;
             }
 
-            // Do the same for other fields if they are sent over
+            
             if (!string.IsNullOrWhiteSpace(incomingItem.ItemName))
             {
                 existingItem.ItemName = incomingItem.ItemName;
@@ -77,11 +77,11 @@ namespace HotelManagementSystem.Services.Inventory
             existingItem.IsActive = incomingItem.IsActive;
 
 
-            // Track who modified it and when
+            
             existingItem.UpdatedBy = incomingItem.UpdatedBy;
             existingItem.UpdatedOn = DateTime.UtcNow;
 
-            // 3. Pass the fully merged record back to the DLL to save safely
+            
             return await _inventoryDLL.UpdateInventoryItem(existingItem);
         }
 
@@ -89,26 +89,26 @@ namespace HotelManagementSystem.Services.Inventory
         {
             Console.WriteLine("Reached the inventory service transaction loop.");
 
-            // 1. Business Logic: Extract recipe requirements using the shared connection context
+            
             var recipes = (await _recipeDLL.GetRecipeByMenuIdAsync(menuId)).ToList();
 
-            // 2. Business Logic: Direct retail items (like Coke cans) don't have ingredients to deduct
+            
             if (!recipes.Any())
                 return true;
 
-            // 3. Business Logic: Loop and process calculations into direct payloads
+            
             var deductionPayloads = new List<InventoryDeductionModel>();
             foreach (var recipe in recipes)
             {
                 deductionPayloads.Add(new InventoryDeductionModel
                 {
                     InventoryItemId = recipe.InventoryItemId,
-                    // 💡 Supports both positive deductions (ordering) and negative additions (updates/returns)
+                    
                     TotalDeduction = recipe.QuantityRequired * orderedQuantity
                 });
             }
 
-            // 4. Send the sanitized parameters down to the DLL under the exact same transaction context
+            
             return await _inventoryDLL.DeductRawStockAsync(deductionPayloads);
         }
         public async Task<bool> DeleteInventoryItem(int id, int deletedby)

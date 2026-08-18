@@ -29,13 +29,11 @@ namespace HotelManagementSystem.Controllers.usercontroller
         [HttpGet("all")]
         public async Task<IActionResult> GetUserAsync()
         {
-            // Enforce Admin role
             
-
 
             try
             {
-                if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+                if (!User.IsInRole("5")) 
                 {
                     throw new Exception("User not allowed");
                 }
@@ -56,7 +54,7 @@ namespace HotelManagementSystem.Controllers.usercontroller
         [HttpPut("update")]
         public async Task<IActionResult> updateuserprofile([FromBody] UserModel user)
         {
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            if (!User.IsInRole("5")) 
             {
                 throw new Exception("User not allowed");
             }

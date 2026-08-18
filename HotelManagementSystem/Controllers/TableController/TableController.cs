@@ -113,8 +113,8 @@ namespace HotelManagementSystem.Controllers.TableController
             if (table == null) return BadRequest(new { message = "Invalid table data payload." });
 
             int userId = ClaimHelper.GetUserId(User);
-            //var roleId = ClaimHelper.GetRoleId(User);
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            
+            if (!User.IsInRole("5")) 
             {
                 throw new Exception("User not allowed");
             }
@@ -176,13 +176,13 @@ namespace HotelManagementSystem.Controllers.TableController
 
             if (table == null) return BadRequest(new { message = "Invalid update payload." });
 
-            //int userId = ClaimHelper.GetUserId(User);
-            //int roleId = ClaimHelper.GetRoleId(User);
+            
+            
 
 
 
-            //if (roleId != 2)
-            //    return Unauthorized("user not allowed is not an waiter")
+            
+            
 
 
 
@@ -217,7 +217,7 @@ namespace HotelManagementSystem.Controllers.TableController
                     return BadRequest(new { message = "Error encountered while attempting to free the table." });
                 }
 
-                // Fixed success messaging path to cleanly indicate transition to Cleaning status
+                
                 return Ok(new { affectedRows = result, message = "Table status set to Available!" });
             }
             catch (Exception ex)

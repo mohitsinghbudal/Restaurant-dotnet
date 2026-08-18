@@ -1,5 +1,4 @@
-﻿using HotelManagementSystem.Models.Categories;
-
+﻿
 namespace HotelManagementSystem.Models.MenuItems
 {
     public class Menu
@@ -8,19 +7,15 @@ namespace HotelManagementSystem.Models.MenuItems
         public string ItemName { get; set; } = string.Empty;
         public string? ItemDescription { get; set; }
         public int CategoryId { get; set; }
-        public int? SubCategoryId { get; set; }
+        public int SubCategoryId { get; set; }
         public string? ItemImage { get; set; }
         public decimal ItemPrice { get; set; }
-        public int UnitId { get; set; } // Matches DB UnitId
-        public bool IsAvailable { get; set; } = true;
-        public bool IsActive { get; set; } = true;
+        public int UnitId { get; set; }
+        public bool IsAvailable { get; set; }
+        public bool IsActive { get; set; }
         public int CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedOn { get; set; }
         public int? LastUpdatedBy { get; set; }
         public DateTime? LastUpdatedOn { get; set; }
-
-        // --- Navigation Properties for Dapper Mapping ---
-        public Category? Category { get; set; }
-        public SubCategory? SubCategory { get; set; }
     }
 }

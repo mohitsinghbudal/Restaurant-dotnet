@@ -26,10 +26,10 @@ namespace HotelManagementSystem.Controllers.PaymentController
                     throw new Exception("User not allowed");
                 }
                 var result = await _payserve.GetPaymentByUuidAsync(uuid);
-                //if (!result)
-                //{
-                //    throw new Exception("bad request");
-                //}
+                
+                
+                
+                
                 return Ok(new {payment = result });
             }
             catch(Exception ex)
@@ -42,7 +42,7 @@ namespace HotelManagementSystem.Controllers.PaymentController
         {
             try
             {
-                if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+                if (!User.IsInRole("5")) 
                 {
                     throw new Exception("User not allowed");
                 }
@@ -56,3 +56,4 @@ namespace HotelManagementSystem.Controllers.PaymentController
         }
     }
 }
+

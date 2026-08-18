@@ -2,7 +2,7 @@
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.OrderItemInterface;
 
-//using HotelManagementSystem.Interfaces.OrderItemInterface;
+
 using HotelManagementSystem.Models;
 using System.Data;
 
@@ -52,7 +52,7 @@ namespace HotelManagementSystem.DLL.OrderItemDLL
                     @ItemStatus, @IsActive, @CreatedBy, SYSUTCDATETIME()
                 );";
 
-            // Dapper automatically loops over the collection and executes efficiently in bulk
+            
             int rowsAffected = await connection.ExecuteAsync(sql, items);
             return rowsAffected == items.Count();
         }
@@ -88,4 +88,5 @@ namespace HotelManagementSystem.DLL.OrderItemDLL
     }
 }
     
+
 

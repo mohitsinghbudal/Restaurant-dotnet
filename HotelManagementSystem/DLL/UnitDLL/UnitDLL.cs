@@ -18,7 +18,7 @@ namespace HotelManagementSystem.DLL.UnitDLL
             _dbConn = dbConn;
         }
 
-        // FIX: Changed return type to IEnumerable<Units> to retrieve the full list of units
+        
         public async Task<IEnumerable<Unit>> GetAllUnitsAsync()
         {
             using var conn = _dbConn.CreateConnection();
@@ -30,7 +30,7 @@ namespace HotelManagementSystem.DLL.UnitDLL
             return await conn.QueryAsync<Unit>(sql);
         }
 
-        // FIX: Replaced 'Task task' with your 'Units unit' model payload
+        
         public async Task<int> AddUnitAsync(Unit unit)
         {
             using var conn = _dbConn.CreateConnection();
@@ -54,7 +54,7 @@ namespace HotelManagementSystem.DLL.UnitDLL
             return await conn.ExecuteAsync(sql, unit);
         }
 
-        // FIX: Replaced 'Task task' with 'Units unit' and corrected method casing to UpdateUnitAsync
+        
         public async Task<int> UpdateUnitAsync(Unit unit)
         {
             using var conn = _dbConn.CreateConnection();

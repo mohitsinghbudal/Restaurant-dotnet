@@ -41,14 +41,14 @@ namespace HotelManagementSystem.DLL.DinningDLL
         {
             using var connection = _dbconn.CreateConnection();
 
-            // 1. Corrected table name to DinningSessions
-            // 2. Removed CustomerUserId to match your Model properties
+            
+            
             var sql = @"
                 INSERT INTO DinningSessions (TableId, StartedAt, SessionStatus, UpdatedAt,CreatedBy)
                 OUTPUT INSERTED.SessionId
                 VALUES (@TableId, GETUTCDATE(), @SessionStatus, NULL,@CreatedBy);";
 
-            // Using QuerySingleAsync to cleanly pull back the newly generated primary key identity
+            
             var sessionId = await connection.QuerySingleAsync<int>(sql, dinning);
             Console.WriteLine(sessionId);
 
@@ -73,7 +73,7 @@ namespace HotelManagementSystem.DLL.DinningDLL
         {
             using var connection = _dbconn.CreateConnection();
 
-            // FIX: This must be an UPDATE statement targeting an existing SessionId record!
+            
             var sql = @"
                 UPDATE DinningSessions
                 SET EndAt = GETUTCDATE(),
@@ -83,7 +83,7 @@ namespace HotelManagementSystem.DLL.DinningDLL
 
                 WHERE SessionId = @SessionId;";
 
-            // ExecuteAsync returns the count of affected rows (should be 1 if successful)
+            
             return await connection.ExecuteAsync(sql, dinning);
         }
 
@@ -96,14 +96,14 @@ namespace HotelManagementSystem.DLL.DinningDLL
             return await connection.QuerySingleOrDefaultAsync<DinningModel>(sql, new { SessionId = id });
         }
 
-        //public async Task<int> GetDinningsesssionbytableno(int id)
-        //{
-        //    using var connection = _dbconn.CreateConnection();
+        
+        
+        
 
-        //    string sql = @"SELECT * FROM DinningSessions WHERE TableNo = @Id;";
+        
 
-        //    return await connection.QuerySingleOrDefaultAsync<int>(sql, new { Id = id });
-        //}
+        
+        
 
         public async Task<int?> GetMySessionId(int userId)
             {

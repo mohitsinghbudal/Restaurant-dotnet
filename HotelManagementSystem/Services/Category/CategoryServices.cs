@@ -38,7 +38,7 @@ namespace HotelManagementSystem.Services.CategoryService
         {
             if (category == null) throw new ArgumentNullException(nameof(category));
 
-            // Check if it exists before editing
+            
             await GetCategoryByIdAsync(category.CategoryId);
 
             return await _categoryDLL.UpdateCategoryAsync(category);
@@ -51,3 +51,4 @@ namespace HotelManagementSystem.Services.CategoryService
         }
     }
 }
+

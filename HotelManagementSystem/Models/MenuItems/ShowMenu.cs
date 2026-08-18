@@ -18,7 +18,7 @@
 
         public int UnitId { get; set; }
 
-        // Stored in database (manual availability)
+        
         public bool IsAvailable { get; set; }
 
         public bool IsActive { get; set; }
@@ -31,7 +31,7 @@
 
         public DateTime? LastUpdatedOn { get; set; }
 
-        // Calculated in MenuService (NOT stored in DB)
+        
         public int AvailablePortions { get; set; }
     }
 }

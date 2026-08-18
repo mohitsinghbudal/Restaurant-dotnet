@@ -144,7 +144,7 @@ namespace HotelManagementSystem.DLL.InventoryDLL
                         transaction
                     );
 
-                    // If stock is insufficient or item is deleted, abort entire transaction
+                    
                     if (rowsAffected == 0)
                     {
                         transaction.Rollback();

@@ -34,7 +34,7 @@ namespace HotelManagementSystem.Helper.ClaimHelper
             if (user == null)
                 return new List<int>();
 
-            // Collect all RoleId claims; return empty list if none.
+            
             var values = user.FindAll("RoleId").Select(c => c?.Value).Where(v => !string.IsNullOrWhiteSpace(v));
 
             var roles = new List<int>();
@@ -48,3 +48,4 @@ namespace HotelManagementSystem.Helper.ClaimHelper
         }
     }
 }
+

@@ -32,13 +32,13 @@ namespace HotelManagementSystem.Services.Dinning
         {
             var table = await _tableDLL.GetTableByIdAsync(tableId);
 
-            // FIX: Null guard check must happen BEFORE accessing properties like table.Status
+            
             if (table == null)
             {
                 throw new KeyNotFoundException($"Table with ID {tableId} was not found.");
             }
 
-            // Standard operational guard: A session can only start if the table has been booked/occupied
+            
             if (table.Status != "Occupied")
             {
                 throw new InvalidOperationException($"Cannot start a dining session on table {table.TableNo} because its current status is '{table.Status}'.");
@@ -56,7 +56,7 @@ namespace HotelManagementSystem.Services.Dinning
             return await _dinningDLL.CreateDinningAsync(newDinning);
         }
 
-        // FIX: Changed return type contract from DinningModel to int to match your interface
+        
         public async Task<int> EndDinningSessionAsync(int sessionId)
         {
             var claimPrincipal = _httpContextAccessor.HttpContext?.User;
@@ -67,7 +67,7 @@ namespace HotelManagementSystem.Services.Dinning
             int userId = ClaimHelper.GetUserId(claimPrincipal);
 
             Console.WriteLine(userId);
-            // 1. Fetch the active dining session
+            
             var getDinning = await _dinningDLL.GetDinningByIdAsync(sessionId);
             if (getDinning == null)
             {
@@ -79,30 +79,30 @@ namespace HotelManagementSystem.Services.Dinning
                 throw new InvalidOperationException("This dining session is already closed.");
             }
 
-            // 2. Fetch the associated physical table configuration
+            
             var table = await _tableDLL.GetTableByIdAsync(getDinning.TableId);
             if (table == null)
             {
                 throw new KeyNotFoundException($"The table associated with this session (TableID: {getDinning.TableId}) no longer exists.");
             }
 
-            // 3. Mutate the session tracking properties
-            getDinning.SessionStatus = "Closed"; // Consolidated casing format
+            
+            getDinning.SessionStatus = "Closed"; 
             getDinning.EndAt = DateTime.UtcNow;
             getDinning.UpdatedAt = DateTime.UtcNow;
             getDinning.EndedBy = userId;
 
-            // 4. Persist the session close down to the database
+            
             var rowsAffected = await _dinningDLL.EndDinningSessionAsync(getDinning);
 
             if (rowsAffected > 0)
             {
-                // 5. CRITICAL STEP: Sync table state back to "Cleaning" using our existing repository method
+                
                 var updateTableDto = new UpdateTable
                 {
                     TableNo = table.TableNo,
                     Status = "Cleaning",
-                    UpdatedBy = table.UpdatedBy // Cascade the tracking user context
+                    UpdatedBy = table.UpdatedBy 
                 };
 
                 await _tableDLL.UpdateTableAsync(updateTableDto);
@@ -117,12 +117,13 @@ namespace HotelManagementSystem.Services.Dinning
         }
         public async Task<int?> GetMySessionId(int userId)
         {
-            return await _dinningDLL.GetMySessionId(userId);
+            // IDinningDLL does not define GetMySessionId; use existing GetDiningSession which returns int.
+            var sessionId = await _dinningDLL.GetDiningSession(userId);
+            return sessionId;
         }
         public async Task<int> GetCustomerId(int tableId)
         {
             return await _dinningDLL.GetCustomerId(tableId);
         }
-
     }
 }

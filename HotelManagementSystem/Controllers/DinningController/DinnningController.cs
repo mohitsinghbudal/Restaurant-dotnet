@@ -11,7 +11,7 @@ namespace HotelManagementSystem.Controllers.DinningController
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class DinningController : ControllerBase // Fixed 'Dinnning' spelling typo
+    public class DinningController : ControllerBase 
     {
         private readonly IDinningService _dinningService;
 
@@ -22,9 +22,9 @@ namespace HotelManagementSystem.Controllers.DinningController
         [HttpGet("all")]
         public async Task<IActionResult> GetAllDinningSessions()
         {
-            //int userId = ClaimHelper.GetUserId(User);
-            //var roleId = ClaimHelper.GetRoleId(User);
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            
+            
+            if (!User.IsInRole("5")) 
             {
                 throw new Exception("User not allowed");
             }
@@ -44,20 +44,20 @@ namespace HotelManagementSystem.Controllers.DinningController
         [HttpGet("user")]
         public async Task<IActionResult> GetSessionByUserId()
         {
-            //if (User?.Identity?.IsAuthenticated != true)
-            //    return Unauthorized("User is not authenticated.");
+            
+            
 
-            //var roleClaim = User.FindFirst("RoleId");
-            //if (roleClaim == null || string.IsNullOrWhiteSpace(roleClaim.Value))
-            //    return Unauthorized("RoleId claim is missing or empty.");
+            
+            
+            
 
             int userId = ClaimHelper.GetUserId(User);
-            //int roleId = ClaimHelper.GetRoleId(User);
+            
 
-            //if (roleId != 1)
-            //{
-            //    return Unauthorized("User not allowed");
-            //}
+            
+            
+            
+            
 
             try
             {

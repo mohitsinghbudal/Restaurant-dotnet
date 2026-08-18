@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 using HotelManagementSystem.Interfaces.DatabaseConnection;
 using HotelManagementSystem.Interfaces.SubCategoryInterface;
 using HotelManagementSystem.Models.Categories;
@@ -18,7 +18,7 @@ namespace HotelManagementSystem.Controllers.CategoryController
 
         public async Task<int> AddSubCategoryAsync(SubCategory subCategory)
         {
-            // Authorization note: callers should verify role membership with User.IsInRole("5") instead of numeric RoleId checks.
+            
             using var conn = _dbConn.CreateConnection();
             var sql = @"
 INSERT INTO SubCategories (CategoryId, SubCategoryName, [Description], IsAvailable, IsActive, CreatedBy, CreatedOn, DisplayOrder)
@@ -50,7 +50,7 @@ VALUES (@CategoryId, @SubCategoryName, @Description, @IsAvailable, 1, @CreatedBy
 
         public async Task<int> UpdateSubCategoryAsync(SubCategory subCategory)
         {
-            // Authorization note: callers should verify role membership with User.IsInRole("5") instead of numeric RoleId checks.
+            
             using var conn = _dbConn.CreateConnection();
             var sql = @"
 UPDATE SubCategories
@@ -67,7 +67,7 @@ WHERE SubCategoryId = @SubCategoryId ";
 
         public async Task<int> SoftDeleteSubCategoryAsync(int subCategoryId, int deletedBy)
         {
-            // Authorization note: callers should verify role membership with User.IsInRole("5") instead of numeric RoleId checks.
+            
             using var conn = _dbConn.CreateConnection();
             var sql = @"
 UPDATE SubCategories
@@ -79,3 +79,4 @@ WHERE SubCategoryId = @SubCategoryId;";
         }
     }
 }
+

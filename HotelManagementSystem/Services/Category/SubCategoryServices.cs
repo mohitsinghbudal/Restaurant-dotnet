@@ -20,7 +20,7 @@ namespace HotelManagementSystem.Services.Categories
             if (subCategory == null) throw new ArgumentNullException(nameof(subCategory));
             if (string.IsNullOrWhiteSpace(subCategory.SubCategoryName)) throw new ArgumentException("SubCategory Name is required.");
 
-            // 1. Foreign Key Validation: Verify parent Category exists and is active
+            
             var parentCategory = await _categoryDLL.GetCategoryByIdAsync(subCategory.CategoryId);
             if (parentCategory == null)
             {
@@ -55,10 +55,10 @@ namespace HotelManagementSystem.Services.Categories
         {
             if (subCategory == null) throw new ArgumentNullException(nameof(subCategory));
 
-            // 1. Verify this SubCategory exists before updating
+            
             await GetSubCategoryByIdAsync(subCategory.SubCategoryId);
 
-            // 2. Verify parent category context remains valid
+            
             var parentCategory = await _categoryDLL.GetCategoryByIdAsync(subCategory.CategoryId);
 
             if (parentCategory == null)
@@ -71,9 +71,10 @@ namespace HotelManagementSystem.Services.Categories
 
         public async Task<int> DeleteSubCategoryAsync(int subCategoryId, int deletedBy)
         {
-            // Verify item exists before executing deletion pipeline
+            
             await GetSubCategoryByIdAsync(subCategoryId);
             return await _subCategoryDLL.SoftDeleteSubCategoryAsync(subCategoryId, deletedBy);
         }
     }
 }
+

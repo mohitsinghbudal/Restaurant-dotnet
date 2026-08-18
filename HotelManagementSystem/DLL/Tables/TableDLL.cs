@@ -70,8 +70,8 @@ namespace HotelManagementSystem.DLL.Tables
         {
             using var connection = _dbConnection.CreateConnection();
 
-            // 1. Enclosed [Status] keyword in brackets
-            // 2. Switched UpdatedAt to execute directly using SQL's GETUTCDATE()
+            
+            
             var sql = @"UPDATE Tables 
                         SET [Status] = @Status, 
                             TableNo=@TableNo,
@@ -87,15 +87,15 @@ namespace HotelManagementSystem.DLL.Tables
 
         public async Task<int> BookTableAsync(TableModel table)
         {
-            // 1. Utilize your injected _userDLL dependency to dynamically 
-            //    find and assign the waiter with the lowest active workload!
+            
+            
             int WaiterId = await _userDLL.AssignWaiterAsync();
 
             using var connection = _dbConnection.CreateConnection();
 
-            // 2. Enclosed [Status] keyword in brackets
-            // 3. We map the parameters explicitly to make sure Dapper knows 
-            //    to read 'UpdatedBy' from your object and inject our dynamic waiter ID.
+            
+            
+            
             var sql = @"UPDATE Tables 
                         SET [Status] = @Status, 
                             UpdatedAt = GETUTCDATE(), 

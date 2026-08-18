@@ -18,8 +18,8 @@ namespace HotelManagementSystem.Controllers.InventoryController
             _inventoryService = inventoryService;
         }
 
-        //hotel staff
-        // GET: api/Inventory
+        
+        
         [HttpGet]
         public async Task<IActionResult> GetInventoryItems()
         {
@@ -40,7 +40,7 @@ namespace HotelManagementSystem.Controllers.InventoryController
         public async Task<IActionResult> GetAllInventoryItems([FromQuery] int page)
         {
           
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            if (!User.IsInRole("5")) 
             {
                 throw new Exception("User not allowed");
             }
@@ -62,7 +62,7 @@ namespace HotelManagementSystem.Controllers.InventoryController
             }
         }
 
-        // GET: api/Inventory/5
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetInventoryItemById(int id)
         {
@@ -83,7 +83,7 @@ namespace HotelManagementSystem.Controllers.InventoryController
             });
         }
 
-        // POST: api/Inventory
+        
         [HttpPost]
         public async Task<IActionResult> AddInventoryItem([FromBody] InventoryItem inventoryItem)
         {
@@ -109,7 +109,7 @@ namespace HotelManagementSystem.Controllers.InventoryController
             
         }
 
-        // PUT: api/Inventory/5
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInventoryItem( [FromBody] InventoryItem inventoryItem)
         {

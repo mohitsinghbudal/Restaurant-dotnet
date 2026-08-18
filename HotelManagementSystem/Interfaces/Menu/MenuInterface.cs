@@ -12,10 +12,10 @@ namespace HotelManagementSystem.Interfaces.MenuInterface
 
     public interface IMenuDLL
     {
-        Task<int> CreateMenuItemAsync(CreateMenu menu); // Returns the new identity ID
+        Task<int> CreateMenuItemAsync(CreateMenu menu); 
         Task<Menu?> GetMenuItemByIdAsync(int menuId);
-        //Task<IEnumerable<Menu>> GetAllMenuItemsAsync(); // Added missing method
-        Task<int> UpdateMenuAsync(UpdateMenu menu); // Standardized signature
+        
+        Task<int> UpdateMenuAsync(UpdateMenu menu); 
         Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync();
         Task<decimal> GetPriceById(int Id);
     }

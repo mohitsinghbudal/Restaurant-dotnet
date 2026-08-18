@@ -20,26 +20,26 @@ namespace HotelManagementSystem.Services.Report
 
         public async Task<byte[]> ExportDashboardReportAsync()
         {
-            // 1. Retrieve the analytical datasets from the data layer via Dapper
+            
             var data = await _reportDLL.GetDashboardReportAsync();
 
-            // 2. Initialize the ClosedXML Workbook
+            
             using (var workbook = new XLWorkbook())
             {
                 var ws = workbook.Worksheets.Add("Dashboard Metrics");
-                //ws.SheetView.ShowGridLines = true;
+                
                 ws.SetShowGridLines(true);
 
-                // Palette definitions (Professional Slate Muted Teal Scheme)
+                
                 var darkTeal = XLColor.FromHtml("#005B60");
                 var lightTeal = XLColor.FromHtml("#E0F2F1");
                 var zebraBg = XLColor.FromHtml("#F4FBFB");
                 var white = XLColor.White;
                 var grayBorder = XLColor.FromHtml("#CCCCCC");
 
-                // ==========================================
-                // HEADER BANNER BLOCKS
-                // ==========================================
+                
+                
+                
                 ws.Cell("A1").Value = "Executive Management Performance Report";
                 ws.Cell("A1").Style.Font.FontName = "Segoe UI";
                 ws.Cell("A1").Style.Font.FontSize = 16;
@@ -47,9 +47,9 @@ namespace HotelManagementSystem.Services.Report
                 ws.Cell("A1").Style.Font.FontColor = darkTeal;
                 ws.Row(1).Height = 30;
 
-                // ==========================================
-                // PILLAR SECTION 1: FINANCIAL OVERVIEW CARD
-                // ==========================================
+                
+                
+                
                 ws.Cell("A3").Value = "Financial Performance Summary";
                 ws.Cell("A3").Style.Font.FontName = "Segoe UI";
                 ws.Cell("A3").Style.Font.FontSize = 13;
@@ -69,12 +69,12 @@ namespace HotelManagementSystem.Services.Report
                 financialHeaders.Style.Border.OutsideBorderColor = grayBorder;
                 ws.Row(4).Height = 24;
 
-                // Row 5: Total Revenue Key KPI Data Card
+                
                 ws.Cell("A5").Value = "Total Revenue Aggregation";
                 ws.Cell("B5").Value = data.Summary.TotalRevenue;
                 ws.Cell("B5").Style.NumberFormat.Format = "$#,##0.00";
 
-                // Row 6: Volume Card
+                
                 ws.Cell("A6").Value = "Total Order Volume";
                 ws.Cell("B6").Value = data.Summary.TotalOrders;
                 ws.Cell("B6").Style.NumberFormat.Format = "#,##0";
@@ -91,9 +91,9 @@ namespace HotelManagementSystem.Services.Report
                 ws.Row(5).Height = 20;
                 ws.Row(6).Height = 20;
 
-                // ==========================================
-                // PILLAR SECTION 2: MOST ORDERED ITEMS (LEFT BLOCK)
-                // ==========================================
+                
+                
+                
                 ws.Cell("A8").Value = "Product Affinity Matrix (Top Ordered Items)";
                 ws.Cell("A8").Style.Font.FontName = "Segoe UI";
                 ws.Cell("A8").Style.Font.FontSize = 13;
@@ -136,9 +136,9 @@ namespace HotelManagementSystem.Services.Report
                     itemRow++;
                 }
 
-                // ==========================================
-                // PILLAR SECTION 3: REGULAR CUSTOMERS (RIGHT BLOCK)
-                // ==========================================
+                
+                
+                
                 ws.Cell("D8").Value = "Customer Lifetime Value Matrix (Top Spenders)";
                 ws.Cell("D8").Style.Font.FontName = "Segoe UI";
                 ws.Cell("D8").Style.Font.FontSize = 13;
@@ -189,7 +189,7 @@ namespace HotelManagementSystem.Services.Report
                     custRow++;
                 }
 
-                // Set Column Width Formatting Explicitly
+                
                 ws.Column(1).Width = 32;
                 ws.Column(2).Width = 24;
                 ws.Column(3).Width = 6;
@@ -197,7 +197,7 @@ namespace HotelManagementSystem.Services.Report
                 ws.Column(5).Width = 18;
                 ws.Column(6).Width = 28;
 
-                // 3. Render out to a memory stream byte array
+                
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);

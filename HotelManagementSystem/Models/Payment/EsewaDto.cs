@@ -22,7 +22,7 @@ namespace HotelManagementSystem.Models.Payment
     {
         public string transaction_code { get; set; } = string.Empty;
         public string status { get; set; } = string.Empty;
-        // Allow reading numeric values that may be encoded as JSON strings
+        
         [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public decimal? total_amount { get; set; }
         public string transaction_uuid { get; set; } = string.Empty;
@@ -41,3 +41,4 @@ namespace HotelManagementSystem.Models.Payment
         public string transaction_uuid { get; set; } = string.Empty;
     }
 }
+

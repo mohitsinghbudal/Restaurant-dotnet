@@ -27,7 +27,7 @@ namespace HotelManagementSystem.Helper.JWT
         new Claim(ClaimTypes.Email, user.Email)
     };
 
-            // Add integer Role IDs as string claims
+            
             foreach (var roleId in roleIds)
             {
                 claims.Add(new Claim(ClaimTypes.Role, roleId.ToString()));

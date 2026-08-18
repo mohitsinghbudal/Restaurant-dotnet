@@ -8,7 +8,7 @@
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
 
-        // Calculated automatically by the database
+        
         public decimal LineTotal { get; }
 
         public string? Remarks { get; set; }
@@ -21,3 +21,4 @@
         public DateTime? UpdatedAt { get; set; }
     }
 }
+

@@ -6,10 +6,10 @@ using HotelManagementSystem.Models.Order;
 
 namespace HotelManagementSystem.Services.OrderService
 {
-    public class OrderService : IOrderService // Assuming you have an IOrderService interface
+    public class OrderService : IOrderService 
     {
         private readonly IOrderDLL _orderDLL;
-        //private readonly IOrderItemService _orderItemService;
+        
         private readonly IInventoryService _inventoryService;
         private readonly IMenuDLL _menuDLL;
         private readonly IMenuServices _menuServices;
@@ -18,7 +18,7 @@ namespace HotelManagementSystem.Services.OrderService
         public OrderService(IOrderDLL orderDLL, IInventoryService inventoryService , IMenuDLL menuDLL, IMenuServices menuServices)
         {
             _orderDLL = orderDLL;
-            //_orderItemService = orderItemService;
+            
             _inventoryService = inventoryService;
             _menuDLL = menuDLL;
             _menuServices = menuServices;
@@ -29,7 +29,7 @@ namespace HotelManagementSystem.Services.OrderService
             return await _orderDLL.GetAllOrdersAsync();
         }
 
-        //get order by id
+        
         public async Task<Order?> GetOrderByIdAsync(int id)
         {
             if (id <= 0)
@@ -64,7 +64,7 @@ namespace HotelManagementSystem.Services.OrderService
 
             Console.WriteLine(order.MenuId);
 
-            //// 1. First check and deduct kitchen stock based on the recipe requirements
+            
             bool stockDeducted = await _inventoryService.DeductInventoryForOrderAsync(order.MenuId, order.Quantity);
 
             if (!stockDeducted)
@@ -147,15 +147,15 @@ namespace HotelManagementSystem.Services.OrderService
             if (order == null || order.OrderId <= 0)
                 throw new ArgumentException("Invalid order data.");
 
-            // 1. Calculate the difference (Delta)
-            // If positive: user added items (need to deduct more inventory)
-            // If negative: user removed items (need to return inventory back to kitchen)
+            
+            
+            
             int quantityDifference = newOrderedQuantity - currentOrderedQuantity;
 
             if (quantityDifference != 0)
             {
-                // 2. Call inventory service with the difference
-                // We will adjust our inventory service to handle negative numbers as "reversing/adding back" stock
+                
+                
                 bool stockAdjusted = await _inventoryService.DeductInventoryForOrderAsync(menuId, quantityDifference);
 
                 if (!stockAdjusted)
@@ -164,7 +164,7 @@ namespace HotelManagementSystem.Services.OrderService
                 }
             }
 
-            // 3. Forward the updated metadata to the DLL
+            
             return await _orderDLL.UpdateOrderAsync(order);
         }
 

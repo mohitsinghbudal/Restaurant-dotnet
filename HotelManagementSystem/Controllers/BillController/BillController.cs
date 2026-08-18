@@ -70,7 +70,7 @@ namespace HotelManagementSystem.Controllers.BillController
             {
                 int userId = ClaimHelper.GetUserId(User);
                 pay.PaidBy = userId;
-                // This will execute your math calculations and return a preview object DTO
+                
                 var billPreview = await _billService.PayBillCash(pay);
 
                 if (billPreview == null)
@@ -121,13 +121,13 @@ namespace HotelManagementSystem.Controllers.BillController
             return BadRequest(new { status = "Failed", message = "Payment verification failed or status incomplete." });
         }
 
-        //[HttpGet("pay/esewa/success")]
-        //public async Task<IActionResult> Success(string data)
-        //{
+        
+        
+        
 
-        //    return Ok(new { message = "successfull" });
+        
 
-        //}
+        
         [AllowAnonymous]
         [HttpGet("pay/esewa/success")]
         public async Task<IActionResult> EsewaSuccess([FromQuery] string data)
@@ -159,7 +159,7 @@ namespace HotelManagementSystem.Controllers.BillController
         {
             try
             {
-                if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+                if (!User.IsInRole("5")) 
                 {
                     throw new Exception("User not allowed");
                 }
@@ -173,66 +173,66 @@ namespace HotelManagementSystem.Controllers.BillController
             }
         }
 
-        //public async Task<IActionResult> PayBill([FromBody] BillPaymentRequest request)
-        //{
-        //    if (request == null)
-        //        return BadRequest("Payment request body cannot be null.");
+        
+        
+        
+        
 
-        //    try
-        //    {
-        //        // Calls the updated service to finalize numbers and trigger BillDLL.CreateBillAsync
-        //        Bill? finalizedBill = await _billService.GenerateAndPayBillAsync(
-        //            request.SessionId,
-        //            request.SubTotalAmount,
-        //            request.DiscountPercentage,
-        //            request.PaymentMethod,
-        //            request.UserId
-        //        );
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-        //        if (finalizedBill == null)
-        //            return StatusCode(500, "Failed to commit the transaction record.");
+        
+        
 
-        //        return Ok(new { message = "Bill paid and closed successfully.", receipt = finalizedBill });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
-        //[HttpGet("verify/{billNo}")]
-        //public async Task<IActionResult> VerifyBill(int billNo)
-        //{
-        //    if (billNo <= 0)
-        //        return BadRequest("Invalid Bill Number.");
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-        //    try
-        //    {
-        //        // Ensure you expose a matching lookup call down through your BillService/DLL layers
-        //        Bill? archivedBill = await _billService.GetBillByNoAsync(billNo);
+        
+        
+        
+        
 
-        //        if (archivedBill == null)
-        //            return NotFound(new { verified = false, message = $"Invoice #{billNo} was not found inside the active records." });
+        
+        
 
-        //        return Ok(new
-        //        {
-        //            verified = true,
-        //            message = "Invoice record verified successfully.",
-        //            billDetails = archivedBill
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
-        //public class BillPaymentRequest
-        //{
-        //    public int SessionId { get; set; }
-        //    public decimal SubTotalAmount { get; set; }
-        //    public decimal DiscountPercentage { get; set; }
-        //    public string PaymentMethod { get; set; } = "Cash";
-        //    public int UserId { get; set; }
-        //}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 
     }
@@ -241,4 +241,5 @@ namespace HotelManagementSystem.Controllers.BillController
         public int SessionId { get; set; }
     }
 }
+
 

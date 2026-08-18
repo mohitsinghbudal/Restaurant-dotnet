@@ -1,4 +1,4 @@
-using HotelManagementSystem.Controllers.CategoryController;
+﻿using HotelManagementSystem.Controllers.CategoryController;
 using HotelManagementSystem.DLL.AssignWaiterDLL;
 using HotelManagementSystem.DLL.BillDLL;
 using HotelManagementSystem.DLL.CartDLL;
@@ -16,6 +16,7 @@ using HotelManagementSystem.DLL.Tables;
 using HotelManagementSystem.DLL.UnitDLL;
 using HotelManagementSystem.DLL.Users;
 using HotelManagementSystem.Helper.JWT;
+using HotelManagementSystem.Helper.RequestLoggingMiddleware;
 using HotelManagementSystem.Interfaces;
 using HotelManagementSystem.Interfaces.BillInterface;
 using HotelManagementSystem.Interfaces.CategoryInterface;
@@ -66,14 +67,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-// Register email service with DI (ensure ILogger can be injected)
+
 builder.Services.AddScoped<HotelManagementSystem.Interfaces.EmailInterface.IEmailService, HotelManagementSystem.Services.Email.EmailService>();
 
-// Services
+
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IJWT, JWT>();
 
-// For DLL layer
+
 builder.Services.AddScoped<IUserDLL, UserDLL>();
 builder.Services.AddScoped<ITableDLL, TableDLL>();
 builder.Services.AddScoped<IDinningDLL, DinningDLL>();
@@ -83,9 +84,8 @@ builder.Services.AddScoped<ICategoryDLL, CategoryDLL>();
 builder.Services.AddScoped<IMenuDLL, MenuDLL>();
 builder.Services.AddScoped<IInventoryDLL, InventoryDLL>();
 builder.Services.AddScoped<IRecipeDLL, RecipeDLL>();
-// Register SubCategory data layer implementation
-builder.Services.AddScoped<HotelManagementSystem.Interfaces.SubCategoryInterface.ISubCategoryDLL,
-                           HotelManagementSystem.Controllers.CategoryController.SubCategoryController>();
+
+builder.Services.AddScoped<ISubCategoryDLL,SubCategoryController>();
 builder.Services.AddScoped<IOrderDLL, OrderDLL>();
 builder.Services.AddScoped<IOrderItemDLL, OrderItemDLL>();
 builder.Services.AddScoped<IBillDLL, BillDLL>();
@@ -95,7 +95,7 @@ builder.Services.AddScoped<ICartDLL, CartDLL>();
 builder.Services.AddScoped<IRoleDLL,RolesDLL>();
 
 
-// For Service layer
+
 builder.Services.AddScoped<IUserService, UserServices>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<IDinningService, DinningService>();
@@ -108,10 +108,10 @@ builder.Services.AddScoped<ISubCategoryService, SubCategoryServices>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IRoleService, RolesService>();
-// Register BillService as a scoped service and enable IHttpClientFactory so
-// the service can create HttpClient instances without being registered as a
-// typed HttpClient. This ensures other scoped dependencies (like IPaymentDLL)
-// are resolved correctly.
+
+
+
+
 builder.Services.AddScoped<IBillService, BillService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IReportService, ReportService>();
@@ -170,7 +170,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Register IHttpContextAccessor so services can access HttpContext when needed
+
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -180,6 +180,28 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi();
 }
+//custom middlewares inline
+// Get the logger instance from app.Services
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+app.Use(async (context, next) =>
+{
+    logger.LogInformation("1. Processing Request: {Method} {Path}", context.Request.Method, context.Request.Path);
+
+    await next(); // Pass control to next middleware
+    Console.WriteLine("this is just the test middleware");
+
+    logger.LogInformation("2. Processing Response: {StatusCode}", context.Response.StatusCode);
+});
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("1. Processing Request");
+    await next(); // Pass control to next middleware
+    Console.WriteLine("2. Processing Response");
+});
+
+app.UseRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAllLocal");
@@ -216,3 +238,4 @@ public class SqlConnectionFactory : IDbConnectionFactory
         return new SqlConnection(connectionString);
     }
 }
+

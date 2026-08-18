@@ -14,7 +14,7 @@ namespace HotelManagementSystem.Interfaces.TableInterface
         public Task<TableModel> SeeTableInfo(int tableNo);
         Task<IEnumerable<TableModel>> GetAllTable();
 
-        //Task<TableModel> GetMyBookings(int userId);
+        
         Task<IEnumerable<TableModel>> GetMyAllBookings(int userId);
         Task<bool> UpdateTableInfoAsync(TableModel table, int userid);
         Task<bool> DeleteTableAsync(int tableid, int userid);
@@ -28,13 +28,13 @@ namespace HotelManagementSystem.Interfaces.TableInterface
         Task<TableModel> GetTableByTableNoAsync(int tableNo);
         Task<TableModel> GetTableByIdAsync(int tableId);
 
-        // Match the model signature used in your TableDLL implementation
+        
         Task<int> BookTableAsync(TableModel table);
 
         Task<TableModel> GetTableByNo(int Id);
         Task<IEnumerable<TableModel>> GetAllTable();
 
-        //Task<TableModel> GetMyBookings(int userId);
+        
         Task<IEnumerable<TableModel>> GetMyAllBookings(int userId);
         Task<bool> UpdateTableInfoAsync(TableModel table);
         Task<bool> DeleteTableAsync(int tableid, int userid);

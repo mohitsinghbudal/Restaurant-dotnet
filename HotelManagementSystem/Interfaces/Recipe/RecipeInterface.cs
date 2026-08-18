@@ -18,7 +18,7 @@ namespace HotelManagementSystem.Interfaces.RecipeInterface
 
         Task<IEnumerable<Recipe>> GetAllRecipesAsync();
 
-        Task<int> UpdateRecipeAsync(Recipe recipe);
+        Task<int> UpdateRecipeAsync(Recipe recipe,int i);
 
         Task<int> DeleteRecipeAsync(int recipeId);
     }

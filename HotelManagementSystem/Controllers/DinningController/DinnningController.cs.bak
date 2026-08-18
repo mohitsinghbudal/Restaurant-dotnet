@@ -1,0 +1,178 @@
+﻿using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Interfaces.DinningInterface;
+using HotelManagementSystem.Models.Dinning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+
+namespace HotelManagementSystem.Controllers.DinningController
+{
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DinningController : ControllerBase // Fixed 'Dinnning' spelling typo
+    {
+        private readonly IDinningService _dinningService;
+
+        public DinningController(IDinningService dinningService)
+        {
+            _dinningService = dinningService;
+        }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllDinningSessions()
+        {
+            //int userId = ClaimHelper.GetUserId(User);
+            //var roleId = ClaimHelper.GetRoleId(User);
+            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            {
+                throw new Exception("User not allowed");
+            }
+            try
+            {
+                var sessions = await _dinningService.GetAllDinningSessions();
+
+                return Ok( new{ message = "success",Sessions = sessions});
+
+            }catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+        }
+
+        [HttpGet("user")]
+        public async Task<IActionResult> GetSessionByUserId()
+        {
+            //if (User?.Identity?.IsAuthenticated != true)
+            //    return Unauthorized("User is not authenticated.");
+
+            //var roleClaim = User.FindFirst("RoleId");
+            //if (roleClaim == null || string.IsNullOrWhiteSpace(roleClaim.Value))
+            //    return Unauthorized("RoleId claim is missing or empty.");
+
+            int userId = ClaimHelper.GetUserId(User);
+            //int roleId = ClaimHelper.GetRoleId(User);
+
+            //if (roleId != 1)
+            //{
+            //    return Unauthorized("User not allowed");
+            //}
+
+            try
+            {
+                if (userId <= 0)
+                {
+                    return BadRequest(new { message = "Invalid User ID provided." });
+                }
+
+                int sessionId = await _dinningService.GetDiningSession(userId);
+
+                if (sessionId <= 0)
+                {
+                    return NotFound(new { message = $"No active dining session found for User ID {userId}." });
+                }
+
+                return Ok(new { sessionId = sessionId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching the dining session.", details = ex.Message });
+            }
+        }
+
+        [HttpPost("Create-Session")]
+        public async Task<IActionResult> CreateDinningSession([FromBody] DinningDTO dto)
+        {
+            int userId = ClaimHelper.GetUserId(User);
+
+            if (dto == null || dto.TableId <= 0)
+            {
+                return BadRequest(new { message = "Invalid data payload. A valid Table ID is required." });
+            }
+
+            try
+            {
+                var sessionId = await _dinningService.CreateDinningAsync(dto.TableId, userId);
+                return Ok(new { sessionId = sessionId, message = "Dining session initiated successfully." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An internal server error occurred.", details = ex.Message });
+            }
+        }
+
+        [HttpPost("End-Session/{sessionId}")]
+        public async Task<IActionResult> EndDinningSession(int sessionId)
+        {
+            if (sessionId <= 0)
+            {
+                return BadRequest(new { message = "A valid Session ID must be provided." });
+            }
+
+            try
+            {
+
+
+                var rowsAffected = await _dinningService.EndDinningSessionAsync(sessionId);
+
+                if (rowsAffected <= 0)
+                {
+                    return BadRequest(new { message = "Failed to close the session. It may already be closed or does not exist." });
+                }
+
+                return Ok(new { message = "Dining session closed successfully. Table has transitioned to cleaning status." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An internal server error occurred.", details = ex.Message });
+            }
+        }
+        [HttpGet("my-id")]
+        public async Task<IActionResult> GetMySessionId()
+        {
+            try
+            {
+                if (!User.IsInRole("1"))
+                {
+                    throw new Exception("User not allowed");
+                }
+
+                int userId = ClaimHelper.GetUserId(User);
+                int? id = await _dinningService.GetMySessionId(userId);
+                return Ok(new { SessionId = id });
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("customer-waiter-id")]
+        public async Task<IActionResult> GetCustomerSessionId([FromQuery] int tableId)
+        {
+            try
+            {
+                if (!User.IsInRole("2")) 
+                {
+                    throw new Exception("User not allowed");
+                }
+                int id = await _dinningService.GetCustomerId(tableId);
+                return Ok(new { SessionId = id });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("error occured" +ex.Message );
+            }
+        }
+        
+    }
+}

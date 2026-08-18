@@ -28,7 +28,7 @@ namespace HotelManagementSystem.Services.BillService
             _billDLL = billDLL;
             _orderDLL = orderDLL;
             _config = config;
-            // Create a HttpClient from the factory to avoid lifetime mismatches
+            
             _httpClient = httpClientFactory.CreateClient();
             _paymentDLL = paymentDLL;
             _dinningService = dinningService;
@@ -44,7 +44,7 @@ namespace HotelManagementSystem.Services.BillService
         {
             var orders = await _orderDLL.GetOrderBySessionId(sessionId);
 
-            // 1. Block bill generation if any order is still in progress (e.g., Placed, Preparing)
+            
             
             bool hasIncompleteOrders = orders.Any(order =>
                 !order.OrderStatus.Equals("Completed", StringComparison.OrdinalIgnoreCase) &&
@@ -56,12 +56,12 @@ namespace HotelManagementSystem.Services.BillService
                 throw new Exception("Current dining session orders are not completed");
             }
 
-            // 2. Calculate grandTotal by including ONLY Completed orders (ignoring Cancelled)
+            
             decimal grandTotal = orders
                 .Where(order => order.OrderStatus.Equals("Completed", StringComparison.OrdinalIgnoreCase))
                 .Sum(o => o.TotalAmount);
 
-            // 3. Financial calculations
+            
             decimal discount = grandTotal * (discountPercentage / 100M);
             decimal taxableAmount = grandTotal - discount;
             decimal tax = taxableAmount * 0.13M;
@@ -88,7 +88,7 @@ namespace HotelManagementSystem.Services.BillService
             if (subTotalAmount < 0) throw new ArgumentException("Subtotal cannot be negative.");
 
             await _dinningService.EndDinningSessionAsync(sessionId);
-            // 1. Math Calculation Blocks
+            
             decimal discountAmount = subTotalAmount * (discountPercentage / 100m);
             decimal taxableAmount = subTotalAmount - discountAmount;
 
@@ -96,10 +96,10 @@ namespace HotelManagementSystem.Services.BillService
             decimal taxAmount = taxableAmount * 0.13M;
             decimal totalAmount = taxableAmount + taxAmount;
 
-            // 2. Fetch sequential auto-incrementing Bill number configuration
+            
             int nextBillNo = await _billDLL.GetNextBillNoAsync();
 
-            // 3. Assemble complete Model properties aligning with non-null table schemas
+            
             var bill = new Bill
             {
                 BillNo = nextBillNo,
@@ -108,13 +108,13 @@ namespace HotelManagementSystem.Services.BillService
                 TaxAmount = Math.Round(taxAmount, 2),
                 TotalAmount = Math.Round(totalAmount, 2),
                 PaymentMethod = string.IsNullOrWhiteSpace(paymentMethod) ? "Cash" : paymentMethod,
-                IsPaid = false, // Set true assuming processing happens at physical point of sale settlement
+                IsPaid = false, 
                 CreatedDate = DateTime.UtcNow,
                 PaidAt = DateTime.UtcNow,
                 PaidBy = userId
             };
 
-            // 4. Save calculations directly downstream via DLL
+            
             return await _billDLL.CreateBillAsync(bill);
         }
         public async Task<Bill> PayBillCash(PayBill pay)
@@ -131,7 +131,7 @@ namespace HotelManagementSystem.Services.BillService
             await _dinningService.EndDinningSessionAsync(bill.SessionId);
 
 
-            // Set the payer and persist payment via DLL
+            
             bill.PaidBy = pay.PaidBy;
             return await _billDLL.PayBillAsync(bill.IsPaid, pay.BillNo, bill.PaymentMethod, pay.PaidBy);
         }
@@ -144,22 +144,22 @@ namespace HotelManagementSystem.Services.BillService
             if (bill == null) throw new Exception("No bill found for this session.");
             if (bill.IsPaid) throw new Exception("This bill has already been paid.");
 
-            //always constant
+            
 
-            string transactionUuid = Guid.NewGuid().ToString(); /////
+            string transactionUuid = Guid.NewGuid().ToString(); 
             string productCode = _config["Esewa:ProductCode"] ?? "EPAYTEST"; 
             string secretKey = _config["Esewa:SecretKey"] ?? "8gBm/:&EnhH.1/q";
 
-            // eSewa configuration URLs
+            
 
             string successUrl = _config["Esewa:SuccessUrl"] ?? "https://localhost:7186/api/Bill/pay/esewa/success";
             string failureUrl = _config["Esewa:FailureUrl"] ?? "https://localhost:7186/api/Bill/pay/esewa/failure";
             string signedFieldNames = "total_amount,transaction_uuid,product_code";
 
-            //Strictly format to 2 decimal places
-            string TaxAmount = bill.TaxAmount.ToString("0.00");   // Tax portion
-            string Amount = bill.GrandTotal.ToString("0.00");     // Base portion
-            string TotalAmount = bill.TotalAmount.ToString("0.00"); // Base + Tax
+            
+            string TaxAmount = bill.TaxAmount.ToString("0.00");   
+            string Amount = bill.GrandTotal.ToString("0.00");     
+            string TotalAmount = bill.TotalAmount.ToString("0.00"); 
 
             Console.WriteLine(TotalAmount);
             Console.WriteLine(TotalAmount);
@@ -171,12 +171,12 @@ namespace HotelManagementSystem.Services.BillService
             string ServiceCharge = "0.00";
             string DeliveryCharge = "0.00";
 
-            // HMAC Message string: total_amount,transaction_uuid,product_code
+            
             string message = $"total_amount={TotalAmount},transaction_uuid={transactionUuid},product_code={productCode}";
             string signature = GenerateSignature(message, secretKey);
 
 
-            // Record initial pending payment
+            
             var payment = new Payment
             {
                 BillId = bill.BillId,
@@ -208,7 +208,7 @@ namespace HotelManagementSystem.Services.BillService
             };
         }
 
-        // --- Step B: Verify Callback Response from eSewa ---
+        
         public async Task<bool> VerifyAndProcessEsewaCallbackAsync(string encodedData , int userId)
         {
             try
@@ -218,7 +218,7 @@ namespace HotelManagementSystem.Services.BillService
 
                 if (string.IsNullOrWhiteSpace(encodedData)) return false;
 
-                // 1. Base64 Decode callback data payload
+                
                 byte[] base64Bytes = Convert.FromBase64String(encodedData);
                 string decodedJson = Encoding.UTF8.GetString(base64Bytes);
                 var callbackData = JsonSerializer.Deserialize<EsewaCallbackDecodedData>(decodedJson);
@@ -226,24 +226,24 @@ namespace HotelManagementSystem.Services.BillService
                 if (callbackData == null || string.IsNullOrEmpty(callbackData.transaction_uuid))
                     return false;
 
-                // 2. Fetch locally saved pending payment record
+                
                 var payment = await _paymentDLL.GetPaymentByUuidAsync(callbackData.transaction_uuid);
                 if (payment == null) return false;
 
-                // Idempotency Guard: prevent duplicate processing if already completed
+                
                 if (payment.Status == "Completed") return true;
 
                 string productCode = _config["Esewa:ProductCode"] ?? "EPAYTEST";
 
-                // Sanitize total_amount: prefer the callback numeric value if present, format with two decimals
+                
                 string totalAmountStr = callbackData.total_amount.HasValue
                     ? callbackData.total_amount.Value.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)
                     : payment.Amount.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
 
                 
 
-                // 3. Double-check status with eSewa Status Verification API
-                // CORRECT API PATH: /api/epay/transaction/status/
+                
+                
                 string statusApiUrl = $"https://rc.esewa.com.np/api/epay/transaction/status/?product_code={productCode}&total_amount={totalAmountStr}&transaction_uuid={callbackData.transaction_uuid}";
 
 
@@ -266,7 +266,7 @@ namespace HotelManagementSystem.Services.BillService
 
                 var statusResponse = await response.Content.ReadFromJsonAsync<EsewaStatusApiResponse>();
 
-                // 4. Update Payment & Bill records if verification passes
+                
                 if (statusResponse != null && statusResponse.status == "COMPLETE")
                 {
                     payment.Status = "Completed";
@@ -290,7 +290,7 @@ namespace HotelManagementSystem.Services.BillService
 
             catch (Exception ex)
             {
-                // Unhandled exception fallback
+                //throw new Exception(ex.Message);
                 return false;
             }
         }
@@ -310,3 +310,4 @@ namespace HotelManagementSystem.Services.BillService
         }
     }
 }
+

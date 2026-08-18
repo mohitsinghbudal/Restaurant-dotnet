@@ -28,7 +28,7 @@ namespace HotelManagementSystem.Services.MenuService
 
         public async Task<int> CreateMenuItemAsync(CreateMenu menu)
         {
-            // Business validation rule
+            
             if (menu.ItemPrice <= 0)
                 throw new ArgumentException("Item price must be greater than zero.");
 
@@ -64,7 +64,7 @@ namespace HotelManagementSystem.Services.MenuService
 
         public async Task<IEnumerable<ShowMenu>> GetAllMenuItemsAsync()
         {
-            //const int pageSize = 10;
+            
 
             var menus = (await _menuDLL.GetAllMenuItemsAsync()).ToList();
             var recipes = (await _recipeDLL.GetAllRecipesAsync()).ToList();
@@ -132,8 +132,8 @@ namespace HotelManagementSystem.Services.MenuService
             if (!recipes.Any())
                 return 0;
 
-            // PERFORMANCE OPTIMIZATION: Pull all inventory records into memory in 1 query 
-            // instead of running an individual DB connection trip inside the foreach loop.
+            
+            
             var inventoryItems = (await _inventoryDLL.GetInventoryItemAsync()).ToList();
 
             int available = int.MaxValue;
@@ -159,19 +159,19 @@ namespace HotelManagementSystem.Services.MenuService
 
         public async Task<bool> DeductInventoryForOrderAsync(int menuId, int orderedQuantity)
         {
-            // 1. Fetch recipe items required for this dish
+            
             var recipes = await _recipeDLL.GetRecipeByMenuIdAsync(menuId);
-            if (!recipes.Any()) return true; // Direct retail item without raw recipes (e.g. Coke, Mineral Water)
+            if (!recipes.Any()) return true; 
 
             using var connection = _dbConn.CreateConnection();
 
-            // Explicitly open connection before invoking a local transaction block
+            
             if (connection.State != System.Data.ConnectionState.Open)
             {
                 connection.Open();
             }
 
-            // Use a transaction so if one ingredient fails to deduct, everything rolls back safely
+            
             using var transaction = connection.BeginTransaction();
 
             try
@@ -192,7 +192,7 @@ namespace HotelManagementSystem.Services.MenuService
 
                     if (rowsAffected == 0)
                     {
-                        // Operational failure: Insufficient stock for this component!
+                        
                         transaction.Rollback();
                         return false;
                     }

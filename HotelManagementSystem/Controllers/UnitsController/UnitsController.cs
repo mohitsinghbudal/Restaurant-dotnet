@@ -1,9 +1,11 @@
 ﻿using HotelManagementSystem.Interfaces.Units;
 using HotelManagementSystem.Models.Units;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSystem.Controllers.UnitsController
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UnitsController : ControllerBase

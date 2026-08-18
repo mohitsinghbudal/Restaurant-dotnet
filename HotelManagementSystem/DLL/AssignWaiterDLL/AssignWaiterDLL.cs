@@ -37,9 +37,10 @@ namespace HotelManagementSystem.DLL.AssignWaiterDLL
             if (!waiters.Any())
                 return null;
 
-            // Least busy waiter
+            
             return waiters.First().UserId;
         }
         
     }
 }
+

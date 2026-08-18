@@ -103,12 +103,12 @@ namespace HotelManagementSystem.Services.Table
                 throw new InvalidOperationException("Table is currently being cleaned.");
             }
 
-            // 1. Double Assignment Protection: Handled internally inside TableDLL via AssignWaiterAsync
+            
             existingTable.Status = "Occupied";
             existingTable.UpdatedBy = userId;
             existingTable.UpdatedAt = DateTime.UtcNow;
 
-            // 2. Delegate to DLL which safely assigns the workload-based waiter
+            
             var table = await _table.BookTableAsync(existingTable);
 
             if (table <=0)
@@ -146,12 +146,12 @@ namespace HotelManagementSystem.Services.Table
                 throw new InvalidOperationException($"Cannot free a table that is currently '{existingTable.Status}'. It must be Cleaned first.");
             }
 
-            // Instead of instantiating a raw UpdateTable DTO manually, map it cleanly
+            
             var updatedData = new UpdateTable
             {
                 TableNo = table.TableNo,
-                //UpdatedBy = table.UpdatedBy,
-                Status = "Available" // Standard Restaurant Workflow: Available -> Occupied -> Cleaning -> 
+                
+                Status = "Available" 
             };
 
             return await _table.UpdateTableAsync(updatedData);
@@ -168,7 +168,7 @@ namespace HotelManagementSystem.Services.Table
                 throw new KeyNotFoundException($"Table number {table.tableno} does not exist.");
             }
 
-            // FIX: Typo matching ("Cleaning" vs "Cleanning")   
+            
             if (existingTable.Status == "Available")
             {
                 throw new InvalidOperationException("Table is already cleaned and available.");
@@ -185,8 +185,8 @@ namespace HotelManagementSystem.Services.Table
             var updatedData = new UpdateTable
             {
                 TableNo = table.tableno,
-                //UpdatedBy = table.updatedby,
-                Status = "Cleaning" // Once cleaning is done, it transitions back to Available
+                
+                Status = "Cleaning" 
             };
 
             return await _table.UpdateTableAsync(updatedData);

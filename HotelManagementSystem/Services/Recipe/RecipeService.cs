@@ -27,8 +27,9 @@ namespace HotelManagementSystem.Services.RecipeService
             return await _recipeDLL.GetAllRecipesAsync();
         }
 
-        public async Task<int> UpdateRecipeAsync(Recipe recipe)
+        public async Task<int> UpdateRecipeAsync(Recipe recipe, int userId)
         {
+            recipe.UpdatedBy = userId;
             return await _recipeDLL.UpdateRecipeAsync(recipe);
         }
 

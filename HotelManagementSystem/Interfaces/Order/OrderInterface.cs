@@ -5,7 +5,7 @@ namespace HotelManagementSystem.Interfaces.OrderInterface
     public interface IOrderDLL
     {
         Task<Order> GetOrderByIdAsync(int id);
-        //Task<IEnumerable<Order?>> MyOrderAsync(int UserId);
+        
         Task<IEnumerable<Order>> GetOrderBySessionId(int Id);
         Task<bool> UpdateOrderAsync(Order order );
         Task<Order> CreateOrderAsync(Order order);
@@ -18,7 +18,7 @@ namespace HotelManagementSystem.Interfaces.OrderInterface
     public interface IOrderService
     {
         Task<Order?> GetOrderByIdAsync(int id);
-        //Task<IEnumerable<Order?>> MyOrderAsync(int UserId );
+        
         Task<IEnumerable<Order>> GetOrderBySessionId(int Id);
         Task<bool> UpdateOrderAsync(int id, int wid);
         Task<Order?> CreateOrderAsync(CreateOrder order);
@@ -32,3 +32,4 @@ namespace HotelManagementSystem.Interfaces.OrderInterface
 
     }
 }
+

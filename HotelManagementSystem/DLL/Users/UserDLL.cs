@@ -148,7 +148,7 @@ VALUES
         {
             using var conn = _dbConnection.CreateConnection();
 
-            // Fixed SQL string formatting with proper spacing
+            
             string sql = @"
         SELECT RoleId 
         FROM UserRoles 
@@ -322,11 +322,11 @@ VALUES
 
             try
             {
-                // 1. Delete current role mappings
+                
                 string deleteSql = "DELETE FROM UserRoles WHERE UserId = @UserId;";
                 await conn.ExecuteAsync(deleteSql, new { UserId = userId }, transaction);
 
-                // 2. Insert new role mappings
+                
                 if (roleIds != null && roleIds.Any())
                 {
                     string insertSql = @"

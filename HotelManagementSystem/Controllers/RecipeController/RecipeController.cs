@@ -1,4 +1,5 @@
-﻿using HotelManagementSystem.Interfaces.RecipeInterface;
+﻿using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Interfaces.RecipeInterface;
 using HotelManagementSystem.Models.Recipe;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace HotelManagementSystem.Controllers.RecipeController
             _recipeService = recipeService;
         }
 
-        // GET: api/Recipe
+        
         [HttpGet]
         public async Task<IActionResult> GetAllRecipes()
         {
@@ -28,7 +29,7 @@ namespace HotelManagementSystem.Controllers.RecipeController
             });
         }
 
-        // GET: api/Recipe/menu/1
+        
         [HttpGet("menu/{menuId}")]
         public async Task<IActionResult> GetRecipeByMenuId(int menuId)
         {
@@ -41,11 +42,11 @@ namespace HotelManagementSystem.Controllers.RecipeController
             });
         }
 
-        // POST: api/Recipe
+        
         [HttpPost]
         public async Task<IActionResult> CreateRecipe([FromBody] Recipe recipe)
         {
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            if (!User.IsInRole("5")) 
             {
                 throw new Exception("User not allowed");
             }
@@ -58,15 +59,18 @@ namespace HotelManagementSystem.Controllers.RecipeController
             });
         }
 
-        // PUT: api/Recipe
+        
         [HttpPut]
         public async Task<IActionResult> UpdateRecipe([FromBody] Recipe recipe)
         {
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            if (!User.IsInRole("5")) 
             {
                 throw new Exception("User not allowed");
             }
-            var result = await _recipeService.UpdateRecipeAsync(recipe);
+            int userId = ClaimHelper.GetUserId(User);
+            
+
+            var result = await _recipeService.UpdateRecipeAsync(recipe , userId);
 
             if (result == 0)
             {
@@ -82,11 +86,11 @@ namespace HotelManagementSystem.Controllers.RecipeController
             });
         }
 
-        // DELETE: api/Recipe/5
+        
         [HttpDelete("{recipeId}")]
         public async Task<IActionResult> DeleteRecipe(int recipeId)
         {
-            if (!User.IsInRole("5")) // Checks if "5" exists in ANY of the user's role claims
+            if (!User.IsInRole("5")) 
             {
                 throw new Exception("User not allowed");
             }

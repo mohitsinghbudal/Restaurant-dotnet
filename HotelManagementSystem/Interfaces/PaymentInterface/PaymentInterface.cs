@@ -4,8 +4,8 @@ namespace HotelManagementSystem.Interfaces.PaymentInterface
 {
     public interface IPaymentService
     {
-        //Task<int> CreatePaymentAsync(Payment pay);
-        //Task<bool> UpdatePaymentAsync(Payment pay);
+        
+        
         Task<Payment?> GetPaymentByUuidAsync(string transactionUuid);
         Task<IEnumerable<Payment>> GetALLPaymentsAsync();
     }
@@ -17,3 +17,4 @@ namespace HotelManagementSystem.Interfaces.PaymentInterface
         Task<IEnumerable<Payment>> GetALLPaymentsAsync();
     } 
 }
+

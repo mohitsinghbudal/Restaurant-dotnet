@@ -32,7 +32,7 @@ namespace HotelManagementSystem.DLL.CategoryDLL
         {
             using var conn = _dbConn.CreateConnection();
 
-            // Sorts automatically by your display configuration order
+            
             string sql = @"SELECT * FROM Categories 
                            WHERE IsActive = 1 
                            ORDER BY DisplayOrder ASC, CategoryName ASC;";
@@ -51,7 +51,7 @@ namespace HotelManagementSystem.DLL.CategoryDLL
         {
             using var conn = _dbConn.CreateConnection();
 
-            // Maps exactly to UpdatedBy and UpdatedOn property schemas
+            
             var sql = @"
                 UPDATE Categories 
                 SET CategoryName = @CategoryName,
@@ -80,3 +80,4 @@ namespace HotelManagementSystem.DLL.CategoryDLL
         }
     }
 }
+

@@ -21,7 +21,7 @@ namespace HotelManagementSystem.DLL.CartDLL
             using var conn = _dbconn.CreateConnection();
             string sql = @"SELECT * FROM Cart WHERE UserId = @UserId;";
 
-            // Use QueryFirstOrDefaultAsync to return a single Cart object (or null)
+            
             return await conn.QueryAsync<Cart>(sql, new { UserId = userID });
         }
         public async Task<Cart?> GetCartAsync(int userID, int MenuId)
@@ -29,7 +29,7 @@ namespace HotelManagementSystem.DLL.CartDLL
             using var conn = _dbconn.CreateConnection();
             string sql = @"SELECT * FROM Cart WHERE UserId = @UserId AND MenuId = @MenuId;";
 
-            // Use QueryFirstOrDefaultAsync to return a single Cart object (or null)
+            
             return await conn.QueryFirstOrDefaultAsync<Cart>(sql, new { UserId = userID ,MenuId = MenuId});
         }
         public async Task<Cart?> GetMyCartByItemAsync(int cartId)
@@ -37,7 +37,7 @@ namespace HotelManagementSystem.DLL.CartDLL
             using var conn = _dbconn.CreateConnection();
             string sql = @"SELECT * FROM Cart WHERE CartId = @CartId;";
 
-            // Use QueryFirstOrDefaultAsync to return a single Cart object (or null)
+            
             return await conn.QueryFirstOrDefaultAsync<Cart>(sql, new {CartId = cartId });
         }
 
@@ -74,3 +74,4 @@ namespace HotelManagementSystem.DLL.CartDLL
         }
     }
 }
+

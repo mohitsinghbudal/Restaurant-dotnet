@@ -11,15 +11,15 @@ namespace HotelManagementSystem.Services.PaymentService
         {
             _paydll= paydll;
         }
-       //public async Task<int> CreatePaymentAsync(Payment pay) 
-       // {
+       
+       
             
-       // }
-       // public async Task<bool> UpdatePaymentAsync(Payment pay) 
-       // {
+       
+       
+       
             
 
-       // }
+       
         public async Task<Payment?> GetPaymentByUuidAsync(string transactionUuid) 
         {
             return await _paydll.GetPaymentByUuidAsync(transactionUuid);
@@ -30,3 +30,4 @@ namespace HotelManagementSystem.Services.PaymentService
         }
     }
 }
+

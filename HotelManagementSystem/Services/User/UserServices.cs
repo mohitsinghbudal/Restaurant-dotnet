@@ -78,7 +78,7 @@ namespace HotelManagementSystem.Services.User
                 Email = user.Email,
                 PhoneNo = user.PhoneNo,
                 PasswordHash = passwordHash,
-                //RoleId = user.RoleId,
+                
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 EmailOtp = otp,
@@ -109,10 +109,10 @@ namespace HotelManagementSystem.Services.User
             if (!isPasswordValid)
                 return null;
 
-            // Get all roles of the user
+            
             List<int> roles = await _userDLL.GetUserRoleIdsAsync(existingUser.UserId);
 
-            // Generate JWT with multiple roles
+            
             var token = _jwt.JwtToken(existingUser, roles);
 
 
@@ -175,21 +175,21 @@ namespace HotelManagementSystem.Services.User
                 .OrderBy(x => x)
                 .ToList();
 
-            // Nothing changed
+            
             if (existingRoles.SequenceEqual(newRoles))
                 return true;
 
-            // Roles that user no longer has
+            
             var rolesToRemove = existingRoles
                 .Except(newRoles)
                 .ToList();
 
-            // Roles that user needs
+            
             var rolesToAdd = newRoles
                 .Except(existingRoles)
                 .ToList();
 
-            // Soft delete removed roles
+            
             if (rolesToRemove.Any())
             {
                 await _userDLL.SoftDeleteRolesAsync(
@@ -198,7 +198,7 @@ namespace HotelManagementSystem.Services.User
                     assignedBy);
             }
 
-            // Add or reactivate roles
+            
             if (rolesToAdd.Any())
             {
                 await _userDLL.AddOrReactivateRolesAsync(
@@ -212,7 +212,7 @@ namespace HotelManagementSystem.Services.User
 
         public async Task<bool> AssignRolesAsync(int userId, IEnumerable<int> roleIds, int adminUserId)
         {
-            // Delegate to the existing UpdateUserRolesAsync implementation to avoid duplication
+            
             return await UpdateUserRolesAsync(userId, roleIds, adminUserId);
         }
     }

@@ -20,8 +20,8 @@ namespace HotelManagementSystem.Controllers.MenuController
         }
 
 
-        // GET: api/Menu
-        //[AllowAnonymous]
+        
+        
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAllMenuItems()
         {
@@ -43,7 +43,7 @@ namespace HotelManagementSystem.Controllers.MenuController
         }
 
 
-        // GET: api/Menu/5
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMenuItemById(int id)
         {
@@ -65,7 +65,7 @@ namespace HotelManagementSystem.Controllers.MenuController
         }
 
 
-        // POST: api/Menu
+        
         [HttpPost]
         public async Task<IActionResult> CreateMenuItem(
             [FromBody] CreateMenu menu)
@@ -84,7 +84,7 @@ namespace HotelManagementSystem.Controllers.MenuController
         }
 
 
-        // PUT: api/Menu/5
+        
         [HttpPut]
         public async Task<IActionResult> UpdateMenuItem(
             [FromBody] UpdateMenu menu)
@@ -102,7 +102,7 @@ namespace HotelManagementSystem.Controllers.MenuController
                 return BadRequest("Enter the valid menu Item");
             }
 
-            // Ensure the MenuId expected by the SQL is provided from the route
+            
 
            try{
                 var result = await _menuService.UpdateMenuAsync(menu , userId);
@@ -122,7 +122,7 @@ namespace HotelManagementSystem.Controllers.MenuController
             }
             catch(Exception ex)
             {
-                return BadRequest("server errro");
+                return BadRequest("server errro"+ex.Message);
             }
 
             

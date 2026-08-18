@@ -16,7 +16,7 @@ namespace HotelManagementSystem.Services.Email
             _configuration = configuration;
             _logger = logger;
         }
-        // C#
+        
 public async Task SendEmailAsync(string to, string subject, string html)
         {
             var fromEmail = _configuration["EmailSettings:SenderEmail"]?.Trim();
@@ -112,3 +112,4 @@ public async Task SendEmailAsync(string to, string subject, string html)
             }
     }
 }
+

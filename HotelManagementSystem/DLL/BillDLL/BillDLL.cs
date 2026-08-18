@@ -26,7 +26,7 @@ namespace HotelManagementSystem.DLL.BillDLL
             public async Task<int> GetNextBillNoAsync()
             {
                 using var conn = _dbConn.CreateConnection();
-                // Fallback to 1 if it's the very first bill in the system
+                
                 string sql = "SELECT ISNULL(MAX(BillNo), 0) + 1 FROM Bills;";
                 return await conn.ExecuteScalarAsync<int>(sql);
             }
@@ -51,7 +51,8 @@ namespace HotelManagementSystem.DLL.BillDLL
             }
 
             public async Task<Bill> PayBillAsync(bool pay, long bilno, string paymentmethod, int userId)
-            {
+             
+        {
             using var conn = _dbConn.CreateConnection();
             string sql = @"
         UPDATE Bills 
