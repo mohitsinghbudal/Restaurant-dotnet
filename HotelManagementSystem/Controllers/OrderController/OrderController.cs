@@ -1,9 +1,11 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 using HotelManagementSystem.Helper.ClaimHelper;
+using HotelManagementSystem.Hubs;
 using HotelManagementSystem.Interfaces.OrderInterface;
 using HotelManagementSystem.Models.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 namespace HotelManagementSystem.Controllers.OrderController
@@ -14,9 +16,17 @@ namespace HotelManagementSystem.Controllers.OrderController
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        public OrderController(IOrderService orderService)
+        private readonly IHubContext<OrderHub> _hubContext;
+
+        public OrderController(IOrderService orderService, IHubContext<OrderHub> hubContext)
         {
             _orderService = orderService;
+            _hubContext = hubContext;
+        }
+        private async Task BroadcastUpdatedOrdersAsync()
+        {
+            var latestOrders = await _orderService.GetAllOrdersAsync();
+            await _hubContext.Clients.All.SendAsync("ReceiveAllOrders", latestOrders);
         }
 
         [HttpGet("all")]
@@ -110,6 +120,9 @@ namespace HotelManagementSystem.Controllers.OrderController
                 if (createOrder == null)
                     throw new Exception("Server Error");
 
+                //broad cast
+                await BroadcastUpdatedOrdersAsync();
+
                 return Ok(new { NewOrder = createOrder });
             }
             catch (Exception ex)
@@ -131,6 +144,8 @@ namespace HotelManagementSystem.Controllers.OrderController
             try
             {
                 var order = await _orderService.PlaceOrder(req, userId);
+                //broad cast
+                await BroadcastUpdatedOrdersAsync();
                 return Ok(order);
             }catch(Exception ex)
             {
@@ -154,8 +169,11 @@ namespace HotelManagementSystem.Controllers.OrderController
                     if (OrderId <= 0) throw new Exception("Please enter the order values");
 
                     bool cancelorder = await _orderService.CancelOrderAsync(OrderId, userId);
-
-                    return Ok(new { message = "sucessfull" });
+                    
+                //broad cast
+                await BroadcastUpdatedOrdersAsync();
+                
+                return Ok(new { message = "sucessfull" });
                 }
                 catch (Exception ex)
                 {
@@ -174,6 +192,9 @@ namespace HotelManagementSystem.Controllers.OrderController
             {
                 bool updateOrder = await _orderService.UpdateOrderQuantityAsync(itemQuantity,orderId, menuId);
 
+                //broad cast
+                await BroadcastUpdatedOrdersAsync();
+
                 return Ok(new { message = "sucessfull" });
             }
             catch (Exception ex)
@@ -191,6 +212,10 @@ namespace HotelManagementSystem.Controllers.OrderController
                     throw new Exception("user is not allowed");
 
                 var result = await _orderService.UpdateStatus(status , OrderId);
+
+                //broad cast
+                await BroadcastUpdatedOrdersAsync();
+
                 return Ok(result);
             }
             catch(Exception ex)

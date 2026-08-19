@@ -54,6 +54,7 @@ using HotelManagementSystem.Services.Table;
 using HotelManagementSystem.Services.Units;
 using HotelManagementSystem.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -65,6 +66,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.RateLimiting;
+using HotelManagementSystem.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -158,20 +161,48 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter =
+        PartitionedRateLimiter.Create<HttpContext, string>(
+            httpContext =>
+            {
+                var ipAddress =
+                    httpContext.Connection.RemoteIpAddress?.ToString()
+                    ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: ipAddress,
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 10,
+                        Window = TimeSpan.FromSeconds(10),
+                        QueueLimit = 0
+                    });
+            });
+
+    options.RejectionStatusCode =
+        StatusCodes.Status429TooManyRequests;
+});
+
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllLocal", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:5173")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -180,6 +211,7 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi();
 }
+
 //custom middlewares inline
 // Get the logger instance from app.Services
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
@@ -206,10 +238,15 @@ app.UseRequestLogging();
 app.UseHttpsRedirection();
 app.UseCors("AllowAllLocal");
 
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+app.MapHub<OrderHub>("/hubs/orders");
 
 app.MapFallbackToFile("index.html");
 

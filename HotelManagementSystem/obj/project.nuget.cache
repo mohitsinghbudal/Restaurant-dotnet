@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Fz9omIjKR9s=",
+  "dgSpecHash": "C+PVAzagMw4=",
   "success": true,
   "projectFilePath": "C:\\Users\\ishwo\\source\\repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.csproj",
   "expectedPackageFiles": [
@@ -60,7 +60,21 @@
     "C:\\Users\\ishwo\\.nuget\\packages\\system.io.packaging\\8.0.1\\system.io.packaging.8.0.1.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\system.security.cryptography.pkcs\\10.0.7\\system.security.cryptography.pkcs.10.0.7.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.13\\system.security.cryptography.protecteddata.9.0.13.nupkg.sha512",
+    "C:\\Users\\ishwo\\.nuget\\packages\\system.threading.ratelimiting\\10.0.11\\system.threading.ratelimiting.10.0.11.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\yamldotnet\\16.3.0\\yamldotnet.16.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "message": "PackageReference System.Threading.RateLimiting will not be pruned. This package is automatically available and does not need to be referenced explicitly. Remove the PackageReference item.",
+      "projectPath": "C:\\Users\\ishwo\\source\\repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\ishwo\\source\\repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.csproj",
+      "libraryId": "System.Threading.RateLimiting",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
 }
