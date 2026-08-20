@@ -2,11 +2,13 @@
 using HotelManagementSystem.Interfaces.PaymentInterface;
 using HotelManagementSystem.Models.Payment;
 using HotelManagementSystem.Services.PaymentService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSystem.Controllers.PaymentController
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentController : ControllerBase
@@ -21,7 +23,7 @@ namespace HotelManagementSystem.Controllers.PaymentController
         {
             try
             {
-                if (!User.IsInRole("5")) 
+                if (!User.IsInRole("5"))
                 {
                     throw new Exception("User not allowed");
                 }
@@ -42,10 +44,10 @@ namespace HotelManagementSystem.Controllers.PaymentController
         {
             try
             {
-                if (!User.IsInRole("5")) 
-                {
-                    throw new Exception("User not allowed");
-                }
+                //if (!User.IsInRole("5")) 
+                //{
+                //    throw new Exception("User not allowed");
+                //}
                 var result = await _payserve.GetALLPaymentsAsync();
                 return Ok(new { message = result });
             }
