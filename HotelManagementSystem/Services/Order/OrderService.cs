@@ -1,24 +1,27 @@
-﻿using HotelManagementSystem.Interfaces.Inventory;
+﻿using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle;
+using HotelManagementSystem.Interfaces.Inventory;
 using HotelManagementSystem.Interfaces.MenuInterface;
 using HotelManagementSystem.Interfaces.OrderInterface;
+using HotelManagementSystem.Interfaces.Redis;
 using HotelManagementSystem.Models.MenuItems;
 using HotelManagementSystem.Models.Order;
 
 namespace HotelManagementSystem.Services.OrderService
 {
-    public class OrderService : IOrderService 
+    public class OrderService : IOrderService
     {
         private readonly IOrderDLL _orderDLL;
-        
+
         private readonly IInventoryService _inventoryService;
         private readonly IMenuDLL _menuDLL;
         private readonly IMenuServices _menuServices;
+        private readonly IRedisService _redis;
 
 
-        public OrderService(IOrderDLL orderDLL, IInventoryService inventoryService , IMenuDLL menuDLL, IMenuServices menuServices)
+        public OrderService(IOrderDLL orderDLL, IInventoryService inventoryService, IMenuDLL menuDLL, IMenuServices menuServices, IRedisService redis)
         {
             _orderDLL = orderDLL;
-            
+            _redis = redis;
             _inventoryService = inventoryService;
             _menuDLL = menuDLL;
             _menuServices = menuServices;
@@ -26,10 +29,20 @@ namespace HotelManagementSystem.Services.OrderService
 
         public async Task<IEnumerable<Order>> GetAllOrdersAsync()
         {
-            return await _orderDLL.GetAllOrdersAsync();
+            const string cachekey = "order:all";
+
+            var cachedOrders = await _redis.GetAsync<List<Order>>(cachekey);
+            if (cachedOrders != null)
+                return cachedOrders;
+
+            var orders = await _orderDLL.GetAllOrdersAsync();
+
+            await _redis.SetAsync(cachekey, orders, TimeSpan.FromMinutes(10));
+
+            return orders;
         }
 
-        
+
         public async Task<Order?> GetOrderByIdAsync(int id)
         {
             if (id <= 0)
@@ -46,7 +59,7 @@ namespace HotelManagementSystem.Services.OrderService
         }
 
 
-        
+
 
         public async Task<Order?> CreateOrderAsync(CreateOrder order)
         {
@@ -54,17 +67,17 @@ namespace HotelManagementSystem.Services.OrderService
             if (order == null)
                 throw new ArgumentNullException(nameof(order));
 
-            if(order.MenuId <= 0)
+            if (order.MenuId <= 0)
                 throw new ArgumentException("Invalid Menu ID for order creation.");
 
-            if(order.Quantity <= 0)
+            if (order.Quantity <= 0)
                 throw new ArgumentException("Ordered quantity must be greater than zero.");
 
             Console.WriteLine("reached the service");
 
             Console.WriteLine(order.MenuId);
 
-            
+
             bool stockDeducted = await _inventoryService.DeductInventoryForOrderAsync(order.MenuId, order.Quantity);
 
             if (!stockDeducted)
@@ -84,10 +97,14 @@ namespace HotelManagementSystem.Services.OrderService
                 OrderStatus = "Pending",
                 IsActive = true,
                 UnitPrice = await _menuDLL.GetPriceById(order.MenuId)
-                
+
             };
 
-         var createdOrder = await _orderDLL.CreateOrderAsync(newOrder);
+            var createdOrder = await _orderDLL.CreateOrderAsync(newOrder);
+
+            await _redis.RemoveAsync("order: all");
+
+            
 
 
             return createdOrder;
@@ -147,15 +164,15 @@ namespace HotelManagementSystem.Services.OrderService
             if (order == null || order.OrderId <= 0)
                 throw new ArgumentException("Invalid order data.");
 
-            
-            
-            
+
+
+
             int quantityDifference = newOrderedQuantity - currentOrderedQuantity;
 
             if (quantityDifference != 0)
             {
-                
-                
+
+
                 bool stockAdjusted = await _inventoryService.DeductInventoryForOrderAsync(menuId, quantityDifference);
 
                 if (!stockAdjusted)
@@ -164,7 +181,7 @@ namespace HotelManagementSystem.Services.OrderService
                 }
             }
 
-            
+
             return await _orderDLL.UpdateOrderAsync(order);
         }
 
@@ -176,7 +193,7 @@ namespace HotelManagementSystem.Services.OrderService
 
                 if (existingOrder == null) throw new Exception("invalid order");
 
-                if(DateTime.UtcNow - existingOrder.CreatedAt > TimeSpan.FromMinutes(5) && existingOrder.OrderStatus =="Preparing") throw new Exception("can't be deleted its already preparing");
+                if (DateTime.UtcNow - existingOrder.CreatedAt > TimeSpan.FromMinutes(5) && existingOrder.OrderStatus == "Preparing") throw new Exception("can't be deleted its already preparing");
 
                 existingOrder.OrderStatus = "Cancelled";
                 existingOrder.UpdatedBy = userId;
@@ -185,11 +202,12 @@ namespace HotelManagementSystem.Services.OrderService
 
                 return await _orderDLL.UpdateOrderAsync(existingOrder);
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception("please enter valid order");
             }
-            
+
         }
         public async Task<bool> UpdateOrderQuantityAsync(int quantity, int orderId, int menuId)
         {
@@ -200,7 +218,7 @@ namespace HotelManagementSystem.Services.OrderService
 
             var order = await _orderDLL.GetOrderByIdAsync(orderId);
 
-            if (order.OrderStatus == "Ready" || order.OrderStatus == "Completed"|| order.OrderStatus == "Cancelled") throw new Exception("order is already prepared create new order");
+            if (order.OrderStatus == "Ready" || order.OrderStatus == "Completed" || order.OrderStatus == "Cancelled") throw new Exception("order is already prepared create new order");
 
             if (menuitem == null)
                 throw new Exception("Menu item not found.");
@@ -244,13 +262,14 @@ namespace HotelManagementSystem.Services.OrderService
         {
             var order = await _orderDLL.GetOrderBySessionId(sessionId);
 
-            foreach(var or in order){
+            foreach (var or in order)
+            {
 
-         
+
 
                 if (or.OrderStatus != "Completed" && or.OrderStatus != "Cancelled")
-                   { 
-                    
+                {
+
                     await _orderDLL.UpdateStatus(status, sessionId);
 
                 }

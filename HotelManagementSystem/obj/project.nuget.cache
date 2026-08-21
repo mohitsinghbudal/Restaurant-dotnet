@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "C+PVAzagMw4=",
+  "dgSpecHash": "7s3Ud6TNO4Q=",
   "success": true,
   "projectFilePath": "C:\\Users\\ishwo\\source\\repos\\HotelManagementSystem\\HotelManagementSystem\\HotelManagementSystem.csproj",
   "expectedPackageFiles": [
@@ -23,6 +23,7 @@
     "C:\\Users\\ishwo\\.nuget\\packages\\microsoft.data.sqlclient.internal.logging\\7.0.2\\microsoft.data.sqlclient.internal.logging.7.0.2.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\6.0.2\\microsoft.data.sqlclient.sni.runtime.6.0.2.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\microsoft.extensions.apidescription.server\\10.0.0\\microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",
+    "C:\\Users\\ishwo\\.nuget\\packages\\microsoft.extensions.caching.stackexchangeredis\\10.0.11\\microsoft.extensions.caching.stackexchangeredis.10.0.11.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.19.1\\microsoft.identitymodel.abstractions.8.19.1.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.19.1\\microsoft.identitymodel.jsonwebtokens.8.19.1.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\microsoft.identitymodel.logging\\8.19.1\\microsoft.identitymodel.logging.8.19.1.nupkg.sha512",
@@ -46,9 +47,11 @@
     "C:\\Users\\ishwo\\.nuget\\packages\\nswag.core.yaml\\14.7.1\\nswag.core.yaml.14.7.1.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\nswag.generation\\14.7.1\\nswag.generation.14.7.1.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\nswag.generation.aspnetcore\\14.7.1\\nswag.generation.aspnetcore.14.7.1.nupkg.sha512",
+    "C:\\Users\\ishwo\\.nuget\\packages\\pipelines.sockets.unofficial\\2.2.8\\pipelines.sockets.unofficial.2.2.8.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\qrcoder\\1.8.0\\qrcoder.1.8.0.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\rbush.signed\\4.0.0\\rbush.signed.4.0.0.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\sixlabors.fonts\\1.0.0\\sixlabors.fonts.1.0.0.nupkg.sha512",
+    "C:\\Users\\ishwo\\.nuget\\packages\\stackexchange.redis\\2.7.27\\stackexchange.redis.2.7.27.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\swashbuckle.aspnetcore\\10.2.3\\swashbuckle.aspnetcore.10.2.3.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\10.2.3\\swashbuckle.aspnetcore.swagger.10.2.3.nupkg.sha512",
     "C:\\Users\\ishwo\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\10.2.3\\swashbuckle.aspnetcore.swaggergen.10.2.3.nupkg.sha512",

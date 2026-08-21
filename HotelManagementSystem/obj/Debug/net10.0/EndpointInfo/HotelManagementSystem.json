@@ -23,6 +23,27 @@
         }
       }
     },
+    "/api/Redis/test": {
+      "get": {
+        "tags": [
+          "Redis"
+        ],
+        "operationId": "Redis_Test",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/WeatherForecast": {
       "get": {
         "tags": [

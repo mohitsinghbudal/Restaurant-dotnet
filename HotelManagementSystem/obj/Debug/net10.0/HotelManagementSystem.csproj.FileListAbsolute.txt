@@ -104,3 +104,6 @@ C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\obj\Debu
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\BouncyCastle.Cryptography.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\MailKit.dll
 C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\MimeKit.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\Pipelines.Sockets.Unofficial.dll
+C:\Users\ishwo\source\repos\HotelManagementSystem\HotelManagementSystem\bin\Debug\net10.0\StackExchange.Redis.dll
