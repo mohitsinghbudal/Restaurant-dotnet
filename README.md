@@ -31,7 +31,7 @@ The system covers the complete restaurant lifecycle, including **table managemen
 
 This repository focuses on the **backend/API implementation** and demonstrates practical backend engineering concepts using the Microsoft .NET ecosystem.
 
-> **Project period:** January 2026 – April 2026  
+> **Project period:** July 2026 – September 2026  
 > **Project type:** Full-Stack Project — Backend Repository  
 > **Primary backend:** ASP.NET Core Web API
 
