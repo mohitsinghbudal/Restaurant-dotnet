@@ -46,6 +46,6 @@ namespace HotelManagementSystem.Services.Redis
             return await _database.KeyExistsAsync(key);
         }
 
-        public async Task<Y>
+        //public async Task<Y>
     }
 }
